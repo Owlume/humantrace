@@ -1,0 +1,125 @@
+{
+    "spec": {
+        "name": "reading_failure_types",
+        "version": "1.0.0",
+        "status": "canonical",
+        "closed_set": true,
+        "tunable": false,
+        "precedence": "doctrine",
+        "notes": "This file defines non-negotiable constraints that govern Owlume behavior. It is not learned, optimized, extended, or revised by runtime systems."
+    },
+    "types": [
+        {
+            "id": "RF01",
+            "name": "Mechanization",
+            "definition": "Reducing narrative or symbolic text to a functional or explanatory mechanism before its meaning has been endured.",
+            "root_impulse": "epistemic_acceleration",
+            "intervention_mode": "attention_brake",
+            "tunable": false
+        },
+        {
+            "id": "RF02",
+            "name": "Position-Taking",
+            "definition": "Occupying a stance of agreement, disagreement, or evaluation before reading has finished unfolding.",
+            "root_impulse": "positional_fixation",
+            "intervention_mode": "attention_brake",
+            "tunable": false
+        },
+        {
+            "id": "RF03",
+            "name": "Premature Moralization",
+            "definition": "Collapsing narrative tension into early judgments of good and bad, right and wrong.",
+            "root_impulse": "positional_fixation",
+            "intervention_mode": "attention_brake",
+            "tunable": false
+        },
+        {
+            "id": "RF04",
+            "name": "Linguistic Drift Blindness",
+            "definition": "Failing to notice that shifts in language are themselves actions that alter meaning, risk, or responsibility.",
+            "root_impulse": "epistemic_acceleration",
+            "intervention_mode": "salience_marker",
+            "tunable": false
+        },
+        {
+            "id": "RF05",
+            "name": "Responsibility Displacement",
+            "definition": "Redirecting agency or consequence away from the reader or subject to preserve moral or emotional comfort.",
+            "root_impulse": "discomfort_avoidance",
+            "intervention_mode": "responsibility_return",
+            "tunable": false
+        },
+        {
+            "id": "RF06",
+            "name": "Fairness Projection",
+            "definition": "Imposing external standards of fairness or proportionality before the text has disclosed its own internal logic.",
+            "root_impulse": "positional_fixation",
+            "intervention_mode": "attention_brake",
+            "tunable": false
+        },
+        {
+            "id": "RF07",
+            "name": "System Substitution",
+            "definition": "Replacing personal position or responsibility with systems, structures, scale, or abstraction.",
+            "root_impulse": "discomfort_avoidance",
+            "intervention_mode": "responsibility_return",
+            "tunable": false
+        },
+        {
+            "id": "RF08",
+            "name": "Promise Instrumentalization",
+            "definition": "Using future resolution or assurance to neutralize present uncertainty or obligation.",
+            "root_impulse": "discomfort_avoidance",
+            "intervention_mode": "temporal_hold",
+            "tunable": false
+        },
+        {
+            "id": "RF09",
+            "name": "Acceleration Substitution",
+            "definition": "Attempting to bypass waiting, silence, or indeterminacy through premature action.",
+            "root_impulse": "discomfort_avoidance",
+            "intervention_mode": "temporal_hold",
+            "tunable": false
+        },
+        {
+            "id": "RF10",
+            "name": "Spiritual or Moral Elitism",
+            "definition": "Interpreting selection, success, or survival as evidence of superiority or moral rank.",
+            "root_impulse": "positional_fixation",
+            "intervention_mode": "status_flattening",
+            "tunable": false
+        },
+        {
+            "id": "RF11",
+            "name": "Temporal Compression",
+            "definition": "Eliminating duration, delay, or development by leaping directly from beginning to outcome.",
+            "root_impulse": "epistemic_acceleration",
+            "intervention_mode": "temporal_hold",
+            "tunable": false
+        },
+        {
+            "id": "RF12",
+            "name": "Premature Consolation",
+            "definition": "Deploying meaning, reassurance, or closure before loss, ambiguity, or harm has been fully faced.",
+            "root_impulse": "discomfort_avoidance",
+            "intervention_mode": "attention_brake",
+            "tunable": false
+        },
+        {
+            "id": "RF13",
+            "name": "Interpretive Substitution",
+            "definition": "Replacing the act of reading with explanation, summary, or conceptual mastery.",
+            "root_impulse": "epistemic_acceleration",
+            "intervention_mode": "attention_brake",
+            "tunable": false
+        },
+        {
+            "id": "RF14",
+            "name": "Tension Relief Compulsion",
+            "definition": "Treating unresolved tension as a defect rather than as a condition of meaning.",
+            "root_impulse": "epistemic_acceleration",
+            "intervention_mode": "tension_hold",
+            "tunable": false
+        }
+    ]
+}

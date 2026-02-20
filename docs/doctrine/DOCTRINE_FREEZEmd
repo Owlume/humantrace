@@ -1,0 +1,77 @@
+# Doctrine Freeze Manifest
+
+**Status:** Frozen (Normative)  
+**Applies to:** Owlume doctrine layer under `docs/doctrine/`  
+**Version:** doctrine-v1.0  
+**Intent:** Establish a stable, audit-safe set of non-tunable constraints.
+
+---
+
+## What “Frozen” Means
+
+“Frozen” does not mean doctrine can never change.
+
+It means:
+- doctrine is treated as **normative constraint**, not iteration surface,
+- changes are **exceptional**, not routine,
+- and no runtime system may learn, tune, extend, or implicitly modify doctrine.
+
+Doctrine exists to limit system power.
+
+---
+
+## Frozen Doctrine Surface (v1.0)
+
+The following files constitute the frozen doctrine surface for `doctrine-v1.0`:
+
+1. `docs/doctrine/README.md`  
+2. `docs/doctrine/reading_failure_types.md`  
+3. `docs/doctrine/reading_failure_types.json`  
+4. `docs/doctrine/reference_mapping_reading_failures_to_modes.md` *(reference-only; non-authoritative)*
+
+If additional doctrine files are introduced in the future, they must be explicitly listed in a new freeze version.
+
+---
+
+## Authority Ordering
+
+1. **Canonical doctrine:** `reading_failure_types.md`  
+2. **Machine-readable mirror:** `reading_failure_types.json` (must match canonical)  
+3. **Governance guardrail:** `docs/doctrine/README.md`  
+4. **Reference-only mapping:** `reference_mapping_reading_failures_to_modes.md` (non-binding)
+
+In any conflict, canonical doctrine prevails.
+
+---
+
+## Closed Set Rule
+
+The Reading Failure Types are a **closed set**.
+
+No system may:
+- add, remove, merge, split, rank, or weight these types,
+- introduce new IDs,
+- or treat this set as learnable/tunable.
+
+New observations must map to an existing type or be excluded as outside scope.
+
+---
+
+## Change Policy
+
+Changes to frozen doctrine require:
+- explicit architectural justification,
+- a review for scope creep and circularity,
+- confirmation that constraints remain non-tunable and closed,
+- and a new freeze version (e.g., `doctrine-v1.1`).
+
+Absent these steps, doctrine remains stable.
+
+---
+
+## Design Principle
+
+Doctrine governs **what Owlume is allowed to do**, not what it is able to do.
+
+Constraints are not features.  
+They are limits.

@@ -1,0 +1,130 @@
+{
+    "$schema": "http://json-schema.org/draft-07/schema#",
+    "$id": "https://owlume.example/schemas/reading_failure_types.schema.json",
+    "title": "reading_failure_types.schema.json",
+    "type": "object",
+    "additionalProperties": false,
+    "required": [
+        "spec",
+        "types"
+    ],
+    "properties": {
+        "spec": {
+            "type": "object",
+            "additionalProperties": false,
+            "required": [
+                "name",
+                "version",
+                "status",
+                "closed_set",
+                "tunable",
+                "precedence",
+                "notes"
+            ],
+            "properties": {
+                "name": {
+                    "type": "string",
+                    "const": "reading_failure_types"
+                },
+                "version": {
+                    "type": "string",
+                    "pattern": "^[0-9]+\\.[0-9]+\\.[0-9]+$"
+                },
+                "status": {
+                    "type": "string",
+                    "const": "canonical"
+                },
+                "closed_set": {
+                    "type": "boolean",
+                    "const": true
+                },
+                "tunable": {
+                    "type": "boolean",
+                    "const": false
+                },
+                "precedence": {
+                    "type": "string",
+                    "const": "doctrine"
+                },
+                "notes": {
+                    "type": "string",
+                    "minLength": 1
+                }
+            }
+        },
+        "types": {
+            "type": "array",
+            "minItems": 14,
+            "maxItems": 14,
+            "items": {
+                "$ref": "#/definitions/readingFailureType"
+            }
+        }
+    },
+    "definitions": {
+        "readingFailureType": {
+            "type": "object",
+            "additionalProperties": false,
+            "required": [
+                "id",
+                "name",
+                "definition",
+                "root_impulse",
+                "intervention_mode",
+                "tunable"
+            ],
+            "properties": {
+                "id": {
+                    "type": "string",
+                    "enum": [
+                        "RF01",
+                        "RF02",
+                        "RF03",
+                        "RF04",
+                        "RF05",
+                        "RF06",
+                        "RF07",
+                        "RF08",
+                        "RF09",
+                        "RF10",
+                        "RF11",
+                        "RF12",
+                        "RF13",
+                        "RF14"
+                    ]
+                },
+                "name": {
+                    "type": "string",
+                    "minLength": 2
+                },
+                "definition": {
+                    "type": "string",
+                    "minLength": 10
+                },
+                "root_impulse": {
+                    "type": "string",
+                    "enum": [
+                        "epistemic_acceleration",
+                        "positional_fixation",
+                        "discomfort_avoidance"
+                    ]
+                },
+                "intervention_mode": {
+                    "type": "string",
+                    "enum": [
+                        "attention_brake",
+                        "salience_marker",
+                        "responsibility_return",
+                        "temporal_hold",
+                        "status_flattening",
+                        "tension_hold"
+                    ]
+                },
+                "tunable": {
+                    "type": "boolean",
+                    "const": false
+                }
+            }
+        }
+    }
+}

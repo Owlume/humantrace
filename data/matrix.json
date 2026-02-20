@@ -1,49 +1,206 @@
 {
-  "$schema": "file:///C:/Users/shenb/DesktopLocal/elx-repo/schemas/matrix.schema.json",
-  "spec_version": "2025-10-18",
-  "Analytical": {
-    "Evidence & Validation": "What evidence most directly supports or challenges this conclusion?",
-    "Assumption": "What must be true here for this to work?",
-    "Evidence": "What evidence distinguishes signal from noise in this claim?",
-    "Risk": "Where could this fail first, and how would we notice early?",
-    "Clarity": "What is meant precisely here, and what could be misread?",
-    "Efficiency": "What is being repeated, wasted, or unnecessarily complex?",
-    "Action": "What is the smallest step that would test this?"
-  },
-  "Critical": {
-    "Assumption": "Which assumptions could be flawed, biased, or circular?",
-    "Stakeholder": "Whose interests or incentives could distort this reasoning?",
-    "Evidence": "What counter-evidence or missing data could overturn this?",
-    "Risk": "What is the hidden downside or worst-case that’s ignored?",
-    "Clarity": "Where is the ambiguity that could conceal an error?",
-    "Efficiency": "What is over-engineered or unnecessarily constrained?",
-    "Action": "Which action here may backfire or cause harm?"
-  },
-  "Creative": {
-    "Exploration": "What new angle, idea, or prototype could reveal hidden potential?",
-    "Assumption": "What alternative assumptions could open new possibilities?",
-    "Evidence": "How might unusual or overlooked signals point to a breakthrough?",
-    "Risk": "How could reframing this risk create an unexpected advantage?",
-    "Clarity": "What metaphors or analogies could clarify and inspire?",
-    "Efficiency": "What shortcut, hack, or inversion could simplify?",
-    "Action": "What bold step would radically change the outcome?"
-  },
-  "Reflective": {
-    "Root Cause": "What’s the underlying cause behind this recurring issue?",
-    "Assumption": "How do my own biases shape these assumptions?",
-    "Evidence": "Why do I trust this evidence — and could I be wrong?",
-    "Risk": "What past failures mirror the risks here?",
-    "Clarity": "What am I avoiding seeing clearly because it’s uncomfortable?",
-    "Efficiency": "Where am I overcomplicating because of ego or habit?",
-    "Action": "Am I acting for clarity, or for comfort and identity?"
-  },
-  "Growth": {
-    "Iteration": "What new assumption would I test to learn fastest?",
-    "Assumption": "What new assumption would I test to learn fastest?",
-    "Evidence": "What evidence would most accelerate my learning curve?",
-    "Risk": "What small risk could I take to expand capacity safely?",
-    "Clarity": "What misunderstanding, if resolved, would unlock progress?",
-    "Efficiency": "How could I recycle mistakes into faster improvement?",
-    "Action": "What experiment moves me forward regardless of success or failure?"
-  }
+  "spec_version": "2026-02-13",
+  "description": "Questioncraft Matrix — Canonical ID Schema for deterministic classification",
+  "modes": [
+    {
+      "mode_id": "M1-ANALYTICAL",
+      "label": "Analytical",
+      "principles": [
+        {
+          "principle_id": "P1-AN-EVIDENCE_VALIDATION",
+          "label": "Evidence & Validation",
+          "prompt": "What evidence most directly supports or challenges this conclusion?"
+        },
+        {
+          "principle_id": "P2-AN-ASSUMPTION",
+          "label": "Assumption",
+          "prompt": "What must be true here for this to work?"
+        },
+        {
+          "principle_id": "P3-AN-EVIDENCE_SIGNAL",
+          "label": "Signal vs Noise",
+          "prompt": "What evidence distinguishes signal from noise in this claim?"
+        },
+        {
+          "principle_id": "P4-AN-RISK",
+          "label": "Risk",
+          "prompt": "Where could this fail first, and how would we notice early?"
+        },
+        {
+          "principle_id": "P5-AN-CLARITY",
+          "label": "Clarity",
+          "prompt": "What is meant precisely here, and what could be misread?"
+        },
+        {
+          "principle_id": "P6-AN-EFFICIENCY",
+          "label": "Efficiency",
+          "prompt": "What is being repeated, wasted, or unnecessarily complex?"
+        },
+        {
+          "principle_id": "P7-AN-ACTION",
+          "label": "Action",
+          "prompt": "What is the smallest step that would test this?"
+        }
+      ]
+    },
+    {
+      "mode_id": "M2-CRITICAL",
+      "label": "Critical",
+      "principles": [
+        {
+          "principle_id": "P1-CR-ASSUMPTION",
+          "label": "Assumption",
+          "prompt": "Which assumptions could be flawed, biased, or circular?"
+        },
+        {
+          "principle_id": "P2-CR-STAKEHOLDER",
+          "label": "Stakeholder",
+          "prompt": "Whose interests or incentives could distort this reasoning?"
+        },
+        {
+          "principle_id": "P3-CR-EVIDENCE",
+          "label": "Counter-Evidence",
+          "prompt": "What counter-evidence or missing data could overturn this?"
+        },
+        {
+          "principle_id": "P4-CR-RISK",
+          "label": "Hidden Risk",
+          "prompt": "What is the hidden downside or worst-case that’s ignored?"
+        },
+        {
+          "principle_id": "P5-CR-CLARITY",
+          "label": "Ambiguity",
+          "prompt": "Where is the ambiguity that could conceal an error?"
+        },
+        {
+          "principle_id": "P6-CR-EFFICIENCY",
+          "label": "Over-Engineering",
+          "prompt": "What is over-engineered or unnecessarily constrained?"
+        },
+        {
+          "principle_id": "P7-CR-ACTION",
+          "label": "Backfire Risk",
+          "prompt": "Which action here may backfire or cause harm?"
+        }
+      ]
+    },
+    {
+      "mode_id": "M3-CREATIVE",
+      "label": "Creative",
+      "principles": [
+        {
+          "principle_id": "P1-CRV-EXPLORATION",
+          "label": "Exploration",
+          "prompt": "What new angle, idea, or prototype could reveal hidden potential?"
+        },
+        {
+          "principle_id": "P2-CRV-ASSUMPTION_SHIFT",
+          "label": "Alternative Assumption",
+          "prompt": "What alternative assumptions could open new possibilities?"
+        },
+        {
+          "principle_id": "P3-CRV-SIGNAL",
+          "label": "Unusual Signal",
+          "prompt": "How might unusual or overlooked signals point to a breakthrough?"
+        },
+        {
+          "principle_id": "P4-CRV-RISK_REFRAME",
+          "label": "Risk Reframe",
+          "prompt": "How could reframing this risk create an unexpected advantage?"
+        },
+        {
+          "principle_id": "P5-CRV-CLARITY_METAPHOR",
+          "label": "Clarifying Metaphor",
+          "prompt": "What metaphor or analogy could clarify this perspective?"
+        },
+        {
+          "principle_id": "P6-CRV-EFFICIENCY_INVERSION",
+          "label": "Inversion",
+          "prompt": "What shortcut, hack, or inversion could simplify?"
+        },
+        {
+          "principle_id": "P7-CRV-ACTION_BOLD",
+          "label": "Bold Move",
+          "prompt": "What bold step would radically change the outcome?"
+        }
+      ]
+    },
+    {
+      "mode_id": "M4-REFLECTIVE",
+      "label": "Reflective",
+      "principles": [
+        {
+          "principle_id": "P1-RF-ROOT_CAUSE",
+          "label": "Root Cause",
+          "prompt": "What’s the underlying cause behind this recurring issue?"
+        },
+        {
+          "principle_id": "P2-RF-BIAS",
+          "label": "Self-Bias",
+          "prompt": "How do my own biases shape these assumptions?"
+        },
+        {
+          "principle_id": "P3-RF-EVIDENCE_TRUST",
+          "label": "Evidence Trust",
+          "prompt": "Why do I trust this evidence — and could I be wrong?"
+        },
+        {
+          "principle_id": "P4-RF-RISK_MEMORY",
+          "label": "Past Pattern",
+          "prompt": "What past failures mirror the risks here?"
+        },
+        {
+          "principle_id": "P5-RF-CLARITY_AVOIDANCE",
+          "label": "Avoidance",
+          "prompt": "What am I avoiding seeing clearly because it’s uncomfortable?"
+        },
+        {
+          "principle_id": "P6-RF-EFFICIENCY_EGO",
+          "label": "Ego Complexity",
+          "prompt": "Where am I overcomplicating because of ego or habit?"
+        },
+        {
+          "principle_id": "P7-RF-ACTION_IDENTITY",
+          "label": "Identity Action",
+          "prompt": "Am I acting for clarity, or for comfort and identity?"
+        }
+      ]
+    },
+    {
+      "mode_id": "M5-GROWTH",
+      "label": "Growth",
+      "principles": [
+        {
+          "principle_id": "P1-GR-ASSUMPTION_TEST",
+          "label": "Assumption Test",
+          "prompt": "What new assumption would I test to learn fastest?"
+        },
+        {
+          "principle_id": "P2-GR-EVIDENCE_ACCELERATOR",
+          "label": "Learning Evidence",
+          "prompt": "What evidence would most accelerate my learning curve?"
+        },
+        {
+          "principle_id": "P3-GR-RISK_SAFE_EXPANSION",
+          "label": "Safe Risk",
+          "prompt": "What small risk could expand capacity safely?"
+        },
+        {
+          "principle_id": "P4-GR-CLARITY_UNLOCK",
+          "label": "Unlocking Clarity",
+          "prompt": "What misunderstanding, if resolved, would unlock progress?"
+        },
+        {
+          "principle_id": "P5-GR-EFFICIENCY_RECYCLE",
+          "label": "Recycle Mistakes",
+          "prompt": "How could mistakes be recycled into faster improvement?"
+        },
+        {
+          "principle_id": "P6-GR-ACTION_EXPERIMENT",
+          "label": "Experiment",
+          "prompt": "What experiment moves forward regardless of success or failure?"
+        }
+      ]
+    }
+  ]
 }
