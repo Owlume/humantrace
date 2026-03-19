@@ -1,0 +1,586 @@
+{
+  "spec": {
+    "name": "humantrace_validation_dataset",
+    "version": "1.0.0",
+    "created": "2026-03-21",
+    "owner": "HumanTrace / Owlume",
+    "description": "Synthetic validation dataset for HumanTrace accuracy testing. 60 labeled messages across 4 categories. Based on publicly documented fraud patterns from ACCC Scamwatch, ASIC alerts, and known scam typologies.",
+    "categories": {
+      "synthetic_fraud": "Known AI-generated or template-based fraud messages. Ground truth: RED",
+      "genuine_human": "Known genuine human communications in similar emotional registers. Ground truth: GREEN or YELLOW",
+      "mixed_content": "Human-edited AI fraud — AI scaffold with human personalisation. Ground truth: YELLOW with mixed_content_warning",
+      "edge_case": "Ambiguous messages, non-native English, formal business, legitimate urgency. Ground truth: YELLOW — tests false positive rate"
+    },
+    "target_accuracy": {
+      "synthetic_fraud_detection_rate": 0.80,
+      "false_positive_rate_max": 0.15,
+      "mixed_content_detection_rate": 0.70
+    }
+  },
+  "messages": [
+
+    {
+      "id": "SF001",
+      "category": "synthetic_fraud",
+      "fraud_type": "phishing",
+      "context_hint": "bank_officer",
+      "ground_truth": "red",
+      "source_basis": "ACCC Scamwatch — bank impersonation phishing template",
+      "text": "Dear valued customer, we have detected unusual activity on your account. Your account has been temporarily suspended for security reasons. You must verify your identity within 24 hours or your account will be permanently closed. Click the link below to confirm your details immediately. Failure to act will result in permanent account termination."
+    },
+    {
+      "id": "SF002",
+      "category": "synthetic_fraud",
+      "fraud_type": "investment_fraud",
+      "context_hint": "investment_opportunity",
+      "ground_truth": "red",
+      "source_basis": "ASIC investor alert — crypto guaranteed returns",
+      "text": "Hi, I wanted to share an exclusive investment opportunity that has been generating guaranteed returns of 35% monthly for our members. This is a completely risk-free system using advanced AI trading algorithms. Spots are extremely limited and this offer expires in 48 hours. Join now and start earning passive income today. This opportunity is only available to a select group of people."
+    },
+    {
+      "id": "SF003",
+      "category": "synthetic_fraud",
+      "fraud_type": "romance_scam",
+      "context_hint": "friend_in_distress",
+      "ground_truth": "red",
+      "source_basis": "ACCC Scamwatch — romance scam emergency request",
+      "text": "My darling, I am writing to you with a heavy heart. I am currently stranded in Malaysia after my wallet was stolen at the airport. I need you to urgently wire $2,500 to my account so I can book a flight home and pay my hotel. Please send via Western Union as soon as possible. I miss you so much and I will repay you immediately when I return. Time is critical."
+    },
+    {
+      "id": "SF004",
+      "category": "synthetic_fraud",
+      "fraud_type": "authority_impersonation",
+      "context_hint": "bank_officer",
+      "ground_truth": "red",
+      "source_basis": "ACCC Scamwatch — ATO impersonation",
+      "text": "URGENT NOTICE from the Australian Taxation Office. Our records indicate you have an outstanding tax debt of $4,892. Failure to pay immediately will result in legal action, asset seizure, and criminal prosecution. You must call our secure line within 2 hours or a warrant will be issued for your arrest. This is your final warning before enforcement action begins."
+    },
+    {
+      "id": "SF005",
+      "category": "synthetic_fraud",
+      "fraud_type": "phishing",
+      "context_hint": "bank_officer",
+      "ground_truth": "red",
+      "source_basis": "ACCC Scamwatch — parcel delivery phishing",
+      "text": "Your parcel could not be delivered due to incomplete address information. To reschedule delivery you must verify your details and pay a redelivery fee of $3.50. Your parcel will be returned to sender in 24 hours if you do not act immediately. Click here to update your delivery information and confirm payment now."
+    },
+    {
+      "id": "SF006",
+      "category": "synthetic_fraud",
+      "fraud_type": "investment_fraud",
+      "context_hint": "investment_opportunity",
+      "ground_truth": "red",
+      "source_basis": "ASIC alert — property investment scheme",
+      "text": "Congratulations! You have been selected for our exclusive property investment program. Our members consistently achieve 20-40% annual returns with zero risk to capital. This secret investment method is used by the world's wealthiest families and is now available to a limited number of qualified investors. Act within the next 72 hours to secure your position before this offer closes permanently."
+    },
+    {
+      "id": "SF007",
+      "category": "synthetic_fraud",
+      "fraud_type": "phishing",
+      "context_hint": "bank_officer",
+      "ground_truth": "red",
+      "source_basis": "ACCC — Medicare / health insurance phishing",
+      "text": "Important notice regarding your Medicare account. We have detected unauthorised access to your account and your benefits have been suspended. To restore your benefits immediately you must verify your identity and update your banking details. Do not delay as your claims are currently on hold. Visit the secure link below within 12 hours to avoid losing your entitlements."
+    },
+    {
+      "id": "SF008",
+      "category": "synthetic_fraud",
+      "fraud_type": "romance_scam",
+      "context_hint": "friend_in_distress",
+      "ground_truth": "red",
+      "source_basis": "ACCC Scamwatch — online dating platform emergency",
+      "text": "I know this is sudden but I need your help urgently. I am a doctor currently working in a field hospital in Syria and I have run into serious trouble. My bank account has been frozen due to international sanctions and I cannot access my funds. I need $5,000 transferred via Bitcoin to cover emergency medical supplies for my patients. I promise to return every cent when I am back home next month."
+    },
+    {
+      "id": "SF009",
+      "category": "synthetic_fraud",
+      "fraud_type": "authority_impersonation",
+      "context_hint": "bank_officer",
+      "ground_truth": "red",
+      "source_basis": "ACCC — police impersonation scam",
+      "text": "This is an official notice from the Australian Federal Police Cybercrime Division. Your bank account has been identified in connection with money laundering activities. To avoid immediate arrest you must transfer your funds to a secure government holding account within the next 3 hours. Do not contact your bank or tell anyone about this notice as it may compromise the investigation."
+    },
+    {
+      "id": "SF010",
+      "category": "synthetic_fraud",
+      "fraud_type": "investment_fraud",
+      "context_hint": "investment_opportunity",
+      "ground_truth": "red",
+      "source_basis": "ASIC — forex trading bot scheme",
+      "text": "Our automated forex trading system has delivered consistent profits for over 2,000 members worldwide. With a minimum investment of $500 you can access our AI-powered trading bot that operates 24/7 and generates guaranteed daily returns of 3-5%. This is completely passive income with no risk to your principal. Limited accounts are available so you must register today to secure your spot."
+    },
+    {
+      "id": "SF011",
+      "category": "synthetic_fraud",
+      "fraud_type": "phishing",
+      "context_hint": "bank_officer",
+      "ground_truth": "red",
+      "source_basis": "ACCC — superannuation early access scam",
+      "text": "You are eligible to access your superannuation early under a special government COVID relief provision. To claim your entitlement of up to $20,000 you must verify your identity and provide your super fund details immediately. This offer expires at midnight tonight. Our specialists are standing by to process your claim. Do not miss this limited opportunity to access your own money."
+    },
+    {
+      "id": "SF012",
+      "category": "synthetic_fraud",
+      "fraud_type": "authority_impersonation",
+      "context_hint": "bank_officer",
+      "ground_truth": "red",
+      "source_basis": "ACCC — bank security team impersonation",
+      "text": "This is the CommBank Fraud Prevention Team. We have detected suspicious transactions on your account totalling $3,400. To protect your funds we need you to immediately transfer your balance to a temporary secure holding account while we investigate. Do not use internet banking or contact your branch as the fraud may be internal. Call our direct secure line immediately and keep this confidential."
+    },
+    {
+      "id": "SF013",
+      "category": "synthetic_fraud",
+      "fraud_type": "investment_fraud",
+      "context_hint": "investment_opportunity",
+      "ground_truth": "red",
+      "source_basis": "ASIC — NFT investment scheme",
+      "text": "The next Bitcoin opportunity is here and early investors will see returns of 1000% or more. Our exclusive NFT collection is launching in 48 hours and our founding members consistently achieve extraordinary gains. This is not financial advice but everyone who got in early on Bitcoin became a millionaire. Do not miss this once in a generation wealth creation opportunity. Spots are extremely limited."
+    },
+    {
+      "id": "SF014",
+      "category": "synthetic_fraud",
+      "fraud_type": "phishing",
+      "context_hint": null,
+      "ground_truth": "red",
+      "source_basis": "ACCC — toll road / fine phishing",
+      "text": "You have an unpaid toll fee of $4.85 on your account. Failure to pay within 24 hours will result in a fine of $150 and potential suspension of your vehicle registration. Pay immediately at the secure link below to avoid penalties. This is your final reminder before automatic enforcement action is taken against your vehicle registration."
+    },
+    {
+      "id": "SF015",
+      "category": "synthetic_fraud",
+      "fraud_type": "romance_scam",
+      "context_hint": "friend_in_distress",
+      "ground_truth": "red",
+      "source_basis": "ACCC — military romance scam",
+      "text": "My dearest, I have been deployed unexpectedly to a peacekeeping mission and I need your urgent help. My military pay has been delayed due to a clerical error and I cannot access funds for another 6 weeks. I need $3,000 for essential equipment and communication fees. Please send via gift cards — iTunes or Google Play work best in the field. I will never forget your kindness and loyalty."
+    },
+    {
+      "id": "SF016",
+      "category": "synthetic_fraud",
+      "fraud_type": "authority_impersonation",
+      "context_hint": null,
+      "ground_truth": "red",
+      "source_basis": "ACCC — Microsoft tech support scam",
+      "text": "CRITICAL SECURITY ALERT: Our systems have detected that your computer has been compromised by malware and your personal data is being stolen right now. You must call our Microsoft Certified Security team immediately to prevent complete data loss and identity theft. Do not turn off your computer or the malware will activate and destroy all your files. Call the number below within the next 30 minutes."
+    },
+    {
+      "id": "SF017",
+      "category": "synthetic_fraud",
+      "fraud_type": "investment_fraud",
+      "context_hint": "investment_opportunity",
+      "ground_truth": "red",
+      "source_basis": "ASIC — pyramid / referral scheme",
+      "text": "I have discovered a completely legal way to earn $5,000 per week from home with just 2 hours of work per day. This exclusive system has helped thousands of ordinary Australians achieve financial freedom. There is absolutely no selling involved and the income is passive and guaranteed. I can only share this with a limited number of people so you must contact me today before I close this offer."
+    },
+    {
+      "id": "SF018",
+      "category": "synthetic_fraud",
+      "fraud_type": "phishing",
+      "context_hint": "bank_officer",
+      "ground_truth": "red",
+      "source_basis": "ACCC — energy / utility phishing",
+      "text": "Your electricity account is significantly overdue and disconnection has been scheduled for tomorrow morning. To avoid disconnection you must make an immediate payment of $847 using the PayID below. Standard payment methods are temporarily unavailable due to a system upgrade. This is your final notice before disconnection. Pay now to avoid reconnection fees and service interruption."
+    },
+    {
+      "id": "SF019",
+      "category": "synthetic_fraud",
+      "fraud_type": "authority_impersonation",
+      "context_hint": null,
+      "ground_truth": "red",
+      "source_basis": "ACCC — immigration / visa scam",
+      "text": "URGENT: Your visa application requires immediate action. The Department of Home Affairs has identified a discrepancy in your application that must be resolved within 48 hours or your visa will be cancelled and you may be subject to deportation proceedings. You must pay a $450 processing fee to a government holding account immediately. Do not contact the department directly as this is a confidential compliance matter."
+    },
+    {
+      "id": "SF020",
+      "category": "synthetic_fraud",
+      "fraud_type": "investment_fraud",
+      "context_hint": "investment_opportunity",
+      "ground_truth": "red",
+      "source_basis": "ASIC — celebrity-endorsed investment scam",
+      "text": "As seen on Channel 7 — Australian investors are making fortunes with this revolutionary trading platform. Our algorithm has been verified by leading financial experts and consistently delivers returns of 25% per month. Thousands of Australians have already achieved financial independence using our system. There is no experience required and your capital is fully protected. Register now before this offer is withdrawn."
+    },
+
+    {
+      "id": "GH001",
+      "category": "genuine_human",
+      "fraud_type": null,
+      "context_hint": null,
+      "ground_truth": "yellow",
+      "source_basis": "Typical personal email — invoice query",
+      "text": "Hey, just wanted to check in — I think I might have sent you the wrong invoice last week, not totally sure. It was either the 15th or 16th, I can never keep track honestly. Sorry for the confusion, let me know if you need me to resend it. Hope you're doing well!"
+    },
+    {
+      "id": "GH002",
+      "category": "genuine_human",
+      "fraud_type": null,
+      "context_hint": "bank_officer",
+      "ground_truth": "yellow",
+      "source_basis": "Typical bank customer service email",
+      "text": "Hi there, I'm writing about my home loan application I submitted about three weeks ago. I haven't heard anything back and I'm getting a bit anxious — we've found a property we love and the vendor is pushing for a decision. I know you're probably busy but any update would be really appreciated. Thanks for your help with this."
+    },
+    {
+      "id": "GH003",
+      "category": "genuine_human",
+      "fraud_type": null,
+      "context_hint": null,
+      "ground_truth": "yellow",
+      "source_basis": "Typical friend request for help",
+      "text": "Hi! Random question — are you free this weekend? I'm moving apartments and could really use an extra pair of hands on Saturday morning. I know it's short notice and totally understand if you can't. I'll buy lunch and beer obviously. Let me know either way, no pressure at all."
+    },
+    {
+      "id": "GH004",
+      "category": "genuine_human",
+      "fraud_type": null,
+      "context_hint": "investment_opportunity",
+      "ground_truth": "yellow",
+      "source_basis": "Genuine investment query from acquaintance",
+      "text": "Hey, I've been thinking about putting some money into ETFs and wanted to ask if you had any thoughts. I'm not really sure where to start — I've read a bit about Vanguard but honestly the whole thing is a bit confusing. I don't have a huge amount to invest, maybe $5-10k. No rush on this, just curious what you think when you get a chance."
+    },
+    {
+      "id": "GH005",
+      "category": "genuine_human",
+      "fraud_type": null,
+      "context_hint": null,
+      "ground_truth": "yellow",
+      "source_basis": "Typical family message — genuine distress",
+      "text": "Hi Mum, it's been a really rough week. My car broke down on Tuesday and the repair bill is going to be about $800 which I just don't have right now. I hate asking but do you think you could lend me some money until I get paid on the 28th? I feel terrible about it. Let me know if it's not possible, I'll figure something out."
+    },
+    {
+      "id": "GH006",
+      "category": "genuine_human",
+      "fraud_type": null,
+      "context_hint": null,
+      "ground_truth": "yellow",
+      "source_basis": "Typical colleague email — work related",
+      "text": "Hi Sarah, hope you're well. I wanted to flag that I'm going to be about 20 minutes late to the 10am meeting tomorrow — I have a GP appointment that's running over. I've already looked through the agenda and I don't think I'll miss anything critical but wanted to give you advance notice. Can you make sure someone takes notes on the first agenda item? Thanks and sorry for the inconvenience."
+    },
+    {
+      "id": "GH007",
+      "category": "genuine_human",
+      "fraud_type": null,
+      "context_hint": null,
+      "ground_truth": "yellow",
+      "source_basis": "Genuine online marketplace seller message",
+      "text": "Hi there, thanks for your interest in the couch. It's still available. Just to be upfront — there is a small scratch on the left armrest that I tried to show in the photos but it's a bit hard to see. Happy to send more photos if you want. I'm asking $350 but could probably do $300 if you can pick up this weekend as I'm moving next week. Let me know."
+    },
+    {
+      "id": "GH008",
+      "category": "genuine_human",
+      "fraud_type": null,
+      "context_hint": null,
+      "ground_truth": "yellow",
+      "source_basis": "Genuine customer complaint email",
+      "text": "I'm writing about an order I placed three weeks ago that still hasn't arrived. I've tried calling twice but kept getting put on hold and eventually gave up. I'm not trying to be difficult — I understand things get delayed — but at this point I'd just like either the item or a refund. Order number is #48291. Is there someone who can actually help me sort this out?"
+    },
+    {
+      "id": "GH009",
+      "category": "genuine_human",
+      "fraud_type": null,
+      "context_hint": "friend_in_distress",
+      "ground_truth": "yellow",
+      "source_basis": "Genuine friend emergency — authentic distress",
+      "text": "Hey, I know this is really weird to ask but I'm in a bit of a bind. My wallet got stolen on the way home last night — cards, cash, everything. I'm at the station and I don't have money for a ticket home. Is there any way you could transfer me $20? I'll pay you back tomorrow when I can get to a bank. So sorry to ask, this is mortifying."
+    },
+    {
+      "id": "GH010",
+      "category": "genuine_human",
+      "fraud_type": null,
+      "context_hint": null,
+      "ground_truth": "yellow",
+      "source_basis": "Genuine job application follow-up",
+      "text": "Hi, I applied for the marketing coordinator role about two weeks ago and wanted to follow up as I haven't heard anything. I'm still very interested in the position — I know you're probably reviewing a lot of applications and I don't want to be a nuisance. If the role has already been filled I completely understand. Either way, thanks for considering my application."
+    },
+    {
+      "id": "GH011",
+      "category": "genuine_human",
+      "fraud_type": null,
+      "context_hint": null,
+      "ground_truth": "yellow",
+      "source_basis": "Typical landlord message — maintenance",
+      "text": "Hi, just a heads up that the plumber is coming Tuesday between 10 and 12 to fix the hot water system. You don't need to be home if it's inconvenient — I have a spare key. Let me know if Tuesday doesn't work and I can try to reschedule, though it might take a few more days given how booked they are at the moment."
+    },
+    {
+      "id": "GH012",
+      "category": "genuine_human",
+      "fraud_type": null,
+      "context_hint": null,
+      "ground_truth": "yellow",
+      "source_basis": "Genuine charity donation request — known contact",
+      "text": "Hi everyone, sorry for the group message. As some of you know I'm running the City2Surf this year to raise money for Beyond Blue. I've set myself a target of $500 and I'm about halfway there. No pressure at all but if anyone feels like chipping in even $10 or $20 I'd really appreciate it. The link is below. Thanks so much and hope you're all well."
+    },
+    {
+      "id": "GH013",
+      "category": "genuine_human",
+      "fraud_type": null,
+      "context_hint": null,
+      "ground_truth": "yellow",
+      "source_basis": "Genuine freelancer invoice follow-up",
+      "text": "Hi David, I hope everything is going well. I'm following up on invoice #1047 for $1,200 which was due on the 10th. I know things get busy and I don't want to be annoying about it — just wanted to make sure it hadn't slipped through. Let me know if there are any issues with the invoice and I'm happy to sort it out. Thanks again for the work."
+    },
+    {
+      "id": "GH014",
+      "category": "genuine_human",
+      "fraud_type": null,
+      "context_hint": null,
+      "ground_truth": "yellow",
+      "source_basis": "Genuine neighbour note",
+      "text": "Hi, I'm your neighbour from number 14. I wanted to let you know that your dog has been barking quite a lot during the day — I work from home so I notice it more than most people would. I'm not trying to cause any trouble and I understand dogs get anxious when they're alone. I just wanted to mention it in case you weren't aware. Hope we can sort it out between ourselves."
+    },
+    {
+      "id": "GH015",
+      "category": "genuine_human",
+      "fraud_type": null,
+      "context_hint": null,
+      "ground_truth": "yellow",
+      "source_basis": "Genuine trade quote follow-up",
+      "text": "Hi, I sent through a request for a quote on bathroom tiling about 10 days ago. Just checking if you had a chance to look at it — I know you're probably flat out. If it's too small a job or the timing doesn't work I completely understand. I'm flexible on timing so if you can fit it in over the next few months that would be great. Thanks."
+    },
+    {
+      "id": "GH016",
+      "category": "genuine_human",
+      "fraud_type": null,
+      "context_hint": null,
+      "ground_truth": "yellow",
+      "source_basis": "Genuine parent school communication",
+      "text": "Hi, I'm Emily's mum. I just wanted to flag that Emily has been finding maths quite difficult lately and has been a bit upset about it at home. She hasn't said anything to her teacher and I thought it might be better to mention it directly. Is there any extra support available or would it be worth a brief chat? I don't want to make a big deal of it but wanted to make sure it was on your radar."
+    },
+    {
+      "id": "GH017",
+      "category": "genuine_human",
+      "fraud_type": null,
+      "context_hint": null,
+      "ground_truth": "yellow",
+      "source_basis": "Genuine used car inquiry",
+      "text": "Hi, I saw your ad for the 2019 Mazda CX-5. I'm interested but I have a few questions. Has it had any accident history? And is the service history complete? I had a bad experience with a car I bought last year that had undisclosed issues so I'm being a bit careful this time. Happy to come and inspect if the answers check out. What times work for you?"
+    },
+    {
+      "id": "GH018",
+      "category": "genuine_human",
+      "fraud_type": null,
+      "context_hint": null,
+      "ground_truth": "yellow",
+      "source_basis": "Genuine sibling money request",
+      "text": "Hey bro, bit of an awkward one. I'm really short this month — had an unexpected dental bill that wiped me out. Any chance you could lend me $200 until next payday? I'd rather ask you than put it on the credit card and pay interest. I'll transfer it back on the 5th without fail. Let me know if you can't, no worries either way."
+    },
+    {
+      "id": "GH019",
+      "category": "genuine_human",
+      "fraud_type": null,
+      "context_hint": null,
+      "ground_truth": "yellow",
+      "source_basis": "Genuine event organiser message",
+      "text": "Hi all, quick update on Saturday's dinner. The restaurant has asked us to confirm final numbers by tomorrow as they need to arrange seating. Currently we have 8 confirmed. Could everyone let me know by end of day if they're coming? Also — they've asked if anyone has dietary requirements. I think Marcus is vegetarian but please correct me if I'm wrong. Thanks!"
+    },
+    {
+      "id": "GH020",
+      "category": "genuine_human",
+      "fraud_type": null,
+      "context_hint": null,
+      "ground_truth": "yellow",
+      "source_basis": "Genuine customer feedback email",
+      "text": "Hi, I wanted to leave some feedback about my experience last week. The staff were genuinely lovely and the food was great, but we waited about 45 minutes for our main course which was a bit much for a Tuesday night. I don't want to be overly negative because we really did enjoy ourselves overall — just thought it was worth mentioning in case it helps. We'll definitely come back."
+    },
+
+    {
+      "id": "MC001",
+      "category": "mixed_content",
+      "fraud_type": "investment_fraud",
+      "context_hint": "investment_opportunity",
+      "ground_truth": "yellow",
+      "mixed_content_expected": true,
+      "source_basis": "AI scaffold with human personalisation — investment fraud",
+      "text": "Hi there, I hope this finds you well. I wanted to reach out personally because I think you might be a great fit for something I've been working on. It's an investment opportunity with guaranteed returns of 40% monthly — completely risk-free and exclusive to a select group of people. You must act within 48 hours as spots are extremely limited. I really think this could change your life."
+    },
+    {
+      "id": "MC002",
+      "category": "mixed_content",
+      "fraud_type": "phishing",
+      "context_hint": "bank_officer",
+      "ground_truth": "yellow",
+      "mixed_content_expected": true,
+      "source_basis": "AI scaffold with human opener — bank phishing",
+      "text": "Hey, hope you're having a good week! I wanted to get in touch because something came up with your account that needs attention. There's been some unusual activity detected and your account access will be suspended within 24 hours if you don't verify your identity through our secure portal. I know it's annoying but it's really important you do this today."
+    },
+    {
+      "id": "MC003",
+      "category": "mixed_content",
+      "fraud_type": "romance_scam",
+      "context_hint": "friend_in_distress",
+      "ground_truth": "yellow",
+      "mixed_content_expected": true,
+      "source_basis": "AI scaffold with emotional personalisation — romance scam",
+      "text": "I've been thinking about you a lot lately and I miss our conversations. Life has been really hard recently and I'm going through a difficult time. I hate asking but I'm in a desperate situation — I need $1,500 urgently and the only person I trust is you. Please send via Western Union as soon as possible. I promise I will explain everything when we can speak properly."
+    },
+    {
+      "id": "MC004",
+      "category": "mixed_content",
+      "fraud_type": "authority_impersonation",
+      "context_hint": "bank_officer",
+      "ground_truth": "yellow",
+      "mixed_content_expected": true,
+      "source_basis": "AI template with human-sounding intro — authority impersonation",
+      "text": "Hi, I'm reaching out from the bank's fraud team. I know getting a message like this out of the blue can feel a bit alarming — I want to reassure you this is legitimate. We've flagged some suspicious transactions on your account and we need to move your funds to a secure holding account immediately to protect you. Please keep this confidential as the fraud may be internal to the branch."
+    },
+    {
+      "id": "MC005",
+      "category": "mixed_content",
+      "fraud_type": "investment_fraud",
+      "context_hint": "investment_opportunity",
+      "ground_truth": "yellow",
+      "mixed_content_expected": true,
+      "source_basis": "Human story with AI investment pitch",
+      "text": "I lost my job last year and struggled for months before a friend showed me this trading system. I was sceptical at first — honestly I thought it was too good to be true. But after three months I've made more than my old salary. The system generates guaranteed daily returns of 3-5% using sophisticated AI algorithms with zero risk to your capital. I'm only sharing this with people I care about."
+    },
+    {
+      "id": "MC006",
+      "category": "mixed_content",
+      "fraud_type": "phishing",
+      "context_hint": null,
+      "ground_truth": "yellow",
+      "mixed_content_expected": true,
+      "source_basis": "Human social context with AI phishing payload",
+      "text": "Hi, we met at the networking event last Thursday — I was the one with the terrible coffee joke. I wanted to follow up and also flag something important. I noticed your LinkedIn profile and I think there may be an issue with your account security. You need to verify your credentials immediately through the secure link below or risk losing access to your professional network permanently."
+    },
+    {
+      "id": "MC007",
+      "category": "mixed_content",
+      "fraud_type": "romance_scam",
+      "context_hint": "friend_in_distress",
+      "ground_truth": "yellow",
+      "mixed_content_expected": true,
+      "source_basis": "Emotionally authentic opening with synthetic emergency",
+      "text": "I know we haven't spoken in a while and I feel bad reaching out only when I need something. Things have been really tough since my dad passed away in January. I'm currently stranded overseas after my passport was stolen and I need $2,000 urgently to get home. I can only receive funds via Bitcoin wallet right now due to banking restrictions. Please don't tell anyone — I'm so embarrassed."
+    },
+    {
+      "id": "MC008",
+      "category": "mixed_content",
+      "fraud_type": "investment_fraud",
+      "context_hint": "investment_opportunity",
+      "ground_truth": "yellow",
+      "mixed_content_expected": true,
+      "source_basis": "Personalised intro with template investment fraud body",
+      "text": "Hey, I saw your post about looking for passive income ideas and I thought of you immediately. I've been involved in something for the past six months that's been genuinely life-changing. It's an exclusive crypto arbitrage system that delivers guaranteed returns of 25% per month. Spots are extremely limited and I can only refer a small number of people. This offer closes in 72 hours."
+    },
+    {
+      "id": "MC009",
+      "category": "mixed_content",
+      "fraud_type": "phishing",
+      "context_hint": "bank_officer",
+      "ground_truth": "yellow",
+      "mixed_content_expected": true,
+      "source_basis": "Friendly tone with synthetic urgency payload",
+      "text": "Hi! Just a quick one from the team here. Hope everything's going well with you. We've had to temporarily suspend your account due to a security review — nothing to worry about, it's routine. You just need to click through and verify your details within the next 24 hours to get back up and running. Super quick process, should only take two minutes."
+    },
+    {
+      "id": "MC010",
+      "category": "mixed_content",
+      "fraud_type": "authority_impersonation",
+      "context_hint": null,
+      "ground_truth": "yellow",
+      "mixed_content_expected": true,
+      "source_basis": "Professional-sounding intro with synthetic compliance threat",
+      "text": "Good morning, I'm contacting you on behalf of the compliance team regarding a regulatory matter that requires your immediate attention. I understand this may come as a surprise and I want to be as helpful as possible in resolving this quickly. There is an outstanding compliance obligation that must be settled within 48 hours to avoid enforcement action. Please treat this communication as strictly confidential."
+    },
+
+    {
+      "id": "EC001",
+      "category": "edge_case",
+      "fraud_type": null,
+      "context_hint": "bank_officer",
+      "ground_truth": "yellow",
+      "edge_type": "legitimate_urgency",
+      "source_basis": "Legitimate bank communication with genuine urgency",
+      "text": "Dear account holder, this is an automated notification that your credit card ending in 4821 has been temporarily blocked following detection of a transaction pattern inconsistent with your usual activity. If you attempted a purchase of $2,340 at an overseas retailer in the last 24 hours please call the number on the back of your card to confirm. If not, no action is required as the block will remain in place."
+    },
+    {
+      "id": "EC002",
+      "category": "edge_case",
+      "fraud_type": null,
+      "context_hint": null,
+      "ground_truth": "yellow",
+      "edge_type": "non_native_english",
+      "source_basis": "Genuine communication from non-native English speaker",
+      "text": "Hello, I am write to you about the apartment I see on website. I am interest very much in this place. I am coming from Philippines 3 month ago and I am looking for good place to stay. My english is not so perfect but I am very clean and quiet person. Please can you tell me if still available? I can pay deposit immediately. Thank you very much for your time."
+    },
+    {
+      "id": "EC003",
+      "category": "edge_case",
+      "fraud_type": null,
+      "context_hint": "investment_opportunity",
+      "ground_truth": "yellow",
+      "edge_type": "legitimate_investment_communication",
+      "source_basis": "Legitimate financial adviser communication",
+      "text": "Hi, following our meeting last week I wanted to send through the product disclosure statement for the managed fund we discussed. The fund has historically returned 8-12% annually though past performance is not indicative of future returns. There are risks associated with any investment including possible loss of capital. Please read the PDS carefully before making any decision and feel free to call me with questions."
+    },
+    {
+      "id": "EC004",
+      "category": "edge_case",
+      "fraud_type": null,
+      "context_hint": null,
+      "ground_truth": "yellow",
+      "edge_type": "formal_business_urgency",
+      "source_basis": "Legitimate legal communication with urgency",
+      "text": "Dear Sir/Madam, we act for the estate of the late Margaret Chen. Our records indicate you may be a beneficiary under her will. We require you to contact our office within 14 days to verify your identity and provide documentation confirming your relationship to the deceased. Failure to respond within this timeframe may result in your entitlement being distributed to other beneficiaries. Please call our office at your earliest convenience."
+    },
+    {
+      "id": "EC005",
+      "category": "edge_case",
+      "fraud_type": null,
+      "context_hint": null,
+      "ground_truth": "yellow",
+      "edge_type": "highly_structured_writer",
+      "source_basis": "Genuine communication from highly structured writer",
+      "text": "I am writing to formally request a review of my recent performance assessment. I believe the evaluation did not accurately reflect my contributions to the Q3 project outcomes. Specifically, I would like to discuss: (1) my role in the client retention initiative, (2) the documentation framework I developed, and (3) the training sessions I delivered to new team members. I am available to meet at your earliest convenience."
+    },
+    {
+      "id": "EC006",
+      "category": "edge_case",
+      "fraud_type": null,
+      "context_hint": "friend_in_distress",
+      "ground_truth": "yellow",
+      "edge_type": "legitimate_emergency_request",
+      "source_basis": "Genuine emergency money request — known contact",
+      "text": "This is going to sound crazy but I'm stuck at the hospital with Mum. She had a fall this afternoon and we've been here for hours. My phone is almost dead and I left my wallet at home in the rush. Is there any way you could transfer $50 to my account so I can get a taxi home and come back in the morning? I'll pay you back tomorrow. Really sorry to ask."
+    },
+    {
+      "id": "EC007",
+      "category": "edge_case",
+      "fraud_type": null,
+      "context_hint": null,
+      "ground_truth": "yellow",
+      "edge_type": "marketing_email_legitimate",
+      "source_basis": "Legitimate marketing email — high pressure but genuine",
+      "text": "This is your last chance to take advantage of our end of financial year sale. Over 2,000 products at up to 70% off — but only until midnight tonight. Our most popular items are already selling out fast. We've been helping Australian families save money for over 20 years and this is our biggest sale of the year. Don't miss out — shop now before it's too late."
+    },
+    {
+      "id": "EC008",
+      "category": "edge_case",
+      "fraud_type": null,
+      "context_hint": null,
+      "ground_truth": "yellow",
+      "edge_type": "government_communication",
+      "source_basis": "Legitimate government agency communication",
+      "text": "This is a reminder from Services Australia that your Centrelink payment review is due. You are required to confirm your current income and circumstances by 30 April to avoid interruption to your payments. You can update your details online through myGov or by visiting your nearest service centre. If your circumstances have not changed no action is required other than confirming this via the myGov portal."
+    },
+    {
+      "id": "EC009",
+      "category": "edge_case",
+      "fraud_type": null,
+      "context_hint": null,
+      "ground_truth": "yellow",
+      "edge_type": "cold_outreach_legitimate",
+      "source_basis": "Legitimate cold sales outreach",
+      "text": "Hi, I came across your business on LinkedIn and wanted to reach out. We help small businesses in Melbourne reduce their accounting costs by an average of 40% through cloud-based bookkeeping. I know you probably get a lot of messages like this — I'll keep it brief. Would you be open to a 15-minute call to see if it might be relevant? No obligation at all. Happy to work around your schedule."
+    },
+    {
+      "id": "EC010",
+      "category": "edge_case",
+      "fraud_type": null,
+      "context_hint": null,
+      "ground_truth": "yellow",
+      "edge_type": "ambiguous_request",
+      "source_basis": "Ambiguous message — could be genuine or fraudulent",
+      "text": "Hi, I got your number from a mutual contact. I have a business proposition that could be very profitable for both of us. I'd prefer not to go into details over text but I can assure you it's completely legitimate and legal. I've helped several people in your industry significantly increase their income over the past year. Are you available for a brief call this week?"
+    }
+  ]
+}

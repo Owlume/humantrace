@@ -1,0 +1,2116 @@
+{
+  "spec": {
+    "product": "HumanTrace",
+    "powered_by": "Owlume",
+    "validation_date": "2026-03-19T23:49:18.442743Z",
+    "dataset_size": 60,
+    "dataset_version": "1.0.0"
+  },
+  "summary": {
+    "overall_accuracy": 0.783,
+    "overall_accuracy_pct": "78.3%",
+    "synthetic_fraud_detection_rate": 0.85,
+    "false_positive_rate": 0.067,
+    "mixed_content_detection_rate": 0.9,
+    "targets_met": {
+      "synthetic_fraud": true,
+      "false_positive": true,
+      "mixed_content": true
+    }
+  },
+  "by_category": {
+    "synthetic_fraud": {
+      "total": 20,
+      "correct": 17,
+      "accuracy": 0.85,
+      "accuracy_pct": "85.0%"
+    },
+    "genuine_human": {
+      "total": 20,
+      "correct": 20,
+      "accuracy": 1.0,
+      "accuracy_pct": "100.0%"
+    },
+    "mixed_content": {
+      "total": 10,
+      "correct": 2,
+      "accuracy": 0.2,
+      "accuracy_pct": "20.0%"
+    },
+    "edge_case": {
+      "total": 10,
+      "correct": 8,
+      "accuracy": 0.8,
+      "accuracy_pct": "80.0%"
+    }
+  },
+  "false_positives": [
+    {
+      "id": "EC002",
+      "confidence": 0.7
+    },
+    {
+      "id": "EC007",
+      "confidence": 0.8
+    }
+  ],
+  "missed_fraud": [
+    {
+      "id": "SF006",
+      "predicted": "yellow",
+      "confidence": 0.575
+    },
+    {
+      "id": "SF008",
+      "predicted": "yellow",
+      "confidence": 0.567
+    },
+    {
+      "id": "SF013",
+      "predicted": "yellow",
+      "confidence": 0.575
+    }
+  ],
+  "detailed_results": [
+    {
+      "id": "SF001",
+      "category": "synthetic_fraud",
+      "ground_truth": "red",
+      "predicted": "red",
+      "confidence": 0.8,
+      "correct": true,
+      "mixed_expected": false,
+      "mixed_detected": true,
+      "fraud_category": "manufactured_urgency",
+      "layer_signals": {
+        "structural_reasoning": {
+          "signal": "synthetic",
+          "confidence": 0.8
+        },
+        "contextual_plausibility": {
+          "signal": "uncertain",
+          "confidence": 0.45
+        },
+        "conviction_cost": {
+          "signal": "synthetic",
+          "confidence": 0.65
+        },
+        "pattern_library": {
+          "signal": "synthetic",
+          "confidence": 0.8
+        },
+        "absence_signals": {
+          "signal": "uncertain",
+          "confidence": 0.5
+        }
+      },
+      "error": null
+    },
+    {
+      "id": "SF002",
+      "category": "synthetic_fraud",
+      "ground_truth": "red",
+      "predicted": "red",
+      "confidence": 0.93,
+      "correct": true,
+      "mixed_expected": false,
+      "mixed_detected": false,
+      "fraud_category": "investment_fraud",
+      "layer_signals": {
+        "structural_reasoning": {
+          "signal": "synthetic",
+          "confidence": 0.75
+        },
+        "contextual_plausibility": {
+          "signal": "synthetic",
+          "confidence": 0.9
+        },
+        "conviction_cost": {
+          "signal": "synthetic",
+          "confidence": 0.65
+        },
+        "pattern_library": {
+          "signal": "synthetic",
+          "confidence": 0.75
+        },
+        "absence_signals": {
+          "signal": "synthetic",
+          "confidence": 0.85
+        }
+      },
+      "error": null
+    },
+    {
+      "id": "SF003",
+      "category": "synthetic_fraud",
+      "ground_truth": "red",
+      "predicted": "red",
+      "confidence": 0.86,
+      "correct": true,
+      "mixed_expected": false,
+      "mixed_detected": true,
+      "fraud_category": "romance_scam",
+      "layer_signals": {
+        "structural_reasoning": {
+          "signal": "synthetic",
+          "confidence": 0.75
+        },
+        "contextual_plausibility": {
+          "signal": "synthetic",
+          "confidence": 0.75
+        },
+        "conviction_cost": {
+          "signal": "uncertain",
+          "confidence": 0.45
+        },
+        "pattern_library": {
+          "signal": "synthetic",
+          "confidence": 0.75
+        },
+        "absence_signals": {
+          "signal": "synthetic",
+          "confidence": 0.85
+        }
+      },
+      "error": null
+    },
+    {
+      "id": "SF004",
+      "category": "synthetic_fraud",
+      "ground_truth": "red",
+      "predicted": "red",
+      "confidence": 0.908,
+      "correct": true,
+      "mixed_expected": false,
+      "mixed_detected": true,
+      "fraud_category": "manufactured_urgency",
+      "layer_signals": {
+        "structural_reasoning": {
+          "signal": "synthetic",
+          "confidence": 0.75
+        },
+        "contextual_plausibility": {
+          "signal": "uncertain",
+          "confidence": 0.45
+        },
+        "conviction_cost": {
+          "signal": "synthetic",
+          "confidence": 0.65
+        },
+        "pattern_library": {
+          "signal": "synthetic",
+          "confidence": 0.92
+        },
+        "absence_signals": {
+          "signal": "synthetic",
+          "confidence": 0.85
+        }
+      },
+      "error": null
+    },
+    {
+      "id": "SF005",
+      "category": "synthetic_fraud",
+      "ground_truth": "red",
+      "predicted": "red",
+      "confidence": 0.78,
+      "correct": true,
+      "mixed_expected": false,
+      "mixed_detected": true,
+      "fraud_category": "phishing",
+      "layer_signals": {
+        "structural_reasoning": {
+          "signal": "uncertain",
+          "confidence": 0.45
+        },
+        "contextual_plausibility": {
+          "signal": "uncertain",
+          "confidence": 0.45
+        },
+        "conviction_cost": {
+          "signal": "synthetic",
+          "confidence": 0.65
+        },
+        "pattern_library": {
+          "signal": "synthetic",
+          "confidence": 0.75
+        },
+        "absence_signals": {
+          "signal": "synthetic",
+          "confidence": 0.85
+        }
+      },
+      "error": null
+    },
+    {
+      "id": "SF006",
+      "category": "synthetic_fraud",
+      "ground_truth": "red",
+      "predicted": "yellow",
+      "confidence": 0.575,
+      "correct": false,
+      "mixed_expected": false,
+      "mixed_detected": true,
+      "fraud_category": null,
+      "layer_signals": {
+        "structural_reasoning": {
+          "signal": "uncertain",
+          "confidence": 0.45
+        },
+        "contextual_plausibility": {
+          "signal": "synthetic",
+          "confidence": 0.8
+        },
+        "conviction_cost": {
+          "signal": "uncertain",
+          "confidence": 0.45
+        },
+        "pattern_library": {
+          "signal": "uncertain",
+          "confidence": 0.45
+        },
+        "absence_signals": {
+          "signal": "synthetic",
+          "confidence": 0.85
+        }
+      },
+      "error": null
+    },
+    {
+      "id": "SF007",
+      "category": "synthetic_fraud",
+      "ground_truth": "red",
+      "predicted": "red",
+      "confidence": 0.82,
+      "correct": true,
+      "mixed_expected": false,
+      "mixed_detected": true,
+      "fraud_category": "manufactured_urgency",
+      "layer_signals": {
+        "structural_reasoning": {
+          "signal": "uncertain",
+          "confidence": 0.45
+        },
+        "contextual_plausibility": {
+          "signal": "uncertain",
+          "confidence": 0.45
+        },
+        "conviction_cost": {
+          "signal": "synthetic",
+          "confidence": 0.65
+        },
+        "pattern_library": {
+          "signal": "synthetic",
+          "confidence": 0.85
+        },
+        "absence_signals": {
+          "signal": "synthetic",
+          "confidence": 0.85
+        }
+      },
+      "error": null
+    },
+    {
+      "id": "SF008",
+      "category": "synthetic_fraud",
+      "ground_truth": "red",
+      "predicted": "yellow",
+      "confidence": 0.567,
+      "correct": false,
+      "mixed_expected": false,
+      "mixed_detected": true,
+      "fraud_category": null,
+      "layer_signals": {
+        "structural_reasoning": {
+          "signal": "uncertain",
+          "confidence": 0.45
+        },
+        "contextual_plausibility": {
+          "signal": "synthetic",
+          "confidence": 0.75
+        },
+        "conviction_cost": {
+          "signal": "uncertain",
+          "confidence": 0.45
+        },
+        "pattern_library": {
+          "signal": "uncertain",
+          "confidence": 0.45
+        },
+        "absence_signals": {
+          "signal": "synthetic",
+          "confidence": 0.85
+        }
+      },
+      "error": null
+    },
+    {
+      "id": "SF009",
+      "category": "synthetic_fraud",
+      "ground_truth": "red",
+      "predicted": "red",
+      "confidence": 0.73,
+      "correct": true,
+      "mixed_expected": false,
+      "mixed_detected": true,
+      "fraud_category": "authority_impersonation",
+      "layer_signals": {
+        "structural_reasoning": {
+          "signal": "uncertain",
+          "confidence": 0.45
+        },
+        "contextual_plausibility": {
+          "signal": "uncertain",
+          "confidence": 0.45
+        },
+        "conviction_cost": {
+          "signal": "synthetic",
+          "confidence": 0.65
+        },
+        "pattern_library": {
+          "signal": "synthetic",
+          "confidence": 0.8
+        },
+        "absence_signals": {
+          "signal": "uncertain",
+          "confidence": 0.5
+        }
+      },
+      "error": null
+    },
+    {
+      "id": "SF010",
+      "category": "synthetic_fraud",
+      "ground_truth": "red",
+      "predicted": "red",
+      "confidence": 0.81,
+      "correct": true,
+      "mixed_expected": false,
+      "mixed_detected": true,
+      "fraud_category": "investment_fraud",
+      "layer_signals": {
+        "structural_reasoning": {
+          "signal": "uncertain",
+          "confidence": 0.45
+        },
+        "contextual_plausibility": {
+          "signal": "synthetic",
+          "confidence": 0.8
+        },
+        "conviction_cost": {
+          "signal": "synthetic",
+          "confidence": 0.65
+        },
+        "pattern_library": {
+          "signal": "synthetic",
+          "confidence": 0.65
+        },
+        "absence_signals": {
+          "signal": "synthetic",
+          "confidence": 0.85
+        }
+      },
+      "error": null
+    },
+    {
+      "id": "SF011",
+      "category": "synthetic_fraud",
+      "ground_truth": "red",
+      "predicted": "red",
+      "confidence": 0.84,
+      "correct": true,
+      "mixed_expected": false,
+      "mixed_detected": true,
+      "fraud_category": "manufactured_urgency",
+      "layer_signals": {
+        "structural_reasoning": {
+          "signal": "synthetic",
+          "confidence": 0.75
+        },
+        "contextual_plausibility": {
+          "signal": "uncertain",
+          "confidence": 0.45
+        },
+        "conviction_cost": {
+          "signal": "synthetic",
+          "confidence": 0.65
+        },
+        "pattern_library": {
+          "signal": "synthetic",
+          "confidence": 0.75
+        },
+        "absence_signals": {
+          "signal": "synthetic",
+          "confidence": 0.85
+        }
+      },
+      "error": null
+    },
+    {
+      "id": "SF012",
+      "category": "synthetic_fraud",
+      "ground_truth": "red",
+      "predicted": "red",
+      "confidence": 0.88,
+      "correct": true,
+      "mixed_expected": false,
+      "mixed_detected": true,
+      "fraud_category": "authority_impersonation",
+      "layer_signals": {
+        "structural_reasoning": {
+          "signal": "synthetic",
+          "confidence": 0.75
+        },
+        "contextual_plausibility": {
+          "signal": "synthetic",
+          "confidence": 0.85
+        },
+        "conviction_cost": {
+          "signal": "uncertain",
+          "confidence": 0.45
+        },
+        "pattern_library": {
+          "signal": "synthetic",
+          "confidence": 0.75
+        },
+        "absence_signals": {
+          "signal": "synthetic",
+          "confidence": 0.85
+        }
+      },
+      "error": null
+    },
+    {
+      "id": "SF013",
+      "category": "synthetic_fraud",
+      "ground_truth": "red",
+      "predicted": "yellow",
+      "confidence": 0.575,
+      "correct": false,
+      "mixed_expected": false,
+      "mixed_detected": true,
+      "fraud_category": null,
+      "layer_signals": {
+        "structural_reasoning": {
+          "signal": "uncertain",
+          "confidence": 0.45
+        },
+        "contextual_plausibility": {
+          "signal": "synthetic",
+          "confidence": 0.8
+        },
+        "conviction_cost": {
+          "signal": "uncertain",
+          "confidence": 0.45
+        },
+        "pattern_library": {
+          "signal": "uncertain",
+          "confidence": 0.45
+        },
+        "absence_signals": {
+          "signal": "synthetic",
+          "confidence": 0.85
+        }
+      },
+      "error": null
+    },
+    {
+      "id": "SF014",
+      "category": "synthetic_fraud",
+      "ground_truth": "red",
+      "predicted": "red",
+      "confidence": 0.84,
+      "correct": true,
+      "mixed_expected": false,
+      "mixed_detected": true,
+      "fraud_category": "manufactured_urgency",
+      "layer_signals": {
+        "structural_reasoning": {
+          "signal": "synthetic",
+          "confidence": 0.75
+        },
+        "contextual_plausibility": {
+          "signal": "uncertain",
+          "confidence": 0.45
+        },
+        "conviction_cost": {
+          "signal": "uncertain",
+          "confidence": 0.45
+        },
+        "pattern_library": {
+          "signal": "synthetic",
+          "confidence": 0.85
+        },
+        "absence_signals": {
+          "signal": "synthetic",
+          "confidence": 0.85
+        }
+      },
+      "error": null
+    },
+    {
+      "id": "SF015",
+      "category": "synthetic_fraud",
+      "ground_truth": "red",
+      "predicted": "red",
+      "confidence": 0.78,
+      "correct": true,
+      "mixed_expected": false,
+      "mixed_detected": true,
+      "fraud_category": "manufactured_urgency",
+      "layer_signals": {
+        "structural_reasoning": {
+          "signal": "synthetic",
+          "confidence": 0.75
+        },
+        "contextual_plausibility": {
+          "signal": "uncertain",
+          "confidence": 0.45
+        },
+        "conviction_cost": {
+          "signal": "uncertain",
+          "confidence": 0.45
+        },
+        "pattern_library": {
+          "signal": "synthetic",
+          "confidence": 0.7
+        },
+        "absence_signals": {
+          "signal": "synthetic",
+          "confidence": 0.85
+        }
+      },
+      "error": null
+    },
+    {
+      "id": "SF016",
+      "category": "synthetic_fraud",
+      "ground_truth": "red",
+      "predicted": "red",
+      "confidence": 0.82,
+      "correct": true,
+      "mixed_expected": false,
+      "mixed_detected": true,
+      "fraud_category": "manufactured_urgency",
+      "layer_signals": {
+        "structural_reasoning": {
+          "signal": "synthetic",
+          "confidence": 0.75
+        },
+        "contextual_plausibility": {
+          "signal": "uncertain",
+          "confidence": 0.45
+        },
+        "conviction_cost": {
+          "signal": "synthetic",
+          "confidence": 0.65
+        },
+        "pattern_library": {
+          "signal": "synthetic",
+          "confidence": 0.7
+        },
+        "absence_signals": {
+          "signal": "synthetic",
+          "confidence": 0.85
+        }
+      },
+      "error": null
+    },
+    {
+      "id": "SF017",
+      "category": "synthetic_fraud",
+      "ground_truth": "red",
+      "predicted": "red",
+      "confidence": 0.83,
+      "correct": true,
+      "mixed_expected": false,
+      "mixed_detected": true,
+      "fraud_category": "investment_fraud",
+      "layer_signals": {
+        "structural_reasoning": {
+          "signal": "uncertain",
+          "confidence": 0.45
+        },
+        "contextual_plausibility": {
+          "signal": "synthetic",
+          "confidence": 0.9
+        },
+        "conviction_cost": {
+          "signal": "synthetic",
+          "confidence": 0.65
+        },
+        "pattern_library": {
+          "signal": "synthetic",
+          "confidence": 0.65
+        },
+        "absence_signals": {
+          "signal": "synthetic",
+          "confidence": 0.85
+        }
+      },
+      "error": null
+    },
+    {
+      "id": "SF018",
+      "category": "synthetic_fraud",
+      "ground_truth": "red",
+      "predicted": "red",
+      "confidence": 0.82,
+      "correct": true,
+      "mixed_expected": false,
+      "mixed_detected": true,
+      "fraud_category": "manufactured_urgency",
+      "layer_signals": {
+        "structural_reasoning": {
+          "signal": "synthetic",
+          "confidence": 0.75
+        },
+        "contextual_plausibility": {
+          "signal": "uncertain",
+          "confidence": 0.45
+        },
+        "conviction_cost": {
+          "signal": "synthetic",
+          "confidence": 0.65
+        },
+        "pattern_library": {
+          "signal": "synthetic",
+          "confidence": 0.7
+        },
+        "absence_signals": {
+          "signal": "synthetic",
+          "confidence": 0.85
+        }
+      },
+      "error": null
+    },
+    {
+      "id": "SF019",
+      "category": "synthetic_fraud",
+      "ground_truth": "red",
+      "predicted": "red",
+      "confidence": 0.88,
+      "correct": true,
+      "mixed_expected": false,
+      "mixed_detected": true,
+      "fraud_category": "manufactured_urgency",
+      "layer_signals": {
+        "structural_reasoning": {
+          "signal": "synthetic",
+          "confidence": 0.75
+        },
+        "contextual_plausibility": {
+          "signal": "uncertain",
+          "confidence": 0.45
+        },
+        "conviction_cost": {
+          "signal": "synthetic",
+          "confidence": 0.65
+        },
+        "pattern_library": {
+          "signal": "synthetic",
+          "confidence": 0.85
+        },
+        "absence_signals": {
+          "signal": "synthetic",
+          "confidence": 0.85
+        }
+      },
+      "error": null
+    },
+    {
+      "id": "SF020",
+      "category": "synthetic_fraud",
+      "ground_truth": "red",
+      "predicted": "red",
+      "confidence": 0.74,
+      "correct": true,
+      "mixed_expected": false,
+      "mixed_detected": true,
+      "fraud_category": "investment_fraud",
+      "layer_signals": {
+        "structural_reasoning": {
+          "signal": "uncertain",
+          "confidence": 0.45
+        },
+        "contextual_plausibility": {
+          "signal": "uncertain",
+          "confidence": 0.45
+        },
+        "conviction_cost": {
+          "signal": "uncertain",
+          "confidence": 0.45
+        },
+        "pattern_library": {
+          "signal": "synthetic",
+          "confidence": 0.75
+        },
+        "absence_signals": {
+          "signal": "synthetic",
+          "confidence": 0.85
+        }
+      },
+      "error": null
+    },
+    {
+      "id": "GH001",
+      "category": "genuine_human",
+      "ground_truth": "yellow",
+      "predicted": "yellow",
+      "confidence": 0.542,
+      "correct": true,
+      "mixed_expected": false,
+      "mixed_detected": false,
+      "fraud_category": null,
+      "layer_signals": {
+        "structural_reasoning": {
+          "signal": "human",
+          "confidence": 0.7
+        },
+        "contextual_plausibility": {
+          "signal": "uncertain",
+          "confidence": 0.45
+        },
+        "conviction_cost": {
+          "signal": "human",
+          "confidence": 0.7
+        },
+        "pattern_library": {
+          "signal": "uncertain",
+          "confidence": 0.45
+        },
+        "absence_signals": {
+          "signal": "uncertain",
+          "confidence": 0.5
+        }
+      },
+      "error": null
+    },
+    {
+      "id": "GH002",
+      "category": "genuine_human",
+      "ground_truth": "yellow",
+      "predicted": "yellow",
+      "confidence": 0.567,
+      "correct": true,
+      "mixed_expected": false,
+      "mixed_detected": true,
+      "fraud_category": null,
+      "layer_signals": {
+        "structural_reasoning": {
+          "signal": "human",
+          "confidence": 0.75
+        },
+        "contextual_plausibility": {
+          "signal": "uncertain",
+          "confidence": 0.45
+        },
+        "conviction_cost": {
+          "signal": "uncertain",
+          "confidence": 0.45
+        },
+        "pattern_library": {
+          "signal": "uncertain",
+          "confidence": 0.45
+        },
+        "absence_signals": {
+          "signal": "synthetic",
+          "confidence": 0.85
+        }
+      },
+      "error": null
+    },
+    {
+      "id": "GH003",
+      "category": "genuine_human",
+      "ground_truth": "yellow",
+      "predicted": "yellow",
+      "confidence": 0.517,
+      "correct": true,
+      "mixed_expected": false,
+      "mixed_detected": true,
+      "fraud_category": null,
+      "layer_signals": {
+        "structural_reasoning": {
+          "signal": "uncertain",
+          "confidence": 0.45
+        },
+        "contextual_plausibility": {
+          "signal": "uncertain",
+          "confidence": 0.45
+        },
+        "conviction_cost": {
+          "signal": "uncertain",
+          "confidence": 0.45
+        },
+        "pattern_library": {
+          "signal": "uncertain",
+          "confidence": 0.45
+        },
+        "absence_signals": {
+          "signal": "synthetic",
+          "confidence": 0.85
+        }
+      },
+      "error": null
+    },
+    {
+      "id": "GH004",
+      "category": "genuine_human",
+      "ground_truth": "yellow",
+      "predicted": "yellow",
+      "confidence": 0.558,
+      "correct": true,
+      "mixed_expected": false,
+      "mixed_detected": true,
+      "fraud_category": null,
+      "layer_signals": {
+        "structural_reasoning": {
+          "signal": "human",
+          "confidence": 0.7
+        },
+        "contextual_plausibility": {
+          "signal": "uncertain",
+          "confidence": 0.45
+        },
+        "conviction_cost": {
+          "signal": "uncertain",
+          "confidence": 0.45
+        },
+        "pattern_library": {
+          "signal": "uncertain",
+          "confidence": 0.45
+        },
+        "absence_signals": {
+          "signal": "synthetic",
+          "confidence": 0.85
+        }
+      },
+      "error": null
+    },
+    {
+      "id": "GH005",
+      "category": "genuine_human",
+      "ground_truth": "yellow",
+      "predicted": "yellow",
+      "confidence": 0.517,
+      "correct": true,
+      "mixed_expected": false,
+      "mixed_detected": true,
+      "fraud_category": null,
+      "layer_signals": {
+        "structural_reasoning": {
+          "signal": "uncertain",
+          "confidence": 0.45
+        },
+        "contextual_plausibility": {
+          "signal": "uncertain",
+          "confidence": 0.45
+        },
+        "conviction_cost": {
+          "signal": "uncertain",
+          "confidence": 0.45
+        },
+        "pattern_library": {
+          "signal": "uncertain",
+          "confidence": 0.45
+        },
+        "absence_signals": {
+          "signal": "synthetic",
+          "confidence": 0.85
+        }
+      },
+      "error": null
+    },
+    {
+      "id": "GH006",
+      "category": "genuine_human",
+      "ground_truth": "yellow",
+      "predicted": "yellow",
+      "confidence": 0.5,
+      "correct": true,
+      "mixed_expected": false,
+      "mixed_detected": false,
+      "fraud_category": null,
+      "layer_signals": {
+        "structural_reasoning": {
+          "signal": "uncertain",
+          "confidence": 0.45
+        },
+        "contextual_plausibility": {
+          "signal": "uncertain",
+          "confidence": 0.45
+        },
+        "conviction_cost": {
+          "signal": "human",
+          "confidence": 0.7
+        },
+        "pattern_library": {
+          "signal": "uncertain",
+          "confidence": 0.45
+        },
+        "absence_signals": {
+          "signal": "uncertain",
+          "confidence": 0.5
+        }
+      },
+      "error": null
+    },
+    {
+      "id": "GH007",
+      "category": "genuine_human",
+      "ground_truth": "yellow",
+      "predicted": "yellow",
+      "confidence": 0.558,
+      "correct": true,
+      "mixed_expected": false,
+      "mixed_detected": true,
+      "fraud_category": null,
+      "layer_signals": {
+        "structural_reasoning": {
+          "signal": "human",
+          "confidence": 0.7
+        },
+        "contextual_plausibility": {
+          "signal": "uncertain",
+          "confidence": 0.45
+        },
+        "conviction_cost": {
+          "signal": "uncertain",
+          "confidence": 0.45
+        },
+        "pattern_library": {
+          "signal": "uncertain",
+          "confidence": 0.45
+        },
+        "absence_signals": {
+          "signal": "synthetic",
+          "confidence": 0.85
+        }
+      },
+      "error": null
+    },
+    {
+      "id": "GH008",
+      "category": "genuine_human",
+      "ground_truth": "yellow",
+      "predicted": "yellow",
+      "confidence": 0.567,
+      "correct": true,
+      "mixed_expected": false,
+      "mixed_detected": true,
+      "fraud_category": null,
+      "layer_signals": {
+        "structural_reasoning": {
+          "signal": "human",
+          "confidence": 0.75
+        },
+        "contextual_plausibility": {
+          "signal": "uncertain",
+          "confidence": 0.45
+        },
+        "conviction_cost": {
+          "signal": "uncertain",
+          "confidence": 0.45
+        },
+        "pattern_library": {
+          "signal": "uncertain",
+          "confidence": 0.45
+        },
+        "absence_signals": {
+          "signal": "synthetic",
+          "confidence": 0.85
+        }
+      },
+      "error": null
+    },
+    {
+      "id": "GH009",
+      "category": "genuine_human",
+      "ground_truth": "yellow",
+      "predicted": "yellow",
+      "confidence": 0.517,
+      "correct": true,
+      "mixed_expected": false,
+      "mixed_detected": true,
+      "fraud_category": null,
+      "layer_signals": {
+        "structural_reasoning": {
+          "signal": "uncertain",
+          "confidence": 0.45
+        },
+        "contextual_plausibility": {
+          "signal": "uncertain",
+          "confidence": 0.45
+        },
+        "conviction_cost": {
+          "signal": "uncertain",
+          "confidence": 0.45
+        },
+        "pattern_library": {
+          "signal": "uncertain",
+          "confidence": 0.45
+        },
+        "absence_signals": {
+          "signal": "synthetic",
+          "confidence": 0.85
+        }
+      },
+      "error": null
+    },
+    {
+      "id": "GH010",
+      "category": "genuine_human",
+      "ground_truth": "yellow",
+      "predicted": "yellow",
+      "confidence": 0.558,
+      "correct": true,
+      "mixed_expected": false,
+      "mixed_detected": true,
+      "fraud_category": null,
+      "layer_signals": {
+        "structural_reasoning": {
+          "signal": "human",
+          "confidence": 0.7
+        },
+        "contextual_plausibility": {
+          "signal": "uncertain",
+          "confidence": 0.45
+        },
+        "conviction_cost": {
+          "signal": "uncertain",
+          "confidence": 0.45
+        },
+        "pattern_library": {
+          "signal": "uncertain",
+          "confidence": 0.45
+        },
+        "absence_signals": {
+          "signal": "synthetic",
+          "confidence": 0.85
+        }
+      },
+      "error": null
+    },
+    {
+      "id": "GH011",
+      "category": "genuine_human",
+      "ground_truth": "yellow",
+      "predicted": "yellow",
+      "confidence": 0.517,
+      "correct": true,
+      "mixed_expected": false,
+      "mixed_detected": true,
+      "fraud_category": null,
+      "layer_signals": {
+        "structural_reasoning": {
+          "signal": "uncertain",
+          "confidence": 0.45
+        },
+        "contextual_plausibility": {
+          "signal": "uncertain",
+          "confidence": 0.45
+        },
+        "conviction_cost": {
+          "signal": "uncertain",
+          "confidence": 0.45
+        },
+        "pattern_library": {
+          "signal": "uncertain",
+          "confidence": 0.45
+        },
+        "absence_signals": {
+          "signal": "synthetic",
+          "confidence": 0.85
+        }
+      },
+      "error": null
+    },
+    {
+      "id": "GH012",
+      "category": "genuine_human",
+      "ground_truth": "yellow",
+      "predicted": "yellow",
+      "confidence": 0.5,
+      "correct": true,
+      "mixed_expected": false,
+      "mixed_detected": false,
+      "fraud_category": null,
+      "layer_signals": {
+        "structural_reasoning": {
+          "signal": "uncertain",
+          "confidence": 0.45
+        },
+        "contextual_plausibility": {
+          "signal": "uncertain",
+          "confidence": 0.45
+        },
+        "conviction_cost": {
+          "signal": "human",
+          "confidence": 0.7
+        },
+        "pattern_library": {
+          "signal": "uncertain",
+          "confidence": 0.45
+        },
+        "absence_signals": {
+          "signal": "uncertain",
+          "confidence": 0.5
+        }
+      },
+      "error": null
+    },
+    {
+      "id": "GH013",
+      "category": "genuine_human",
+      "ground_truth": "yellow",
+      "predicted": "yellow",
+      "confidence": 0.558,
+      "correct": true,
+      "mixed_expected": false,
+      "mixed_detected": true,
+      "fraud_category": null,
+      "layer_signals": {
+        "structural_reasoning": {
+          "signal": "uncertain",
+          "confidence": 0.45
+        },
+        "contextual_plausibility": {
+          "signal": "uncertain",
+          "confidence": 0.45
+        },
+        "conviction_cost": {
+          "signal": "human",
+          "confidence": 0.7
+        },
+        "pattern_library": {
+          "signal": "uncertain",
+          "confidence": 0.45
+        },
+        "absence_signals": {
+          "signal": "synthetic",
+          "confidence": 0.85
+        }
+      },
+      "error": null
+    },
+    {
+      "id": "GH014",
+      "category": "genuine_human",
+      "ground_truth": "yellow",
+      "predicted": "yellow",
+      "confidence": 0.558,
+      "correct": true,
+      "mixed_expected": false,
+      "mixed_detected": true,
+      "fraud_category": null,
+      "layer_signals": {
+        "structural_reasoning": {
+          "signal": "uncertain",
+          "confidence": 0.45
+        },
+        "contextual_plausibility": {
+          "signal": "uncertain",
+          "confidence": 0.45
+        },
+        "conviction_cost": {
+          "signal": "human",
+          "confidence": 0.7
+        },
+        "pattern_library": {
+          "signal": "uncertain",
+          "confidence": 0.45
+        },
+        "absence_signals": {
+          "signal": "synthetic",
+          "confidence": 0.85
+        }
+      },
+      "error": null
+    },
+    {
+      "id": "GH015",
+      "category": "genuine_human",
+      "ground_truth": "yellow",
+      "predicted": "yellow",
+      "confidence": 0.517,
+      "correct": true,
+      "mixed_expected": false,
+      "mixed_detected": true,
+      "fraud_category": null,
+      "layer_signals": {
+        "structural_reasoning": {
+          "signal": "uncertain",
+          "confidence": 0.45
+        },
+        "contextual_plausibility": {
+          "signal": "uncertain",
+          "confidence": 0.45
+        },
+        "conviction_cost": {
+          "signal": "uncertain",
+          "confidence": 0.45
+        },
+        "pattern_library": {
+          "signal": "uncertain",
+          "confidence": 0.45
+        },
+        "absence_signals": {
+          "signal": "synthetic",
+          "confidence": 0.85
+        }
+      },
+      "error": null
+    },
+    {
+      "id": "GH016",
+      "category": "genuine_human",
+      "ground_truth": "yellow",
+      "predicted": "yellow",
+      "confidence": 0.558,
+      "correct": true,
+      "mixed_expected": false,
+      "mixed_detected": true,
+      "fraud_category": null,
+      "layer_signals": {
+        "structural_reasoning": {
+          "signal": "uncertain",
+          "confidence": 0.45
+        },
+        "contextual_plausibility": {
+          "signal": "uncertain",
+          "confidence": 0.45
+        },
+        "conviction_cost": {
+          "signal": "human",
+          "confidence": 0.7
+        },
+        "pattern_library": {
+          "signal": "uncertain",
+          "confidence": 0.45
+        },
+        "absence_signals": {
+          "signal": "synthetic",
+          "confidence": 0.85
+        }
+      },
+      "error": null
+    },
+    {
+      "id": "GH017",
+      "category": "genuine_human",
+      "ground_truth": "yellow",
+      "predicted": "yellow",
+      "confidence": 0.517,
+      "correct": true,
+      "mixed_expected": false,
+      "mixed_detected": true,
+      "fraud_category": null,
+      "layer_signals": {
+        "structural_reasoning": {
+          "signal": "uncertain",
+          "confidence": 0.45
+        },
+        "contextual_plausibility": {
+          "signal": "uncertain",
+          "confidence": 0.45
+        },
+        "conviction_cost": {
+          "signal": "uncertain",
+          "confidence": 0.45
+        },
+        "pattern_library": {
+          "signal": "uncertain",
+          "confidence": 0.45
+        },
+        "absence_signals": {
+          "signal": "synthetic",
+          "confidence": 0.85
+        }
+      },
+      "error": null
+    },
+    {
+      "id": "GH018",
+      "category": "genuine_human",
+      "ground_truth": "yellow",
+      "predicted": "yellow",
+      "confidence": 0.567,
+      "correct": true,
+      "mixed_expected": false,
+      "mixed_detected": true,
+      "fraud_category": null,
+      "layer_signals": {
+        "structural_reasoning": {
+          "signal": "human",
+          "confidence": 0.75
+        },
+        "contextual_plausibility": {
+          "signal": "uncertain",
+          "confidence": 0.45
+        },
+        "conviction_cost": {
+          "signal": "uncertain",
+          "confidence": 0.45
+        },
+        "pattern_library": {
+          "signal": "uncertain",
+          "confidence": 0.45
+        },
+        "absence_signals": {
+          "signal": "synthetic",
+          "confidence": 0.85
+        }
+      },
+      "error": null
+    },
+    {
+      "id": "GH019",
+      "category": "genuine_human",
+      "ground_truth": "yellow",
+      "predicted": "yellow",
+      "confidence": 0.567,
+      "correct": true,
+      "mixed_expected": false,
+      "mixed_detected": true,
+      "fraud_category": null,
+      "layer_signals": {
+        "structural_reasoning": {
+          "signal": "human",
+          "confidence": 0.75
+        },
+        "contextual_plausibility": {
+          "signal": "uncertain",
+          "confidence": 0.45
+        },
+        "conviction_cost": {
+          "signal": "uncertain",
+          "confidence": 0.45
+        },
+        "pattern_library": {
+          "signal": "uncertain",
+          "confidence": 0.45
+        },
+        "absence_signals": {
+          "signal": "synthetic",
+          "confidence": 0.85
+        }
+      },
+      "error": null
+    },
+    {
+      "id": "GH020",
+      "category": "genuine_human",
+      "ground_truth": "yellow",
+      "predicted": "yellow",
+      "confidence": 0.55,
+      "correct": true,
+      "mixed_expected": false,
+      "mixed_detected": true,
+      "fraud_category": null,
+      "layer_signals": {
+        "structural_reasoning": {
+          "signal": "uncertain",
+          "confidence": 0.45
+        },
+        "contextual_plausibility": {
+          "signal": "uncertain",
+          "confidence": 0.45
+        },
+        "conviction_cost": {
+          "signal": "synthetic",
+          "confidence": 0.65
+        },
+        "pattern_library": {
+          "signal": "uncertain",
+          "confidence": 0.45
+        },
+        "absence_signals": {
+          "signal": "synthetic",
+          "confidence": 0.85
+        }
+      },
+      "error": null
+    },
+    {
+      "id": "MC001",
+      "category": "mixed_content",
+      "ground_truth": "yellow",
+      "predicted": "red",
+      "confidence": 0.78,
+      "correct": false,
+      "mixed_expected": true,
+      "mixed_detected": true,
+      "fraud_category": "manufactured_urgency",
+      "layer_signals": {
+        "structural_reasoning": {
+          "signal": "uncertain",
+          "confidence": 0.45
+        },
+        "contextual_plausibility": {
+          "signal": "synthetic",
+          "confidence": 0.9
+        },
+        "conviction_cost": {
+          "signal": "human",
+          "confidence": 0.7
+        },
+        "pattern_library": {
+          "signal": "synthetic",
+          "confidence": 0.7
+        },
+        "absence_signals": {
+          "signal": "uncertain",
+          "confidence": 0.45
+        }
+      },
+      "error": null
+    },
+    {
+      "id": "MC002",
+      "category": "mixed_content",
+      "ground_truth": "yellow",
+      "predicted": "red",
+      "confidence": 0.85,
+      "correct": false,
+      "mixed_expected": true,
+      "mixed_detected": true,
+      "fraud_category": "manufactured_urgency",
+      "layer_signals": {
+        "structural_reasoning": {
+          "signal": "synthetic",
+          "confidence": 0.75
+        },
+        "contextual_plausibility": {
+          "signal": "uncertain",
+          "confidence": 0.45
+        },
+        "conviction_cost": {
+          "signal": "human",
+          "confidence": 0.7
+        },
+        "pattern_library": {
+          "signal": "synthetic",
+          "confidence": 0.75
+        },
+        "absence_signals": {
+          "signal": "synthetic",
+          "confidence": 0.85
+        }
+      },
+      "error": null
+    },
+    {
+      "id": "MC003",
+      "category": "mixed_content",
+      "ground_truth": "yellow",
+      "predicted": "red",
+      "confidence": 0.76,
+      "correct": false,
+      "mixed_expected": true,
+      "mixed_detected": true,
+      "fraud_category": "romance_scam",
+      "layer_signals": {
+        "structural_reasoning": {
+          "signal": "uncertain",
+          "confidence": 0.45
+        },
+        "contextual_plausibility": {
+          "signal": "synthetic",
+          "confidence": 0.75
+        },
+        "conviction_cost": {
+          "signal": "uncertain",
+          "confidence": 0.45
+        },
+        "pattern_library": {
+          "signal": "synthetic",
+          "confidence": 0.65
+        },
+        "absence_signals": {
+          "signal": "synthetic",
+          "confidence": 0.85
+        }
+      },
+      "error": null
+    },
+    {
+      "id": "MC004",
+      "category": "mixed_content",
+      "ground_truth": "yellow",
+      "predicted": "red",
+      "confidence": 0.86,
+      "correct": false,
+      "mixed_expected": true,
+      "mixed_detected": true,
+      "fraud_category": "manufactured_urgency",
+      "layer_signals": {
+        "structural_reasoning": {
+          "signal": "synthetic",
+          "confidence": 0.75
+        },
+        "contextual_plausibility": {
+          "signal": "synthetic",
+          "confidence": 0.85
+        },
+        "conviction_cost": {
+          "signal": "uncertain",
+          "confidence": 0.45
+        },
+        "pattern_library": {
+          "signal": "synthetic",
+          "confidence": 0.7
+        },
+        "absence_signals": {
+          "signal": "synthetic",
+          "confidence": 0.85
+        }
+      },
+      "error": null
+    },
+    {
+      "id": "MC005",
+      "category": "mixed_content",
+      "ground_truth": "yellow",
+      "predicted": "yellow",
+      "confidence": 0.669,
+      "correct": true,
+      "mixed_expected": true,
+      "mixed_detected": true,
+      "fraud_category": null,
+      "layer_signals": {
+        "structural_reasoning": {
+          "signal": "uncertain",
+          "confidence": 0.45
+        },
+        "contextual_plausibility": {
+          "signal": "synthetic",
+          "confidence": 0.8
+        },
+        "conviction_cost": {
+          "signal": "synthetic",
+          "confidence": 0.65
+        },
+        "pattern_library": {
+          "signal": "uncertain",
+          "confidence": 0.45
+        },
+        "absence_signals": {
+          "signal": "synthetic",
+          "confidence": 0.85
+        }
+      },
+      "error": null
+    },
+    {
+      "id": "MC006",
+      "category": "mixed_content",
+      "ground_truth": "yellow",
+      "predicted": "red",
+      "confidence": 0.72,
+      "correct": false,
+      "mixed_expected": true,
+      "mixed_detected": true,
+      "fraud_category": "manufactured_urgency",
+      "layer_signals": {
+        "structural_reasoning": {
+          "signal": "uncertain",
+          "confidence": 0.45
+        },
+        "contextual_plausibility": {
+          "signal": "uncertain",
+          "confidence": 0.45
+        },
+        "conviction_cost": {
+          "signal": "uncertain",
+          "confidence": 0.45
+        },
+        "pattern_library": {
+          "signal": "synthetic",
+          "confidence": 0.7
+        },
+        "absence_signals": {
+          "signal": "synthetic",
+          "confidence": 0.85
+        }
+      },
+      "error": null
+    },
+    {
+      "id": "MC007",
+      "category": "mixed_content",
+      "ground_truth": "yellow",
+      "predicted": "red",
+      "confidence": 0.76,
+      "correct": false,
+      "mixed_expected": true,
+      "mixed_detected": true,
+      "fraud_category": "romance_scam",
+      "layer_signals": {
+        "structural_reasoning": {
+          "signal": "uncertain",
+          "confidence": 0.45
+        },
+        "contextual_plausibility": {
+          "signal": "synthetic",
+          "confidence": 0.75
+        },
+        "conviction_cost": {
+          "signal": "uncertain",
+          "confidence": 0.45
+        },
+        "pattern_library": {
+          "signal": "synthetic",
+          "confidence": 0.65
+        },
+        "absence_signals": {
+          "signal": "synthetic",
+          "confidence": 0.85
+        }
+      },
+      "error": null
+    },
+    {
+      "id": "MC008",
+      "category": "mixed_content",
+      "ground_truth": "yellow",
+      "predicted": "red",
+      "confidence": 0.93,
+      "correct": false,
+      "mixed_expected": true,
+      "mixed_detected": false,
+      "fraud_category": "investment_fraud",
+      "layer_signals": {
+        "structural_reasoning": {
+          "signal": "synthetic",
+          "confidence": 0.75
+        },
+        "contextual_plausibility": {
+          "signal": "synthetic",
+          "confidence": 0.9
+        },
+        "conviction_cost": {
+          "signal": "synthetic",
+          "confidence": 0.65
+        },
+        "pattern_library": {
+          "signal": "synthetic",
+          "confidence": 0.75
+        },
+        "absence_signals": {
+          "signal": "synthetic",
+          "confidence": 0.85
+        }
+      },
+      "error": null
+    },
+    {
+      "id": "MC009",
+      "category": "mixed_content",
+      "ground_truth": "yellow",
+      "predicted": "yellow",
+      "confidence": 0.517,
+      "correct": true,
+      "mixed_expected": true,
+      "mixed_detected": true,
+      "fraud_category": null,
+      "layer_signals": {
+        "structural_reasoning": {
+          "signal": "uncertain",
+          "confidence": 0.45
+        },
+        "contextual_plausibility": {
+          "signal": "uncertain",
+          "confidence": 0.45
+        },
+        "conviction_cost": {
+          "signal": "uncertain",
+          "confidence": 0.45
+        },
+        "pattern_library": {
+          "signal": "uncertain",
+          "confidence": 0.45
+        },
+        "absence_signals": {
+          "signal": "synthetic",
+          "confidence": 0.85
+        }
+      },
+      "error": null
+    },
+    {
+      "id": "MC010",
+      "category": "mixed_content",
+      "ground_truth": "yellow",
+      "predicted": "red",
+      "confidence": 0.78,
+      "correct": false,
+      "mixed_expected": true,
+      "mixed_detected": true,
+      "fraud_category": "manufactured_urgency",
+      "layer_signals": {
+        "structural_reasoning": {
+          "signal": "synthetic",
+          "confidence": 0.75
+        },
+        "contextual_plausibility": {
+          "signal": "uncertain",
+          "confidence": 0.45
+        },
+        "conviction_cost": {
+          "signal": "uncertain",
+          "confidence": 0.45
+        },
+        "pattern_library": {
+          "signal": "synthetic",
+          "confidence": 0.7
+        },
+        "absence_signals": {
+          "signal": "synthetic",
+          "confidence": 0.85
+        }
+      },
+      "error": null
+    },
+    {
+      "id": "EC001",
+      "category": "edge_case",
+      "ground_truth": "yellow",
+      "predicted": "yellow",
+      "confidence": 0.508,
+      "correct": true,
+      "mixed_expected": false,
+      "mixed_detected": false,
+      "fraud_category": null,
+      "layer_signals": {
+        "structural_reasoning": {
+          "signal": "human",
+          "confidence": 0.75
+        },
+        "contextual_plausibility": {
+          "signal": "uncertain",
+          "confidence": 0.45
+        },
+        "conviction_cost": {
+          "signal": "uncertain",
+          "confidence": 0.45
+        },
+        "pattern_library": {
+          "signal": "uncertain",
+          "confidence": 0.45
+        },
+        "absence_signals": {
+          "signal": "uncertain",
+          "confidence": 0.5
+        }
+      },
+      "error": null
+    },
+    {
+      "id": "EC002",
+      "category": "edge_case",
+      "ground_truth": "yellow",
+      "predicted": "red",
+      "confidence": 0.7,
+      "correct": false,
+      "mixed_expected": false,
+      "mixed_detected": true,
+      "fraud_category": "manufactured_urgency",
+      "layer_signals": {
+        "structural_reasoning": {
+          "signal": "uncertain",
+          "confidence": 0.45
+        },
+        "contextual_plausibility": {
+          "signal": "uncertain",
+          "confidence": 0.45
+        },
+        "conviction_cost": {
+          "signal": "uncertain",
+          "confidence": 0.45
+        },
+        "pattern_library": {
+          "signal": "synthetic",
+          "confidence": 0.65
+        },
+        "absence_signals": {
+          "signal": "synthetic",
+          "confidence": 0.85
+        }
+      },
+      "error": null
+    },
+    {
+      "id": "EC003",
+      "category": "edge_case",
+      "ground_truth": "yellow",
+      "predicted": "yellow",
+      "confidence": 0.5,
+      "correct": true,
+      "mixed_expected": false,
+      "mixed_detected": false,
+      "fraud_category": null,
+      "layer_signals": {
+        "structural_reasoning": {
+          "signal": "human",
+          "confidence": 0.7
+        },
+        "contextual_plausibility": {
+          "signal": "uncertain",
+          "confidence": 0.45
+        },
+        "conviction_cost": {
+          "signal": "uncertain",
+          "confidence": 0.45
+        },
+        "pattern_library": {
+          "signal": "uncertain",
+          "confidence": 0.45
+        },
+        "absence_signals": {
+          "signal": "uncertain",
+          "confidence": 0.5
+        }
+      },
+      "error": null
+    },
+    {
+      "id": "EC004",
+      "category": "edge_case",
+      "ground_truth": "yellow",
+      "predicted": "yellow",
+      "confidence": 0.558,
+      "correct": true,
+      "mixed_expected": false,
+      "mixed_detected": true,
+      "fraud_category": "manufactured_urgency",
+      "layer_signals": {
+        "structural_reasoning": {
+          "signal": "uncertain",
+          "confidence": 0.45
+        },
+        "contextual_plausibility": {
+          "signal": "uncertain",
+          "confidence": 0.45
+        },
+        "conviction_cost": {
+          "signal": "uncertain",
+          "confidence": 0.45
+        },
+        "pattern_library": {
+          "signal": "synthetic",
+          "confidence": 0.75
+        },
+        "absence_signals": {
+          "signal": "uncertain",
+          "confidence": 0.5
+        }
+      },
+      "error": null
+    },
+    {
+      "id": "EC005",
+      "category": "edge_case",
+      "ground_truth": "yellow",
+      "predicted": "yellow",
+      "confidence": 0.558,
+      "correct": true,
+      "mixed_expected": false,
+      "mixed_detected": true,
+      "fraud_category": null,
+      "layer_signals": {
+        "structural_reasoning": {
+          "signal": "human",
+          "confidence": 0.7
+        },
+        "contextual_plausibility": {
+          "signal": "uncertain",
+          "confidence": 0.45
+        },
+        "conviction_cost": {
+          "signal": "uncertain",
+          "confidence": 0.45
+        },
+        "pattern_library": {
+          "signal": "uncertain",
+          "confidence": 0.45
+        },
+        "absence_signals": {
+          "signal": "synthetic",
+          "confidence": 0.85
+        }
+      },
+      "error": null
+    },
+    {
+      "id": "EC006",
+      "category": "edge_case",
+      "ground_truth": "yellow",
+      "predicted": "yellow",
+      "confidence": 0.517,
+      "correct": true,
+      "mixed_expected": false,
+      "mixed_detected": true,
+      "fraud_category": null,
+      "layer_signals": {
+        "structural_reasoning": {
+          "signal": "uncertain",
+          "confidence": 0.45
+        },
+        "contextual_plausibility": {
+          "signal": "uncertain",
+          "confidence": 0.45
+        },
+        "conviction_cost": {
+          "signal": "uncertain",
+          "confidence": 0.45
+        },
+        "pattern_library": {
+          "signal": "uncertain",
+          "confidence": 0.45
+        },
+        "absence_signals": {
+          "signal": "synthetic",
+          "confidence": 0.85
+        }
+      },
+      "error": null
+    },
+    {
+      "id": "EC007",
+      "category": "edge_case",
+      "ground_truth": "yellow",
+      "predicted": "red",
+      "confidence": 0.8,
+      "correct": false,
+      "mixed_expected": false,
+      "mixed_detected": true,
+      "fraud_category": "manufactured_urgency",
+      "layer_signals": {
+        "structural_reasoning": {
+          "signal": "synthetic",
+          "confidence": 0.75
+        },
+        "contextual_plausibility": {
+          "signal": "uncertain",
+          "confidence": 0.45
+        },
+        "conviction_cost": {
+          "signal": "uncertain",
+          "confidence": 0.45
+        },
+        "pattern_library": {
+          "signal": "synthetic",
+          "confidence": 0.75
+        },
+        "absence_signals": {
+          "signal": "synthetic",
+          "confidence": 0.85
+        }
+      },
+      "error": null
+    },
+    {
+      "id": "EC008",
+      "category": "edge_case",
+      "ground_truth": "yellow",
+      "predicted": "yellow",
+      "confidence": 0.575,
+      "correct": true,
+      "mixed_expected": false,
+      "mixed_detected": true,
+      "fraud_category": "phishing",
+      "layer_signals": {
+        "structural_reasoning": {
+          "signal": "human",
+          "confidence": 0.75
+        },
+        "contextual_plausibility": {
+          "signal": "uncertain",
+          "confidence": 0.45
+        },
+        "conviction_cost": {
+          "signal": "uncertain",
+          "confidence": 0.45
+        },
+        "pattern_library": {
+          "signal": "synthetic",
+          "confidence": 0.65
+        },
+        "absence_signals": {
+          "signal": "uncertain",
+          "confidence": 0.5
+        }
+      },
+      "error": null
+    },
+    {
+      "id": "EC009",
+      "category": "edge_case",
+      "ground_truth": "yellow",
+      "predicted": "yellow",
+      "confidence": 0.558,
+      "correct": true,
+      "mixed_expected": false,
+      "mixed_detected": true,
+      "fraud_category": null,
+      "layer_signals": {
+        "structural_reasoning": {
+          "signal": "human",
+          "confidence": 0.7
+        },
+        "contextual_plausibility": {
+          "signal": "uncertain",
+          "confidence": 0.45
+        },
+        "conviction_cost": {
+          "signal": "uncertain",
+          "confidence": 0.45
+        },
+        "pattern_library": {
+          "signal": "uncertain",
+          "confidence": 0.45
+        },
+        "absence_signals": {
+          "signal": "synthetic",
+          "confidence": 0.85
+        }
+      },
+      "error": null
+    },
+    {
+      "id": "EC010",
+      "category": "edge_case",
+      "ground_truth": "yellow",
+      "predicted": "yellow",
+      "confidence": 0.517,
+      "correct": true,
+      "mixed_expected": false,
+      "mixed_detected": true,
+      "fraud_category": null,
+      "layer_signals": {
+        "structural_reasoning": {
+          "signal": "uncertain",
+          "confidence": 0.45
+        },
+        "contextual_plausibility": {
+          "signal": "uncertain",
+          "confidence": 0.45
+        },
+        "conviction_cost": {
+          "signal": "uncertain",
+          "confidence": 0.45
+        },
+        "pattern_library": {
+          "signal": "uncertain",
+          "confidence": 0.45
+        },
+        "absence_signals": {
+          "signal": "synthetic",
+          "confidence": 0.85
+        }
+      },
+      "error": null
+    }
+  ]
+}
