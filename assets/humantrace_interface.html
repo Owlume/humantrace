@@ -1,0 +1,1515 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>HumanTrace — Powered by Owlume</title>
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=DM+Mono:ital,wght@0,300;0,400;0,500;1,300&family=Instrument+Serif:ital@0;1&family=DM+Sans:opsz,wght@9..40,300;9..40,400;9..40,500&display=swap');
+
+  :root {
+    --bg:         #0a0a0f;
+    --surface:    #111118;
+    --border:     #1e1e2e;
+    --border-hi:  #2e2e42;
+    --text:       #e8e8f0;
+    --text-dim:   #6e6e88;
+    --text-mid:   #9e9eb8;
+    --red:        #ff4458;
+    --red-dim:    #3d1018;
+    --red-glow:   rgba(255,68,88,0.15);
+    --yellow:     #f0b429;
+    --yellow-dim: #2e2200;
+    --yellow-glow:rgba(240,180,41,0.12);
+    --green:      #2ecc71;
+    --green-dim:  #0a2e18;
+    --green-glow: rgba(46,204,113,0.12);
+    --accent:     #7c6dfa;
+    --accent-dim: #1a1640;
+  }
+
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+
+  body {
+    background: var(--bg);
+    color: var(--text);
+    font-family: 'DM Sans', sans-serif;
+    font-size: 15px;
+    line-height: 1.6;
+    min-height: 100vh;
+    overflow-x: hidden;
+  }
+
+  /* ── Grid background ── */
+  body::before {
+    content: '';
+    position: fixed;
+    inset: 0;
+    background-image:
+      linear-gradient(rgba(124,109,250,0.03) 1px, transparent 1px),
+      linear-gradient(90deg, rgba(124,109,250,0.03) 1px, transparent 1px);
+    background-size: 40px 40px;
+    pointer-events: none;
+    z-index: 0;
+  }
+
+  .wrap {
+    position: relative;
+    z-index: 1;
+    max-width: 760px;
+    margin: 0 auto;
+    padding: 48px 24px 80px;
+  }
+
+  /* ── Header ── */
+  header {
+    margin-bottom: 48px;
+  }
+
+  .logo-row {
+    display: flex;
+    align-items: baseline;
+    gap: 12px;
+    margin-bottom: 8px;
+  }
+
+  .logo {
+    font-family: 'Instrument Serif', serif;
+    font-size: 32px;
+    letter-spacing: -0.5px;
+    color: var(--text);
+  }
+
+  .logo span {
+    color: var(--accent);
+  }
+
+  .powered {
+    font-family: 'DM Mono', monospace;
+    font-size: 10px;
+    color: var(--text-dim);
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    border: 1px solid var(--border-hi);
+    padding: 2px 8px;
+    border-radius: 3px;
+  }
+
+  .tagline {
+    font-size: 14px;
+    color: var(--text-mid);
+    font-style: italic;
+    font-family: 'Instrument Serif', serif;
+  }
+
+  /* ── Input section ── */
+  .input-section {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    padding: 24px;
+    margin-bottom: 24px;
+    transition: border-color 0.2s;
+  }
+
+  .input-section:focus-within {
+    border-color: var(--border-hi);
+  }
+
+  .input-label {
+    font-family: 'DM Mono', monospace;
+    font-size: 11px;
+    color: var(--text-dim);
+    text-transform: uppercase;
+    letter-spacing: 0.1em;
+    margin-bottom: 12px;
+    display: block;
+  }
+
+  textarea {
+    width: 100%;
+    background: transparent;
+    border: none;
+    outline: none;
+    color: var(--text);
+    font-family: 'DM Sans', sans-serif;
+    font-size: 14px;
+    line-height: 1.7;
+    resize: none;
+    min-height: 140px;
+    placeholder-color: var(--text-dim);
+  }
+
+  textarea::placeholder {
+    color: var(--text-dim);
+    font-style: italic;
+  }
+
+  .input-footer {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-top: 16px;
+    padding-top: 16px;
+    border-top: 1px solid var(--border);
+  }
+
+  .context-select {
+    background: var(--bg);
+    border: 1px solid var(--border-hi);
+    color: var(--text-mid);
+    font-family: 'DM Mono', monospace;
+    font-size: 11px;
+    padding: 6px 10px;
+    border-radius: 6px;
+    cursor: pointer;
+    outline: none;
+  }
+
+  .context-select:focus {
+    border-color: var(--accent);
+  }
+
+  .scan-btn {
+    background: var(--accent);
+    color: white;
+    border: none;
+    padding: 10px 28px;
+    border-radius: 8px;
+    font-family: 'DM Sans', sans-serif;
+    font-size: 14px;
+    font-weight: 500;
+    cursor: pointer;
+    transition: all 0.2s;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+  }
+
+  .scan-btn:hover {
+    background: #9280fc;
+    transform: translateY(-1px);
+  }
+
+  .scan-btn:active {
+    transform: translateY(0);
+  }
+
+  .scan-btn:disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
+    transform: none;
+  }
+
+  .scan-btn .spinner {
+    width: 14px;
+    height: 14px;
+    border: 2px solid rgba(255,255,255,0.3);
+    border-top-color: white;
+    border-radius: 50%;
+    animation: spin 0.7s linear infinite;
+    display: none;
+  }
+
+  .scan-btn.loading .spinner { display: block; }
+  .scan-btn.loading .btn-text { display: none; }
+
+  @keyframes spin {
+    to { transform: rotate(360deg); }
+  }
+
+  /* ── Results ── */
+  #results {
+    display: none;
+    animation: fadeUp 0.4s ease;
+  }
+
+  @keyframes fadeUp {
+    from { opacity: 0; transform: translateY(12px); }
+    to   { opacity: 1; transform: translateY(0); }
+  }
+
+  /* ── Signal card ── */
+  .signal-card {
+    border-radius: 12px;
+    padding: 28px;
+    margin-bottom: 20px;
+    border: 1px solid;
+    position: relative;
+    overflow: hidden;
+  }
+
+  .signal-card::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    opacity: 0.06;
+    border-radius: inherit;
+  }
+
+  .signal-card.red {
+    background: var(--red-dim);
+    border-color: var(--red);
+    box-shadow: 0 0 40px var(--red-glow);
+  }
+
+  .signal-card.red::before {
+    background: var(--red);
+  }
+
+  .signal-card.yellow {
+    background: var(--yellow-dim);
+    border-color: var(--yellow);
+    box-shadow: 0 0 40px var(--yellow-glow);
+  }
+
+  .signal-card.yellow::before {
+    background: var(--yellow);
+  }
+
+  .signal-card.green {
+    background: var(--green-dim);
+    border-color: var(--green);
+    box-shadow: 0 0 40px var(--green-glow);
+  }
+
+  .signal-card.green::before {
+    background: var(--green);
+  }
+
+  .signal-top {
+    display: flex;
+    align-items: center;
+    gap: 16px;
+    margin-bottom: 16px;
+  }
+
+  .signal-icon {
+    width: 48px;
+    height: 48px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 22px;
+    flex-shrink: 0;
+  }
+
+  .red .signal-icon    { background: rgba(255,68,88,0.2); }
+  .yellow .signal-icon { background: rgba(240,180,41,0.2); }
+  .green .signal-icon  { background: rgba(46,204,113,0.2); }
+
+  .signal-meta {
+    flex: 1;
+  }
+
+  .signal-label {
+    font-family: 'DM Mono', monospace;
+    font-size: 11px;
+    text-transform: uppercase;
+    letter-spacing: 0.12em;
+    margin-bottom: 4px;
+  }
+
+  .red .signal-label    { color: var(--red); }
+  .yellow .signal-label { color: var(--yellow); }
+  .green .signal-label  { color: var(--green); }
+
+  .signal-title {
+    font-family: 'Instrument Serif', serif;
+    font-size: 20px;
+    color: var(--text);
+  }
+
+  .confidence-bar-wrap {
+    margin-bottom: 16px;
+  }
+
+  .confidence-row {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 6px;
+  }
+
+  .confidence-label {
+    font-family: 'DM Mono', monospace;
+    font-size: 11px;
+    color: var(--text-dim);
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+  }
+
+  .confidence-value {
+    font-family: 'DM Mono', monospace;
+    font-size: 13px;
+    font-weight: 500;
+  }
+
+  .red .confidence-value    { color: var(--red); }
+  .yellow .confidence-value { color: var(--yellow); }
+  .green .confidence-value  { color: var(--green); }
+
+  .confidence-bar {
+    height: 4px;
+    background: rgba(255,255,255,0.08);
+    border-radius: 2px;
+    overflow: hidden;
+  }
+
+  .confidence-fill {
+    height: 100%;
+    border-radius: 2px;
+    transition: width 1s cubic-bezier(0.4,0,0.2,1);
+    width: 0%;
+  }
+
+  .red .confidence-fill    { background: var(--red); }
+  .yellow .confidence-fill { background: var(--yellow); }
+  .green .confidence-fill  { background: var(--green); }
+
+  .plain-english {
+    font-size: 14px;
+    color: var(--text-mid);
+    line-height: 1.7;
+    font-style: italic;
+  }
+
+  .first-contact-badge {
+    display: inline-flex;
+    align-items: center;
+    gap: 5px;
+    font-family: 'DM Mono', monospace;
+    font-size: 10px;
+    color: var(--yellow);
+    border: 1px solid rgba(240,180,41,0.3);
+    padding: 3px 8px;
+    border-radius: 4px;
+    margin-top: 12px;
+    background: rgba(240,180,41,0.05);
+  }
+
+  /* ── Layer results ── */
+  .section-title {
+    font-family: 'DM Mono', monospace;
+    font-size: 11px;
+    text-transform: uppercase;
+    letter-spacing: 0.12em;
+    color: var(--text-dim);
+    margin-bottom: 12px;
+  }
+
+  .layers-grid {
+    display: grid;
+    gap: 10px;
+    margin-bottom: 20px;
+  }
+
+  .layer-row {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 10px;
+    padding: 14px 16px;
+    display: grid;
+    grid-template-columns: auto 1fr auto;
+    gap: 12px;
+    align-items: start;
+  }
+
+  .layer-dot {
+    width: 8px;
+    height: 8px;
+    border-radius: 50%;
+    margin-top: 6px;
+    flex-shrink: 0;
+  }
+
+  .layer-dot.synthetic { background: var(--red); }
+  .layer-dot.human     { background: var(--green); }
+  .layer-dot.uncertain { background: var(--yellow); }
+  .layer-dot.absent    { background: var(--text-dim); }
+
+  .layer-name {
+    font-family: 'DM Mono', monospace;
+    font-size: 11px;
+    color: var(--text-mid);
+    text-transform: uppercase;
+    letter-spacing: 0.06em;
+    margin-bottom: 4px;
+  }
+
+  .layer-findings {
+    font-size: 13px;
+    color: var(--text-dim);
+    line-height: 1.5;
+  }
+
+  .layer-conf {
+    font-family: 'DM Mono', monospace;
+    font-size: 11px;
+    color: var(--text-dim);
+    white-space: nowrap;
+  }
+
+  /* ── Analyst questions ── */
+  .questions-card {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    padding: 20px;
+    margin-bottom: 20px;
+  }
+
+  .question-item {
+    display: flex;
+    gap: 12px;
+    padding: 10px 0;
+    border-bottom: 1px solid var(--border);
+    font-size: 13px;
+    color: var(--text-mid);
+    line-height: 1.6;
+  }
+
+  .question-item:last-child {
+    border-bottom: none;
+    padding-bottom: 0;
+  }
+
+  .question-num {
+    font-family: 'DM Mono', monospace;
+    font-size: 11px;
+    color: var(--accent);
+    flex-shrink: 0;
+    padding-top: 2px;
+  }
+
+  /* ── Recommended action ── */
+  .action-card {
+    background: var(--accent-dim);
+    border: 1px solid rgba(124,109,250,0.2);
+    border-radius: 10px;
+    padding: 16px 18px;
+    font-size: 13px;
+    color: var(--text-mid);
+    line-height: 1.6;
+    margin-bottom: 20px;
+  }
+
+  .action-card strong {
+    display: block;
+    font-family: 'DM Mono', monospace;
+    font-size: 10px;
+    text-transform: uppercase;
+    letter-spacing: 0.1em;
+    color: var(--accent);
+    margin-bottom: 6px;
+  }
+
+  /* ── Footer note ── */
+  .governance-note {
+    font-family: 'DM Mono', monospace;
+    font-size: 10px;
+    color: var(--text-dim);
+    text-align: center;
+    line-height: 1.8;
+    padding-top: 20px;
+    border-top: 1px solid var(--border);
+  }
+
+  /* ── Scan ID ── */
+  .scan-id {
+    font-family: 'DM Mono', monospace;
+    font-size: 10px;
+    color: var(--text-dim);
+    text-align: right;
+    margin-bottom: 8px;
+  }
+
+  /* ── New scan ── */
+  .new-scan-btn {
+    background: transparent;
+    border: 1px solid var(--border-hi);
+    color: var(--text-mid);
+    padding: 8px 18px;
+    border-radius: 8px;
+    font-family: 'DM Sans', sans-serif;
+    font-size: 13px;
+    cursor: pointer;
+    transition: all 0.2s;
+    display: block;
+    margin: 0 auto 24px;
+  }
+
+  .new-scan-btn:hover {
+    border-color: var(--accent);
+    color: var(--text);
+  }
+
+  /* ── Fraud category badge ── */
+  .fraud-badge {
+    display: inline-flex;
+    align-items: center;
+    font-family: 'DM Mono', monospace;
+    font-size: 10px;
+    color: var(--red);
+    border: 1px solid rgba(255,68,88,0.3);
+    padding: 3px 10px;
+    border-radius: 4px;
+    background: rgba(255,68,88,0.05);
+    margin-top: 10px;
+  }
+
+  /* ── Judgment Landing ── */
+  .judgment-section {
+    display: none;
+    animation: fadeUp 0.4s ease;
+    margin-bottom: 20px;
+  }
+
+  .judgment-card {
+    background: var(--surface);
+    border: 1px solid var(--border-hi);
+    border-radius: 12px;
+    padding: 24px;
+    margin-bottom: 16px;
+  }
+
+  .judgment-header {
+    font-family: 'Instrument Serif', serif;
+    font-size: 18px;
+    color: var(--text);
+    margin-bottom: 6px;
+  }
+
+  .judgment-sub {
+    font-size: 13px;
+    color: var(--text-dim);
+    margin-bottom: 20px;
+    font-style: italic;
+  }
+
+  .judgment-options {
+    display: grid;
+    gap: 8px;
+    margin-bottom: 20px;
+  }
+
+  .judgment-option {
+    display: flex;
+    align-items: flex-start;
+    gap: 12px;
+    padding: 12px 14px;
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    cursor: pointer;
+    transition: all 0.2s;
+    background: transparent;
+  }
+
+  .judgment-option:hover {
+    border-color: var(--accent);
+    background: var(--accent-dim);
+  }
+
+  .judgment-option.selected {
+    border-color: var(--accent);
+    background: var(--accent-dim);
+  }
+
+  .judgment-option input[type="radio"] {
+    margin-top: 2px;
+    accent-color: var(--accent);
+    flex-shrink: 0;
+  }
+
+  .judgment-option-text {
+    flex: 1;
+  }
+
+  .judgment-option-type {
+    font-family: 'DM Mono', monospace;
+    font-size: 10px;
+    color: var(--accent);
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+    margin-bottom: 2px;
+  }
+
+  .judgment-option-label {
+    font-size: 13px;
+    color: var(--text);
+    line-height: 1.5;
+  }
+
+  .judgment-statement-wrap {
+    margin-bottom: 16px;
+  }
+
+  .judgment-statement {
+    width: 100%;
+    background: var(--bg);
+    border: 1px solid var(--border-hi);
+    border-radius: 8px;
+    color: var(--text);
+    font-family: 'DM Sans', sans-serif;
+    font-size: 13px;
+    padding: 10px 14px;
+    resize: none;
+    outline: none;
+    line-height: 1.6;
+    transition: border-color 0.2s;
+  }
+
+  .judgment-statement:focus {
+    border-color: var(--accent);
+  }
+
+  .judgment-statement::placeholder {
+    color: var(--text-dim);
+    font-style: italic;
+  }
+
+  .confidence-wrap {
+    margin-bottom: 20px;
+  }
+
+  .confidence-slider-row {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    margin-top: 8px;
+  }
+
+  .confidence-slider {
+    flex: 1;
+    accent-color: var(--accent);
+    cursor: pointer;
+  }
+
+  .confidence-pct {
+    font-family: 'DM Mono', monospace;
+    font-size: 13px;
+    color: var(--accent);
+    min-width: 36px;
+    text-align: right;
+  }
+
+  .ack-wrap {
+    background: var(--bg);
+    border: 1px solid var(--border-hi);
+    border-radius: 8px;
+    padding: 14px 16px;
+    margin-bottom: 20px;
+    display: flex;
+    align-items: flex-start;
+    gap: 12px;
+    cursor: pointer;
+  }
+
+  .ack-wrap:hover {
+    border-color: var(--accent);
+  }
+
+  .ack-wrap input[type="checkbox"] {
+    margin-top: 2px;
+    accent-color: var(--accent);
+    flex-shrink: 0;
+    width: 16px;
+    height: 16px;
+    cursor: pointer;
+  }
+
+  .ack-text {
+    font-size: 13px;
+    color: var(--text-mid);
+    line-height: 1.6;
+    font-style: italic;
+  }
+
+  .ack-text strong {
+    color: var(--text);
+    font-style: normal;
+  }
+
+  .share-wrap {
+    margin-bottom: 20px;
+  }
+
+  .share-option {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    padding: 10px 0;
+    cursor: pointer;
+    font-size: 13px;
+    color: var(--text-dim);
+  }
+
+  .share-option input {
+    accent-color: var(--accent);
+  }
+
+  .complete-btn {
+    width: 100%;
+    background: var(--accent);
+    color: white;
+    border: none;
+    padding: 14px;
+    border-radius: 8px;
+    font-family: 'DM Sans', sans-serif;
+    font-size: 15px;
+    font-weight: 500;
+    cursor: pointer;
+    transition: all 0.2s;
+    opacity: 0.4;
+    pointer-events: none;
+  }
+
+  .complete-btn.ready {
+    opacity: 1;
+    pointer-events: all;
+  }
+
+  .complete-btn.ready:hover {
+    background: #9280fc;
+    transform: translateY(-1px);
+  }
+
+  .session-complete {
+    display: none;
+    text-align: center;
+    padding: 32px 24px;
+    animation: fadeUp 0.4s ease;
+  }
+
+  .session-complete-icon {
+    font-size: 40px;
+    margin-bottom: 12px;
+  }
+
+  .session-complete-title {
+    font-family: 'Instrument Serif', serif;
+    font-size: 22px;
+    color: var(--text);
+    margin-bottom: 8px;
+  }
+
+  .session-complete-sub {
+    font-size: 13px;
+    color: var(--text-dim);
+    margin-bottom: 24px;
+  }
+
+  .session-id-final {
+    font-family: 'DM Mono', monospace;
+    font-size: 11px;
+    color: var(--text-dim);
+    border: 1px solid var(--border);
+    padding: 6px 12px;
+    border-radius: 6px;
+    display: inline-block;
+    margin-bottom: 20px;
+  }
+
+</style>
+</head>
+<body>
+<div class="wrap">
+
+  <!-- Header -->
+  <header>
+    <div class="logo-row">
+      <div class="logo">Human<span>Trace</span></div>
+      <div class="powered">Powered by Owlume</div>
+    </div>
+    <div class="tagline">Tells you if a real human sent that message — before you respond.</div>
+  </header>
+
+  <!-- Input -->
+  <div class="input-section" id="inputSection">
+    <label class="input-label" for="msgInput">Paste the suspicious message</label>
+    <textarea
+      id="msgInput"
+      placeholder="Paste an email, text message, or any communication you want to verify..."
+      rows="6"
+    ></textarea>
+    <div class="input-footer">
+      <select class="context-select" id="contextSelect">
+        <option value="">Context: Auto-detect</option>
+        <option value="bank_officer">Claimed: Bank / Financial Institution</option>
+        <option value="investment_opportunity">Claimed: Investment Opportunity</option>
+        <option value="friend_in_distress">Claimed: Friend / Family in Distress</option>
+      </select>
+      <button class="scan-btn" id="scanBtn" onclick="runScan()">
+        <div class="spinner"></div>
+        <span class="btn-text">Scan Message</span>
+      </button>
+    </div>
+  </div>
+
+  <!-- Results -->
+  <div id="results">
+
+    <div class="scan-id" id="scanId"></div>
+
+    <button class="new-scan-btn" onclick="newScan()">← Scan another message</button>
+
+    <!-- Signal card -->
+    <div class="signal-card" id="signalCard">
+      <div class="signal-top">
+        <div class="signal-icon" id="signalIcon"></div>
+        <div class="signal-meta">
+          <div class="signal-label" id="signalLabel"></div>
+          <div class="signal-title" id="signalTitle"></div>
+        </div>
+      </div>
+
+      <div class="confidence-bar-wrap">
+        <div class="confidence-row">
+          <span class="confidence-label">Detection Confidence</span>
+          <span class="confidence-value" id="confValue"></span>
+        </div>
+        <div class="confidence-bar">
+          <div class="confidence-fill" id="confFill"></div>
+        </div>
+      </div>
+
+      <div class="plain-english" id="plainEnglish"></div>
+      <div id="fraudBadge"></div>
+      <div id="firstContactBadge"></div>
+    </div>
+
+    <!-- Recommended action -->
+    <div class="action-card">
+      <strong>Before you respond</strong>
+      <span id="recommendedAction"></span>
+    </div>
+
+    <!-- Layer results -->
+    <div class="section-title">Detection Layers</div>
+    <div class="layers-grid" id="layersGrid"></div>
+
+    <!-- Analyst questions -->
+    <div class="section-title">Questions to investigate</div>
+    <div class="questions-card" id="questionsCard"></div>
+
+
+    <!-- Judgment Landing -->
+    <div class="judgment-section" id="judgmentSection">
+
+      <div class="judgment-card">
+        <div class="judgment-header">What will you do next?</div>
+        <div class="judgment-sub">HumanTrace has surfaced a signal. The judgment is yours.</div>
+
+        <div class="judgment-options" id="judgmentOptions">
+
+          <label class="judgment-option" id="opt-next_step">
+            <input type="radio" name="jtype" value="next_step"
+                   onchange="onJudgmentTypeChange('next_step',
+                     'I will verify this sender independently before responding.')">
+            <div class="judgment-option-text">
+              <div class="judgment-option-type">Next Step</div>
+              <div class="judgment-option-label">I will verify this sender independently before responding</div>
+            </div>
+          </label>
+
+          <label class="judgment-option" id="opt-constraint">
+            <input type="radio" name="jtype" value="constraint"
+                   onchange="onJudgmentTypeChange('constraint',
+                     'I will not respond to this message.')">
+            <div class="judgment-option-text">
+              <div class="judgment-option-type">Constraint</div>
+              <div class="judgment-option-label">I will not respond to this message</div>
+            </div>
+          </label>
+
+          <label class="judgment-option" id="opt-defer">
+            <input type="radio" name="jtype" value="defer"
+                   onchange="onJudgmentTypeChange('defer',
+                     'I need more information before I can decide how to respond.')">
+            <div class="judgment-option-text">
+              <div class="judgment-option-type">Defer</div>
+              <div class="judgment-option-label">I need more information before deciding</div>
+            </div>
+          </label>
+
+          <label class="judgment-option" id="opt-position">
+            <input type="radio" name="jtype" value="position"
+                   onchange="onJudgmentTypeChange('position',
+                     'I have assessed this message and decided it is safe to respond to.')">
+            <div class="judgment-option-text">
+              <div class="judgment-option-type">Position</div>
+              <div class="judgment-option-label">I have decided this message is safe to respond to</div>
+            </div>
+          </label>
+
+        </div>
+
+        <!-- Statement -->
+        <div class="judgment-statement-wrap">
+          <label class="input-label">Your judgment in your own words</label>
+          <textarea
+            class="judgment-statement"
+            id="judgmentStatement"
+            rows="2"
+            maxlength="500"
+            placeholder="Describe what you have decided and why..."
+            oninput="checkJudgmentReady()"
+          ></textarea>
+        </div>
+
+        <!-- Confidence -->
+        <div class="confidence-wrap">
+          <label class="input-label">Confidence in this judgment</label>
+          <div class="confidence-slider-row">
+            <input
+              type="range"
+              class="confidence-slider"
+              id="judgmentConfidence"
+              min="0" max="100" value="70"
+              oninput="document.getElementById('judgmentConfPct').textContent = this.value + '%'"
+            >
+            <span class="confidence-pct" id="judgmentConfPct">70%</span>
+          </div>
+        </div>
+
+        <!-- Acknowledgment -->
+        <label class="ack-wrap" for="judgmentAck">
+          <input type="checkbox" id="judgmentAck" onchange="checkJudgmentReady()">
+          <div class="ack-text">
+            <strong>This judgment is mine. HumanTrace did not decide for me.</strong><br>
+            I acknowledge that HumanTrace surfaced signals only. The decision and its
+            consequences are my responsibility.
+          </div>
+        </label>
+
+        <!-- Share -->
+        <div class="share-wrap">
+          <label class="input-label">Help improve HumanTrace</label>
+          <label class="share-option">
+            <input type="radio" name="shareStatus" value="opt_in" checked>
+            Share this scan anonymously to help improve detection accuracy
+          </label>
+          <label class="share-option">
+            <input type="radio" name="shareStatus" value="skipped">
+            Keep this scan private
+          </label>
+        </div>
+
+        <!-- Complete button -->
+        <button class="complete-btn" id="completeBtn" onclick="completeSession()">
+          Confirm My Judgment
+        </button>
+
+      </div>
+    </div>
+
+    <!-- Session complete -->
+    <div class="session-complete" id="sessionComplete">
+      <div class="session-complete-icon">✦</div>
+      <div class="session-complete-title">Session Complete</div>
+      <div class="session-complete-sub">
+        Your judgment has been recorded. The decision was yours.
+      </div>
+      <div class="session-id-final" id="sessionIdFinal"></div>
+      <button class="new-scan-btn" onclick="newScan()" style="display:inline-block; margin:0 auto;">
+        Scan another message
+      </button>
+    </div>
+
+    <!-- Governance note -->
+    <div class="governance-note">
+      HumanTrace surfaces reasoning signals. It does not make decisions.<br>
+      Final judgment remains with you. Verify all senders independently.<br>
+      Output kind: SIGNAL — not advice, not instruction.
+    </div>
+
+  </div>
+
+</div>
+
+<script>
+// ── Simulated scan engine (mirrors humantrace_scanner.py logic) ───────────────
+// In production this calls the Python FastAPI backend.
+// For demo/pilot this runs client-side simulation.
+
+const SYNTHETIC_PATTERNS = {
+  manufactured_urgency: [
+    /\b(act now|immediately|urgent|expires? (today|tonight|in \d+ hours?)|limited time|don'?t delay|time is running out|last chance)\b/i,
+    /\b(within \d+ (hours?|minutes?|days?))\b/i,
+    /\b(before it'?s too late|once in a lifetime|now or never)\b/i,
+  ],
+  authority_impersonation: [
+    /\b(irs|hmrc|ato|fbi|microsoft|apple|amazon|paypal|your bank|government)\b.{0,40}\b(contact|verify|confirm|suspended|frozen|action required)\b/i,
+    /\b(official notice|final warning|account (suspended|frozen|compromised|flagged))\b/i,
+    /\b(we have detected|unusual activity|security alert|verify your identity)\b/i,
+  ],
+  investment_fraud: [
+    /\b(guaranteed (returns?|profit|income)|risk[- ]free|no risk)\b/i,
+    /\b(\d+%\s*(return|profit|gain|interest) (per|a) (day|week|month|year))\b/i,
+    /\b(secret (method|system|strategy)|exclusive (opportunity|access|offer))\b/i,
+  ],
+  romance_scam: [
+    /\b(i (love|adore|miss|need) you).{0,80}\b(money|send|transfer|wallet|gift card)\b/i,
+    /\b(stuck (in|at)|stranded|emergency|hospital).{0,60}\b(send|transfer|wire|money)\b/i,
+    /\b(western union|moneygram|gift card|wire transfer)\b/i,
+  ],
+  phishing: [
+    /\b(click (here|the link|below)|verify (your|the) (account|email|identity))\b/i,
+    /\b(update (your|billing|payment|account) (information|details|method))\b/i,
+    /\b(your (account|password|card) (will be|has been|is) (suspended|expired|locked))\b/i,
+  ],
+};
+
+const HUMAN_MARKERS = {
+  genuine_uncertainty: [
+    /\b(i (think|believe|guess|suppose|wonder)|not sure (if|whether|about)|maybe|perhaps|probably)\b/i,
+    /\b(i might be wrong|correct me if|let me know if)\b/i,
+  ],
+  self_correction: [
+    /\b(actually|wait|never mind|scratch that|i mean|what i meant|to clarify)\b/i,
+  ],
+  irrelevant_noise: [
+    /\b(anyway|by the way|oh|hmm|sorry for the rambling|hope (you'?re|this finds you))\b/i,
+    /\b(just wanted to|quick question|random thought|totally unrelated)\b/i,
+  ],
+  conviction_cost: [
+    /\b(it'?s (hard|difficult|painful) to (admit|say|accept)|i (hate|regret|wish))\b/i,
+    /\b(even though (i|this)|despite (the fact|knowing|my))\b/i,
+    /\b(i'?m (conflicted|torn|not comfortable|hesitant))\b/i,
+  ],
+};
+
+const CONTEXT_RULES = {
+  bank_officer: {
+    never: [
+      /\b(gift card|itunes|google play|wire (to|me)|send (cash|money) to)\b/i,
+      /\b(keep this (secret|confidential|between us)|don'?t tell)\b/i,
+    ],
+    penalty: 0.35,
+  },
+  investment_opportunity: {
+    never: [
+      /\b(guaranteed|no risk|risk[- ]free|can'?t lose)\b/i,
+      /\b(secret|exclusive|only (a few|limited) (spots?|people|access))\b/i,
+    ],
+    penalty: 0.30,
+  },
+  friend_in_distress: {
+    never: [
+      /\b(wire transfer|western union|moneygram|bitcoin|crypto wallet)\b/i,
+      /\b(don'?t (call|contact) (me|my family|the police))\b/i,
+    ],
+    penalty: 0.25,
+  },
+};
+
+function matchAny(text, patterns) {
+  return patterns.filter(p => p.test(text));
+}
+
+function checkSentenceUniformity(text) {
+  const sentences = text.split(/[.!?]+/).map(s => s.trim()).filter(s => s.split(' ').length > 5);
+  if (sentences.length < 3) return 0;
+  const lengths = sentences.map(s => s.split(' ').length);
+  const mean = lengths.reduce((a,b) => a+b,0) / lengths.length;
+  const variance = lengths.reduce((s,l) => s + Math.pow(l-mean,2), 0) / lengths.length;
+  const std = Math.sqrt(variance);
+  const cv = mean > 0 ? std/mean : 0;
+  if (cv < 0.15) return 0.20;
+  if (cv < 0.25) return 0.10;
+  return 0;
+}
+
+function runDetection(text, contextHint) {
+  const layers = [];
+
+  // ── L1: Structural Reasoning ──
+  let synScore = 0, humScore = 0;
+  const l1findings = [];
+  const urgencyHits = matchAny(text, SYNTHETIC_PATTERNS.manufactured_urgency);
+  if (urgencyHits.length) { synScore += 0.25; l1findings.push(`Urgency appears manufactured rather than earned (${urgencyHits.length} signal(s))`); }
+  const uncertaintyHits = matchAny(text, HUMAN_MARKERS.genuine_uncertainty);
+  if (uncertaintyHits.length) { humScore += 0.20; l1findings.push('Genuine uncertainty markers present'); }
+  const correctionHits = matchAny(text, HUMAN_MARKERS.self_correction);
+  if (correctionHits.length) { humScore += 0.25; l1findings.push('Self-correction detected — strong human signal'); }
+  const uniformityPenalty = checkSentenceUniformity(text);
+  if (uniformityPenalty > 0) { synScore += uniformityPenalty; l1findings.push('Sentence structure shows high uniformity — consistent with synthetic generation'); }
+  if (!l1findings.length) l1findings.push('No strong structural reasoning signals detected');
+  const l1net = humScore - synScore;
+  const l1 = {
+    name: 'Structural Reasoning',
+    signal: l1net > 0.15 ? 'human' : l1net < -0.15 ? 'synthetic' : 'uncertain',
+    confidence: Math.min(0.50 + Math.abs(l1net), 0.80),
+    findings: l1findings,
+  };
+  layers.push(l1);
+
+  // ── L2: Contextual Plausibility ──
+  let detectedContext = contextHint;
+  if (!detectedContext) {
+    if (/\b(bank|account|transaction|financial institution)\b/i.test(text)) detectedContext = 'bank_officer';
+    else if (/\b(invest|return|profit|trading|opportunity)\b/i.test(text)) detectedContext = 'investment_opportunity';
+    else if (/\b(love|miss you|together|relationship|met online)\b/i.test(text)) detectedContext = 'friend_in_distress';
+  }
+  const l2findings = [];
+  let l2signal = 'uncertain', l2conf = 0.45;
+  if (detectedContext && CONTEXT_RULES[detectedContext]) {
+    const rules = CONTEXT_RULES[detectedContext];
+    const violations = matchAny(text, rules.never);
+    if (violations.length) {
+      l2signal = 'synthetic';
+      l2conf = Math.min(0.55 + violations.length * rules.penalty, 0.92);
+      l2findings.push(`Context '${detectedContext.replace(/_/g,' ')}': ${violations.length} plausibility violation(s) detected`);
+      l2findings.push('Real people in this context do not communicate this way');
+    } else {
+      l2findings.push(`Context '${detectedContext.replace(/_/g,' ')}': No obvious plausibility violations`);
+    }
+  } else {
+    l2findings.push('No context available — first contact analysis only');
+  }
+  layers.push({ name: 'Contextual Plausibility', signal: l2signal, confidence: l2conf, findings: l2findings });
+
+  // ── L3: Conviction Cost ──
+  const l3findings = [];
+  const costHits = matchAny(text, HUMAN_MARKERS.conviction_cost);
+  const noiseHits = matchAny(text, HUMAN_MARKERS.irrelevant_noise);
+  let l3signal, l3conf;
+  if (costHits.length) {
+    l3signal = 'human'; l3conf = 0.65;
+    l3findings.push('Evidence of personal cost behind communication — genuine human signal');
+  } else if (noiseHits.length) {
+    l3signal = 'human'; l3conf = 0.55;
+    l3findings.push('Off-topic human noise present — synthetic messages are purpose-pure');
+  } else if (/\b(you will|you must|guaranteed|absolutely|definitely|certainly)\b/i.test(text)) {
+    l3signal = 'synthetic'; l3conf = 0.65;
+    l3findings.push('Costless confidence detected — no evidence of personal stakes or doubt');
+  } else {
+    l3signal = 'uncertain'; l3conf = 0.45;
+    l3findings.push('No conviction cost signals detected');
+  }
+  layers.push({ name: 'Conviction Cost', signal: l3signal, confidence: l3conf, findings: l3findings });
+
+  // ── L4: Pattern Library ──
+  const l4findings = [];
+  const catScores = {};
+  let topCategory = null;
+  for (const [cat, patterns] of Object.entries(SYNTHETIC_PATTERNS)) {
+    const hits = matchAny(text, patterns);
+    if (hits.length) catScores[cat] = hits.length;
+  }
+  let l4signal = 'uncertain', l4conf = 0.45;
+  if (Object.keys(catScores).length) {
+    topCategory = Object.entries(catScores).sort((a,b)=>b[1]-a[1])[0][0];
+    const totalHits = Object.values(catScores).reduce((a,b)=>a+b,0);
+    l4signal = 'synthetic';
+    l4conf = Math.min(0.60 + totalHits * 0.05, 0.92);
+    l4findings.push(`Pattern match: ${topCategory.replace(/_/g,' ').replace(/\b\w/g,c=>c.toUpperCase())} (${totalHits} signal(s))`);
+    const others = Object.keys(catScores).filter(c=>c!==topCategory).map(c=>c.replace(/_/g,' ').replace(/\b\w/g,c=>c.toUpperCase()));
+    if (others.length) l4findings.push(`Secondary patterns: ${others.join(', ')}`);
+  } else {
+    l4findings.push('No known fraud pattern signatures detected');
+  }
+  layers.push({ name: 'Pattern Library', signal: l4signal, confidence: l4conf, findings: l4findings, category: topCategory });
+
+  // ── L5: Absence Signals ──
+  const l5findings = [];
+  let absenceScore = 0;
+  const wordCount = text.split(' ').length;
+  if (!/\b(i know (this|it) (sounds?|seems?|looks?)|you might|i understand if)\b/i.test(text)) {
+    absenceScore += 0.15; l5findings.push("No acknowledgment of recipient's possible doubt");
+  }
+  if (!/\b(i (hope|think|believe) (this|it|you)|not sure (how|if)|might not)\b/i.test(text)) {
+    absenceScore += 0.15; l5findings.push('No genuine uncertainty about outcome');
+  }
+  if (wordCount > 30 && !noiseHits.length) {
+    absenceScore += 0.20; l5findings.push('Message is purpose-pure — no irrelevant human content');
+  }
+  if (wordCount > 50 && !/\b(sorry|apologi[sz]|excuse|forgive|bear with)\b/i.test(text)) {
+    absenceScore += 0.10; l5findings.push('No imperfect self-presentation');
+  }
+  let l5signal, l5conf;
+  if (absenceScore >= 0.40) { l5signal='synthetic'; l5conf=Math.min(0.55+absenceScore,0.85); l5findings.unshift('Multiple absence signals detected'); }
+  else if (absenceScore >= 0.20) { l5signal='uncertain'; l5conf=0.50; }
+  else { l5signal='uncertain'; l5conf=0.45; l5findings.push('Absence signals insufficient to determine'); }
+  layers.push({ name: 'Absence Signals', signal: l5signal, confidence: l5conf, findings: l5findings });
+
+  // ── Aggregate ──
+  const synVotes = layers.filter(l=>l.signal==='synthetic').length;
+  const humVotes = layers.filter(l=>l.signal==='human').length;
+  const weights = [1,1,1,2,1];
+  const weightedConf = layers.reduce((s,l,i)=>s+l.confidence*weights[i],0)/weights.reduce((a,b)=>a+b,0);
+  const l4layer = layers[3];
+
+  let signal, confidence;
+  if (l4layer.signal==='synthetic' && l4layer.confidence>=0.75 && synVotes>=2) {
+    signal='red'; confidence=Math.min(weightedConf*1.15,0.95);
+  } else if (synVotes>=3) {
+    signal=weightedConf>=0.75?'red':'yellow'; confidence=weightedConf;
+  } else if (humVotes>=3) {
+    signal=weightedConf>=0.80?'green':'yellow'; confidence=weightedConf;
+  } else {
+    signal='yellow'; confidence=Math.max(weightedConf,0.45);
+  }
+
+  // ── Analyst questions ──
+  const questions = [
+    'Can the sender be verified through an official channel completely independent of this message?'
+  ];
+  if (l4layer.signal==='synthetic' && l4layer.confidence>=0.65)
+    questions.push('Does the urgency in this message feel earned by the circumstances — or was it inserted to prevent careful thinking?');
+  if (layers[1].signal==='synthetic')
+    questions.push(`Would a real ${(detectedContext||'person').replace(/_/g,' ')} in this situation actually communicate this way?`);
+  if (layers[2].signal==='synthetic')
+    questions.push('Does the sender show any evidence of personal stakes, doubt, or reluctance — or is their confidence completely costless?');
+  if (layers[4].signal==='synthetic')
+    questions.push('Does this message contain anything that serves no persuasive purpose — or is every element working toward one goal?');
+  questions.push('This appears to be a first contact. Why is this person contacting you now, through this channel?');
+
+  return {
+    scanId: 'HT-' + Math.random().toString(36).substr(2,8).toUpperCase(),
+    signal,
+    confidence: Math.round(confidence*100)/100,
+    firstContact: true,
+    layers,
+    fraudCategory: topCategory,
+    questions: questions.slice(0,5),
+    plainEnglish: buildPlainEnglish(signal, confidence, topCategory),
+    recommendedAction: buildAction(signal),
+  };
+}
+
+function buildPlainEnglish(signal, confidence, category) {
+  const pct = Math.round(confidence*100);
+  if (signal==='red') {
+    const cat = category ? category.replace(/_/g,' ').replace(/\b\w/g,c=>c.toUpperCase()) : 'Fraud';
+    return `No genuine human reasoning detected behind this message (${pct}% confidence). Pattern consistent with ${cat}. Treat with extreme caution.`;
+  }
+  if (signal==='green')
+    return `Human reasoning presence detected (${pct}% confidence). Standard caution still applies — verify sender independently.`;
+  return `Reasoning signal is unclear (${pct}% confidence) — no prior communication history available for this sender. Verify the sender independently before responding.`;
+}
+
+function buildAction(signal) {
+  if (signal==='red') return 'Before responding: can you verify this sender through an official channel completely independent of this message?';
+  if (signal==='green') return 'Human presence indicators are present. Standard verification of sender identity still recommended.';
+  return "Before responding or acting: verify the sender's identity through a channel you established yourself, not one provided in this message.";
+}
+
+// ── UI functions ──────────────────────────────────────────────────────────────
+
+function runScan() {
+  const text = document.getElementById('msgInput').value.trim();
+  if (!text) return;
+
+  const btn = document.getElementById('scanBtn');
+  btn.disabled = true;
+  btn.classList.add('loading');
+
+  const contextHint = document.getElementById('contextSelect').value || null;
+
+  // Call real Owlume-powered Python API
+  fetch('/scan', {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({ message: text, context_hint: contextHint })
+  })
+  .then(r => r.json())
+  .then(result => {
+    renderResults(result);
+    btn.disabled = false;
+    btn.classList.remove('loading');
+  })
+  .catch(err => {
+    console.error('API error:', err);
+    alert('Scan failed. Is the server running?');
+    btn.disabled = false;
+    btn.classList.remove('loading');
+  });
+}
+
+function renderResults(r) {
+  document.getElementById('inputSection').style.display = 'none';
+  document.getElementById('results').style.display = 'block';
+
+  // Scan ID
+  document.getElementById('scanId').textContent = `Scan ID: ${r.scan_id || r.scanId}`;
+
+  // Signal card
+  const card = document.getElementById('signalCard');
+  card.className = `signal-card ${r.signal}`;
+
+  const icons = { red: '⚠', yellow: '◐', green: '✓' };
+  const labels = { red: 'Low Human Presence', yellow: 'Signal Unclear', green: 'Human Present' };
+  const mixedWarning = r.meta && r.meta.mixed_content_warning;
+  const titles = {
+    red: 'No genuine human reasoning detected',
+    yellow: mixedWarning ? 'Mixed content detected — human-edited synthetic message' : 'Insufficient signal to determine',
+    green: 'Human reasoning presence detected',
+  };
+
+  document.getElementById('signalIcon').textContent = icons[r.signal];
+  document.getElementById('signalLabel').textContent = labels[r.signal];
+  document.getElementById('signalTitle').textContent = titles[r.signal];
+  document.getElementById('confValue').textContent = `${Math.round(r.confidence*100)}%`;
+  document.getElementById('plainEnglish').textContent = r.plain_english || r.plainEnglish;
+
+  // Animate confidence bar
+  setTimeout(() => {
+    document.getElementById('confFill').style.width = `${Math.round(r.confidence*100)}%`;
+  }, 100);
+
+  // Fraud badge
+  const fraudBadge = document.getElementById('fraudBadge');
+  const fraudCat = r.fraud_category || r.fraudCategory;
+  if (fraudCat && r.signal === 'red') {
+    fraudBadge.innerHTML = `<div class="fraud-badge">⚑ ${fraudCat.replace(/_/g,' ').replace(/\b\w/g,c=>c.toUpperCase())}</div>`;
+  } else {
+    fraudBadge.innerHTML = '';
+  }
+
+  // First contact badge
+  const fcBadge = document.getElementById('firstContactBadge');
+  if (r.first_contact || r.firstContact) {
+    fcBadge.innerHTML = `<div class="first-contact-badge">⊙ First contact — no longitudinal data</div>`;
+  }
+
+  // Recommended action
+  document.getElementById('recommendedAction').textContent = r.recommended_action || r.recommendedAction;
+
+  // Layer display name mapping
+  const layerNames = {
+    'structural_reasoning': 'Structural Reasoning',
+    'contextual_plausibility': 'Contextual Plausibility',
+    'conviction_cost': 'Conviction Cost',
+    'pattern_library': 'Pattern Library',
+    'absence_signals': 'Absence Signals',
+  };
+
+  // Layers
+  const layersGrid = document.getElementById('layersGrid');
+  layersGrid.innerHTML = r.layers.map(l => `
+    <div class="layer-row">
+      <div class="layer-dot ${l.signal}"></div>
+      <div>
+        <div class="layer-name">${layerNames[l.layer] || l.name || l.layer}</div>
+        <div class="layer-findings">${(l.findings||[]).join(' · ')}</div>
+      </div>
+      <div class="layer-conf">${Math.round(l.confidence*100)}%</div>
+    </div>
+  `).join('');
+
+  // Questions
+  const qCard = document.getElementById('questionsCard');
+  const questions = r.analyst_questions || r.questions || [];
+  qCard.innerHTML = questions.map((q,i) => `
+    <div class="question-item">
+      <div class="question-num">0${i+1}</div>
+      <div>${q}</div>
+    </div>
+  `).join('');
+
+  // Show judgment landing after results
+  setTimeout(() => showJudgmentLanding(), 600);
+}
+
+function newScan() {
+  document.getElementById('inputSection').style.display = 'block';
+  document.getElementById('results').style.display = 'none';
+  document.getElementById('msgInput').value = '';
+  document.getElementById('confFill').style.width = '0%';
+  window.scrollTo({top:0,behavior:'smooth'});
+}
+
+// Allow Ctrl+Enter to scan
+document.addEventListener('DOMContentLoaded', () => {
+  document.getElementById('msgInput').addEventListener('keydown', e => {
+    if ((e.ctrlKey || e.metaKey) && e.key === 'Enter') runScan();
+  });
+});
+
+
+// ── Judgment Landing ──────────────────────────────────────────────────────────
+
+let currentJudgmentType = null;
+let currentJudgmentStatement = '';
+
+function showJudgmentLanding() {
+  document.getElementById('judgmentSection').style.display = 'block';
+  document.getElementById('judgmentSection').scrollIntoView({ behavior: 'smooth', block: 'start' });
+}
+
+function onJudgmentTypeChange(type, defaultStatement) {
+  currentJudgmentType = type;
+
+  // Update selected styling
+  ['next_step', 'constraint', 'defer', 'position'].forEach(t => {
+    const el = document.getElementById('opt-' + t);
+    if (el) el.classList.toggle('selected', t === type);
+  });
+
+  // Pre-fill statement if empty
+  const stmt = document.getElementById('judgmentStatement');
+  if (!stmt.value.trim()) {
+    stmt.value = defaultStatement;
+  }
+
+  checkJudgmentReady();
+}
+
+function checkJudgmentReady() {
+  const type = currentJudgmentType;
+  const statement = document.getElementById('judgmentStatement').value.trim();
+  const acked = document.getElementById('judgmentAck').checked;
+  const ready = type && statement.length >= 10 && acked;
+
+  const btn = document.getElementById('completeBtn');
+  btn.classList.toggle('ready', ready);
+}
+
+function completeSession() {
+  const type = currentJudgmentType;
+  const statement = document.getElementById('judgmentStatement').value.trim();
+  const confidence = parseInt(document.getElementById('judgmentConfidence').value) / 100;
+  const acked = document.getElementById('judgmentAck').checked;
+  const shareStatus = document.querySelector('input[name="shareStatus"]:checked').value;
+
+  if (!type || statement.length < 10 || !acked) return;
+
+  const scanId = document.getElementById('scanId').textContent.replace('Scan ID: ', '');
+
+  // POST judgment to API
+  fetch('/judgment', {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({
+      scan_id: scanId,
+      judgment_type: type,
+      statement: statement,
+      confidence: confidence,
+      acknowledged: true,
+      share_status: shareStatus,
+    })
+  })
+  .then(r => r.json())
+  .then(() => {
+    showSessionComplete(scanId);
+  })
+  .catch(err => {
+    // Even if logging fails — session is complete for the user
+    console.error('Logging error:', err);
+    showSessionComplete(scanId);
+  });
+}
+
+function showSessionComplete(scanId) {
+  document.getElementById('judgmentSection').style.display = 'none';
+  document.getElementById('sessionComplete').style.display = 'block';
+  document.getElementById('sessionIdFinal').textContent = scanId;
+  document.getElementById('sessionComplete').scrollIntoView({ behavior: 'smooth' });
+}
+
+
+</script>
+</body>
+</html>

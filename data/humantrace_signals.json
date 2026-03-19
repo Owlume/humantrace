@@ -1,0 +1,54 @@
+{
+  "spec_version": "1.0.0",
+  "spec": {
+    "name": "humantrace_signals",
+    "version": "1.0.0",
+    "updated": "2026-03-20",
+    "owner": "HumanTrace / Owlume",
+    "description": "Proof-of-clarity signals for HumanTrace fraud detection sessions. Compatible with proof_of_clarity_signals.schema.json."
+  },
+  "signals": [
+    {
+      "id": "threat_identified",
+      "label": "Threat Identified",
+      "example_feedback": "Synthetic fraud pattern detected with high confidence.",
+      "meaning": "HumanTrace detected no genuine human reasoning behind this message. The session surfaced a credible synthetic fraud signal.",
+      "source_metric": "humantrace.signal.red.confidence"
+    },
+    {
+      "id": "mixed_content_detected",
+      "label": "Mixed Content Detected",
+      "example_feedback": "This message shows signs of human-edited synthetic content.",
+      "meaning": "HumanTrace detected internally inconsistent reasoning signals — the seam signature of AI scaffolding with human modifications.",
+      "source_metric": "humantrace.meta.mixed_content_warning"
+    },
+    {
+      "id": "human_present",
+      "label": "Human Present",
+      "example_feedback": "Human reasoning presence detected in this message.",
+      "meaning": "HumanTrace detected genuine human reasoning signals across multiple layers with sufficient confidence.",
+      "source_metric": "humantrace.signal.green.confidence"
+    },
+    {
+      "id": "judgment_claimed",
+      "label": "Judgment Claimed",
+      "example_feedback": "You completed this session with an owned judgment.",
+      "meaning": "The user declared their decision and acknowledged that HumanTrace did not decide for them. Responsibility was explicitly claimed.",
+      "source_metric": "humantrace.judgment_landing.acknowledged"
+    },
+    {
+      "id": "delta_insight",
+      "label": "Δ-Insight",
+      "example_feedback": "Your clarity increased significantly through this scan.",
+      "meaning": "The scan produced a meaningful increase in the user's clarity — from raw suspicion to a structured signal with confidence score.",
+      "source_metric": "humantrace.clarity_gain.CG_delta"
+    },
+    {
+      "id": "uncertainty_surfaced",
+      "label": "Uncertainty Surfaced",
+      "example_feedback": "This message could not be confirmed as human or synthetic. Caution was raised.",
+      "meaning": "HumanTrace detected insufficient signal to confirm human presence. The user was protected from false confidence.",
+      "source_metric": "humantrace.signal.yellow.confidence"
+    }
+  ]
+}
