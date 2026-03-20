@@ -24,6 +24,7 @@ from typing import Optional
 import json
 import os
 import sys
+import time
 
 # Add src/ to path so we can import humantrace_scanner
 sys.path.insert(0, os.path.join(os.path.dirname(__file__), "src"))
@@ -38,6 +39,13 @@ except Exception:
     from humantrace_scanner import scan_message
     ADAPTER_AVAILABLE = False
 
+# Import BSE sender fingerprint store
+try:
+    from humantrace_bse import get_bse_context, store_scan_fingerprint, build_bse_meta
+    BSE_AVAILABLE = True
+except Exception:
+    BSE_AVAILABLE = False
+
 # Import governance gate (single call site per runtime_finalize.py)
 try:
     from runtime_finalize import finalize_output
@@ -45,9 +53,60 @@ try:
 except ImportError:
     GOVERNANCE_AVAILABLE = False
 
-# In-memory scan store for judgment landing correlation
-# In production: replace with Redis or database
-_scan_store: dict = {}
+# ── Session store ─────────────────────────────────────────────────────────────
+# File-based persistence — survives server restarts.
+# Stage 1 design: single-user local/pilot deployment.
+# Stage 2: replace with Redis or database for concurrent users.
+
+import tempfile
+import glob
+
+SESSION_DIR = os.path.join(os.path.dirname(__file__), "data", "sessions")
+
+def _session_path(scan_id: str) -> str:
+    os.makedirs(SESSION_DIR, exist_ok=True)
+    return os.path.join(SESSION_DIR, f"{scan_id}.json")
+
+def _store_session(scan_id: str, data: dict) -> None:
+    try:
+        with open(_session_path(scan_id), "w", encoding="utf-8") as f:
+            json.dump(data, f, ensure_ascii=False, default=str)
+    except Exception:
+        pass
+
+def _load_session(scan_id: str) -> dict:
+    try:
+        path = _session_path(scan_id)
+        if os.path.exists(path):
+            with open(path, "r", encoding="utf-8") as f:
+                return json.load(f)
+    except Exception:
+        pass
+    return {}
+
+def _delete_session(scan_id: str) -> None:
+    try:
+        path = _session_path(scan_id)
+        if os.path.exists(path):
+            os.remove(path)
+    except Exception:
+        pass
+
+def _cleanup_old_sessions(max_age_hours: int = 24) -> None:
+    """Remove session files older than max_age_hours."""
+    try:
+        cutoff = time.time() - (max_age_hours * 3600)
+        for path in glob.glob(os.path.join(SESSION_DIR, "*.json")):
+            if os.path.getmtime(path) < cutoff:
+                os.remove(path)
+    except Exception:
+        pass
+
+# Run cleanup on startup
+try:
+    _cleanup_old_sessions()
+except Exception:
+    pass
 
 # ── App setup ─────────────────────────────────────────────────────────────────
 
@@ -158,17 +217,44 @@ async def scan(req: ScanRequest):
         )
 
     try:
+        _t0 = time.time()
+
+        # Get BSE context before scanning
+        bse_context = {}
+        if BSE_AVAILABLE:
+            try:
+                bse_context = get_bse_context(
+                    message=req.message.strip(),
+                    sender_id=None,  # Option B — automatic extraction
+                )
+            except Exception:
+                bse_context = {}
+
         result = scan_message(
             message=req.message.strip(),
             context_hint=req.context_hint or None,
+            bse_history=bse_context.get("history") if bse_context else None,
         )
+        _scan_ms = round((time.time() - _t0) * 1000)
         result_dict = result.to_dict()
+        result_dict.setdefault("meta", {})["scan_time_ms"] = _scan_ms
 
-        # Add message preview for logging (first 120 chars, no PII)
+        # Attach BSE metadata to result
+        if BSE_AVAILABLE and bse_context:
+            bse_meta = build_bse_meta(bse_context)
+            result_dict["meta"].update(bse_meta)
+            # Apply confidence adjustment from BSE history
+            adj = bse_context.get("confidence_adjustment", 0.0)
+            if adj != 0.0:
+                result_dict["confidence"] = round(
+                    min(max(result_dict["confidence"] + adj, 0.0), 0.99), 3
+                )
+
+        # Store BSE fingerprint after scan (if sender identified)
+        _store_session(result.scan_id, {**result_dict, "_bse_context": bse_context})
+
+        # Add message preview for logging (first 120 chars)
         result_dict.setdefault("meta", {})["message_preview"] = req.message.strip()[:120]
-
-        # Store scan result for judgment landing correlation
-        _scan_store[result.scan_id] = result_dict
 
         # Pass through governance gate (runtime_finalize.py — single call site)
         if GOVERNANCE_AVAILABLE:
@@ -211,7 +297,7 @@ async def judgment(req: JudgmentRequest):
     - Failure to log does NOT block user session completion
     """
     # Retrieve stored scan result
-    scan_result = _scan_store.get(req.scan_id)
+    scan_result = _load_session(req.scan_id)
     if not scan_result:
         # Scan not found — still accept judgment, log what we have
         scan_result = {
@@ -232,8 +318,25 @@ async def judgment(req: JudgmentRequest):
             share_status=req.share_status,
         )
 
+        # Store BSE fingerprint if sender was identified and user opted in
+        if BSE_AVAILABLE:
+            try:
+                stored = _load_session(req.scan_id)
+                bse_ctx = stored.get("_bse_context", {})
+                sender_hash = bse_ctx.get("sender_hash")
+                id_method = bse_ctx.get("id_method")
+                if sender_hash and id_method:
+                    store_scan_fingerprint(
+                        sender_hash=sender_hash,
+                        id_method=id_method,
+                        scan_result=stored,
+                        share_status=req.share_status,
+                    )
+            except Exception:
+                pass
+
         # Clean up scan store
-        _scan_store.pop(req.scan_id, None)
+        _delete_session(req.scan_id)
 
         return JSONResponse(content={
             "logged": True,

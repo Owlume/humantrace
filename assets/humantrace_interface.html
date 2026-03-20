@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
 <title>HumanTrace — Powered by Owlume</title>
 <style>
   @import url('https://fonts.googleapis.com/css2?family=DM+Mono:ital,wght@0,300;0,400;0,500;1,300&family=Instrument+Serif:ital@0;1&family=DM+Sans:opsz,wght@9..40,300;9..40,400;9..40,500&display=swap');
@@ -811,10 +811,328 @@
     margin-bottom: 20px;
   }
 
+
+  /* ── Mobile optimisation ── */
+  @media (max-width: 480px) {
+    .wrap {
+      padding: 28px 16px 60px;
+    }
+
+    .logo {
+      font-size: 26px;
+    }
+
+    .tagline {
+      font-size: 13px;
+    }
+
+    .input-section {
+      padding: 18px;
+    }
+
+    textarea {
+      font-size: 16px; /* prevents iOS zoom on focus */
+      min-height: 120px;
+    }
+
+    .input-footer {
+      flex-direction: column;
+      gap: 12px;
+      align-items: stretch;
+    }
+
+    .context-select {
+      width: 100%;
+      font-size: 13px;
+      padding: 8px 10px;
+    }
+
+    .scan-btn {
+      width: 100%;
+      padding: 14px;
+      font-size: 15px;
+      justify-content: center;
+    }
+
+    .signal-card {
+      padding: 20px;
+    }
+
+    .signal-title {
+      font-size: 17px;
+    }
+
+    .layer-row {
+      grid-template-columns: auto 1fr auto;
+      gap: 8px;
+      padding: 12px;
+    }
+
+    .layer-findings {
+      font-size: 12px;
+    }
+
+    .question-item {
+      font-size: 12px;
+    }
+
+    .action-card {
+      font-size: 12px;
+    }
+
+    .judgment-option {
+      padding: 10px 12px;
+    }
+
+    .judgment-option-label {
+      font-size: 13px;
+    }
+
+    .complete-btn {
+      font-size: 14px;
+      padding: 14px;
+    }
+
+    .new-scan-btn {
+      font-size: 13px;
+    }
+
+    .governance-note {
+      font-size: 9px;
+    }
+  }
+
+  /* ── Small mobile (iPhone SE etc) ── */
+  @media (max-width: 380px) {
+    .wrap {
+      padding: 20px 12px 50px;
+    }
+
+    .logo {
+      font-size: 22px;
+    }
+
+    .powered {
+      font-size: 9px;
+    }
+  }
+
+  /* ── Onboarding ── */
+  .onboarding {
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    padding: 48px 24px;
+    max-width: 560px;
+    margin: 0 auto;
+    animation: fadeUp 0.5s ease;
+  }
+
+  .onboarding-logo {
+    font-family: 'Instrument Serif', serif;
+    font-size: 36px;
+    letter-spacing: -0.5px;
+    margin-bottom: 6px;
+  }
+
+  .onboarding-logo span {
+    color: var(--accent);
+  }
+
+  .onboarding-powered {
+    font-family: 'DM Mono', monospace;
+    font-size: 10px;
+    color: var(--text-dim);
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    border: 1px solid var(--border-hi);
+    padding: 2px 8px;
+    border-radius: 3px;
+    display: inline-block;
+    margin-bottom: 32px;
+  }
+
+  .onboarding-headline {
+    font-family: 'Instrument Serif', serif;
+    font-size: 28px;
+    line-height: 1.3;
+    color: var(--text);
+    margin-bottom: 16px;
+  }
+
+  .onboarding-sub {
+    font-size: 15px;
+    color: var(--text-mid);
+    line-height: 1.7;
+    margin-bottom: 40px;
+  }
+
+  .onboarding-steps {
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+    margin-bottom: 40px;
+  }
+
+  .onboarding-step {
+    display: flex;
+    gap: 16px;
+    align-items: flex-start;
+  }
+
+  .onboarding-step-num {
+    width: 32px;
+    height: 32px;
+    border-radius: 50%;
+    background: var(--accent-dim);
+    border: 1px solid rgba(124,109,250,0.3);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-family: 'DM Mono', monospace;
+    font-size: 12px;
+    color: var(--accent);
+    flex-shrink: 0;
+  }
+
+  .onboarding-step-text {
+    padding-top: 6px;
+  }
+
+  .onboarding-step-title {
+    font-size: 14px;
+    font-weight: 500;
+    color: var(--text);
+    margin-bottom: 2px;
+  }
+
+  .onboarding-step-desc {
+    font-size: 13px;
+    color: var(--text-dim);
+    line-height: 1.5;
+  }
+
+  .onboarding-trust {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 10px;
+    padding: 14px 16px;
+    font-size: 12px;
+    color: var(--text-dim);
+    line-height: 1.6;
+    margin-bottom: 32px;
+    font-family: 'DM Mono', monospace;
+  }
+
+  .onboarding-trust strong {
+    color: var(--text-mid);
+    font-weight: 500;
+  }
+
+  .onboarding-start-btn {
+    background: var(--accent);
+    color: white;
+    border: none;
+    padding: 16px 32px;
+    border-radius: 10px;
+    font-family: 'DM Sans', sans-serif;
+    font-size: 16px;
+    font-weight: 500;
+    cursor: pointer;
+    transition: all 0.2s;
+    width: 100%;
+  }
+
+  .onboarding-start-btn:hover {
+    background: #9280fc;
+    transform: translateY(-1px);
+  }
+
+  .onboarding-footnote {
+    font-size: 11px;
+    color: var(--text-dim);
+    text-align: center;
+    margin-top: 16px;
+    font-family: 'DM Mono', monospace;
+  }
+
+  @media (max-width: 480px) {
+    .onboarding {
+      padding: 32px 16px;
+      justify-content: flex-start;
+      padding-top: 48px;
+    }
+    .onboarding-headline {
+      font-size: 24px;
+    }
+    .onboarding-logo {
+      font-size: 28px;
+    }
+  }
 </style>
 </head>
 <body>
-<div class="wrap">
+<!-- Onboarding screen -->
+<div id="onboarding" class="onboarding">
+
+  <div>
+    <div class="onboarding-logo">Human<span>Trace</span></div>
+    <div class="onboarding-powered">Powered by Owlume</div>
+  </div>
+
+  <div class="onboarding-headline">
+    Got a suspicious message?<br>Find out if a real human sent it.
+  </div>
+
+  <div class="onboarding-sub">
+    HumanTrace analyses the reasoning behind any message — email, text, or WhatsApp — and tells you whether a genuine human wrote it, or whether it is synthetic fraud designed to deceive you.
+  </div>
+
+  <div class="onboarding-steps">
+
+    <div class="onboarding-step">
+      <div class="onboarding-step-num">1</div>
+      <div class="onboarding-step-text">
+        <div class="onboarding-step-title">Paste the message</div>
+        <div class="onboarding-step-desc">Copy and paste any suspicious communication you have received.</div>
+      </div>
+    </div>
+
+    <div class="onboarding-step">
+      <div class="onboarding-step-num">2</div>
+      <div class="onboarding-step-text">
+        <div class="onboarding-step-title">We analyse the reasoning</div>
+        <div class="onboarding-step-desc">HumanTrace looks for the reasoning patterns that only genuine humans leave behind — not the words, but the thinking.</div>
+      </div>
+    </div>
+
+    <div class="onboarding-step">
+      <div class="onboarding-step-num">3</div>
+      <div class="onboarding-step-text">
+        <div class="onboarding-step-title">You decide what to do</div>
+        <div class="onboarding-step-desc">We surface a signal and questions to help you think. The judgment is always yours.</div>
+      </div>
+    </div>
+
+  </div>
+
+  <div class="onboarding-trust">
+    <strong>HumanTrace does not store your messages.</strong><br>
+    We never read your personal communications. The message you paste is analysed locally and immediately discarded. We surface signals only — not decisions.
+  </div>
+
+  <button class="onboarding-start-btn" onclick="startScan()">
+    Scan a message now
+  </button>
+
+  <div class="onboarding-footnote">
+    Takes less than 3 seconds · Works on any device
+  </div>
+
+</div>
+
+<div class="wrap" id="mainWrap" style="display:none;">
 
   <!-- Header -->
   <header>
@@ -1333,7 +1651,8 @@ function renderResults(r) {
   document.getElementById('results').style.display = 'block';
 
   // Scan ID
-  document.getElementById('scanId').textContent = `Scan ID: ${r.scan_id || r.scanId}`;
+  const scanMs = r.meta && r.meta.scan_time_ms;
+  document.getElementById('scanId').textContent = `Scan ID: ${r.scan_id || r.scanId}` + (scanMs ? `  ·  ${scanMs}ms` : '');
 
   // Signal card
   const card = document.getElementById('signalCard');
@@ -1418,7 +1737,24 @@ function newScan() {
   document.getElementById('results').style.display = 'none';
   document.getElementById('msgInput').value = '';
   document.getElementById('confFill').style.width = '0%';
+  // Reset judgment landing
+  document.getElementById('judgmentSection').style.display = 'none';
+  document.getElementById('sessionComplete').style.display = 'none';
+  currentJudgmentType = null;
+  document.getElementById('judgmentAck').checked = false;
+  document.getElementById('judgmentStatement').value = '';
+  document.getElementById('completeBtn').classList.remove('ready');
+  // Go back to onboarding
+  document.getElementById('onboarding').style.display = 'flex';
+  document.getElementById('mainWrap').style.display = 'none';
   window.scrollTo({top:0,behavior:'smooth'});
+}
+
+// Onboarding flow
+function startScan() {
+  document.getElementById('onboarding').style.display = 'none';
+  document.getElementById('mainWrap').style.display = 'block';
+  document.getElementById('msgInput').focus();
 }
 
 // Allow Ctrl+Enter to scan

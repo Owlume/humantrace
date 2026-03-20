@@ -1,0 +1,66 @@
+{
+  "$schema": "schemas/bias_signal_weights.schema.json",
+  "spec": {
+    "name": "bias_signal_weights",
+    "version": "1.0.0",
+    "updated": "2026-03-21",
+    "owner": "Owlume / HumanTrace",
+    "description": "Weights controlling how strongly each detection signal contributes to a bias signature vector. Non-tunable defaults. Updated via longitudinal learning only.",
+    "non_tunable": false,
+    "learning_enabled": true,
+    "notes": "Initial weights are equal-weighted defaults. The learning loop in aggregator.py will update these based on DilemmaNet outcomes over time."
+  },
+  "weights": {
+    "mode": {
+      "Critical":    1.20,
+      "Analytical":  0.80,
+      "Reflective":  0.60,
+      "Growth":      0.50,
+      "Creative":    0.50
+    },
+    "principle": {
+      "Stakeholder":           1.20,
+      "Risk":                  1.15,
+      "Assumption":            1.10,
+      "Clarity":               1.00,
+      "Evidence":              1.00,
+      "Evidence & Validation": 1.00,
+      "Action":                0.90,
+      "Root Cause":            0.80,
+      "Exploration":           0.70,
+      "Iteration":             0.70
+    },
+    "context_driver": {
+      "time_pressure":         1.30,
+      "identity_protection":   1.20,
+      "misaligned_incentives": 1.20,
+      "moral_hazard":          1.15,
+      "complexity":            1.00,
+      "overload":              1.00,
+      "confirmation_drift":    0.90,
+      "groupthink":            0.80,
+      "status_quo_bias":       0.80
+    },
+    "pattern_category": {
+      "manufactured_urgency":    1.30,
+      "authority_impersonation": 1.25,
+      "investment_fraud":        1.20,
+      "romance_scam":            1.15,
+      "phishing":                1.20,
+      "payment_redirection":     1.30
+    },
+    "human_marker_absence": {
+      "no_conviction_cost":          1.20,
+      "no_uncertainty":              1.10,
+      "no_self_correction":          1.00,
+      "no_irrelevant_noise":         1.00,
+      "no_doubt_acknowledgment":     1.10,
+      "purpose_pure":                1.25
+    },
+    "signal_outcome": {
+      "red":    1.20,
+      "yellow": 0.80,
+      "green":  0.40
+    }
+  }
+}

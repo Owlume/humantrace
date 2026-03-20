@@ -90,26 +90,43 @@ def _get_engine() -> Optional[Any]:
 # The Questioncraft Matrix Critical mode questions map directly to
 # fraud detection when reoriented from inward to outward.
 
+# Primers are designed to activate Critical mode in the ElenxEngine.
+# They inject Critical mode keywords: incentive, risk, conflict, pressure,
+# stakeholder, bias, contradict, challenge — which bias the engine toward
+# Critical x Stakeholder / Risk / Assumption detection.
+
 FRAUD_CONTEXT_PRIMERS = {
     "bank_officer": (
-        "Examining this communication from a claimed bank officer: "
-        "What assumptions are embedded here? Whose interests does this serve? "
-        "What is the sender trying to make me do without careful thought?"
+        "Critical analysis of a suspicious communication. "
+        "Incentive misalignment risk: the sender may have conflicting interests. "
+        "Stakeholder pressure detected. Hidden risk and second-order consequences. "
+        "Challenge: whose interests does this message actually serve? "
+        "What assumption must I accept for this to work? "
+        "What irreversible risk exists if I act on this now?"
     ),
     "investment_opportunity": (
-        "Examining this investment communication: "
-        "What guarantees are being made? What risk is being hidden? "
-        "What incentives could be distorting this claim?"
+        "Critical analysis of an investment claim. "
+        "Incentive distortion: guaranteed returns contradict market risk reality. "
+        "Stakeholder conflict: sender benefits from my action regardless of my outcome. "
+        "Second-order risk: what is the hidden downside being concealed? "
+        "Bias challenge: what assumption is being planted about risk and reward? "
+        "What evidence is missing that a legitimate opportunity would provide?"
     ),
     "friend_in_distress": (
-        "Examining this distress communication: "
-        "What pressure is being applied? What is being asked of me? "
-        "What would a genuine friend actually say in this situation?"
+        "Critical analysis of a distress communication. "
+        "Stakeholder pressure: emotional urgency being used to override careful thought. "
+        "Incentive misalignment: payment method requested is inconsistent with genuine distress. "
+        "Risk: irreversible financial transfer being requested under time pressure. "
+        "Challenge: what would a genuine friend in this situation actually say and do? "
+        "What assumption must I accept about the sender's identity and situation?"
     ),
     "default": (
-        "Examining this communication for reasoning authenticity: "
-        "What is the sender assuming I will believe? "
-        "What action are they trying to trigger and why now?"
+        "Critical analysis of a suspicious communication. "
+        "Stakeholder conflict: whose interests does this message serve? "
+        "Incentive misalignment: what does the sender gain from my action? "
+        "Hidden risk: what irreversible consequence could follow if I comply? "
+        "Bias challenge: what assumption is being planted to override careful thought? "
+        "Second-order consequence: what happens after I take the action being requested?"
     ),
 }
 

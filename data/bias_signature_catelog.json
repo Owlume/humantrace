@@ -1,0 +1,163 @@
+{
+  "$schema": "schemas/bias_signature_catalog.schema.json",
+  "spec": {
+    "name": "bias_signature_catalog",
+    "version": "1.0.0",
+    "updated": "2026-03-21",
+    "owner": "Owlume / HumanTrace",
+    "description": "Catalog of named bias signatures — recurring reasoning distortion patterns detectable across communications. Used by BSE to classify sender cognitive fingerprints. Dual-purpose: inward-facing (Owlume user reflection) and outward-facing (HumanTrace fraud sender detection)."
+  },
+  "signatures": [
+    {
+      "id": "urgency_exploiter",
+      "label": "Urgency Exploiter",
+      "description": "Consistently manufactures time pressure to override careful thought. Every communication contains artificial deadlines and consequences for delay.",
+      "direction": "outward",
+      "primary_driver": "time_pressure",
+      "primary_mode": "Critical",
+      "primary_principle": "Risk",
+      "detection_markers": [
+        "manufactured_urgency pattern present",
+        "time_pressure driver detected",
+        "no genuine uncertainty about outcome",
+        "consequence framing without evidence"
+      ],
+      "fraud_categories": ["phishing", "authority_impersonation", "investment_fraud"],
+      "threshold": 0.70
+    },
+    {
+      "id": "authority_appropriator",
+      "label": "Authority Appropriator",
+      "description": "Consistently impersonates trusted institutions to suppress critical evaluation. Uses official-sounding language to manufacture legitimacy.",
+      "direction": "outward",
+      "primary_driver": "identity_protection",
+      "primary_mode": "Critical",
+      "primary_principle": "Stakeholder",
+      "detection_markers": [
+        "authority_impersonation pattern present",
+        "institutional language without institutional reasoning",
+        "no acknowledgment of recipient doubt",
+        "confidentiality pressure applied"
+      ],
+      "fraud_categories": ["authority_impersonation", "phishing"],
+      "threshold": 0.65
+    },
+    {
+      "id": "reward_fabricator",
+      "label": "Reward Fabricator",
+      "description": "Consistently presents impossible financial returns to exploit desire for wealth. Removes perceived risk while manufacturing urgency around opportunity.",
+      "direction": "outward",
+      "primary_driver": "misaligned_incentives",
+      "primary_mode": "Critical",
+      "primary_principle": "Assumption",
+      "detection_markers": [
+        "investment_fraud pattern present",
+        "guaranteed returns language",
+        "risk elimination claim",
+        "exclusive access framing",
+        "no evidence provided"
+      ],
+      "fraud_categories": ["investment_fraud"],
+      "threshold": 0.75
+    },
+    {
+      "id": "empathy_exploiter",
+      "label": "Empathy Exploiter",
+      "description": "Consistently manufactures emotional distress scenarios to bypass rational evaluation. Uses relationship trust as a vector for financial extraction.",
+      "direction": "outward",
+      "primary_driver": "moral_hazard",
+      "primary_mode": "Critical",
+      "primary_principle": "Stakeholder",
+      "detection_markers": [
+        "romance_scam pattern present",
+        "emotional urgency manufactured",
+        "payment method inconsistent with claimed context",
+        "secrecy requested"
+      ],
+      "fraud_categories": ["romance_scam"],
+      "threshold": 0.65
+    },
+    {
+      "id": "complexity_concealer",
+      "label": "Complexity Concealer",
+      "description": "Consistently uses technical or procedural complexity to prevent verification. Overloads recipient with information to suppress critical questioning.",
+      "direction": "outward",
+      "primary_driver": "complexity",
+      "primary_mode": "Analytical",
+      "primary_principle": "Clarity",
+      "detection_markers": [
+        "overload driver detected",
+        "deliberate obscurity tactic",
+        "verification pathway blocked",
+        "multiple technical steps required"
+      ],
+      "fraud_categories": ["phishing", "investment_fraud"],
+      "threshold": 0.60
+    },
+    {
+      "id": "confirmation_mirror",
+      "label": "Confirmation Mirror",
+      "description": "Consistently mirrors recipient desires and beliefs to manufacture trust. Tells the recipient what they want to hear before requesting action.",
+      "direction": "outward",
+      "primary_driver": "confirmation_drift",
+      "primary_mode": "Critical",
+      "primary_principle": "Evidence",
+      "detection_markers": [
+        "desire mirroring tactic",
+        "personalisation without genuine knowledge",
+        "flattery before request",
+        "no contrary information provided"
+      ],
+      "fraud_categories": ["romance_scam", "investment_fraud"],
+      "threshold": 0.60
+    },
+    {
+      "id": "assumption_anchor",
+      "label": "Assumption Anchor",
+      "description": "Inward-facing: User consistently fails to question foundational assumptions. Reasoning proceeds from unexamined premises.",
+      "direction": "inward",
+      "primary_driver": "confirmation_drift",
+      "primary_mode": "Analytical",
+      "primary_principle": "Assumption",
+      "detection_markers": [
+        "Assumption principle consistently triggered",
+        "low challenge to foundational premises",
+        "evidence accepted without validation"
+      ],
+      "fraud_categories": [],
+      "threshold": 0.65
+    },
+    {
+      "id": "stakeholder_blind",
+      "label": "Stakeholder Blind",
+      "description": "Inward-facing: User consistently fails to account for others' interests and incentives in their reasoning.",
+      "direction": "inward",
+      "primary_driver": "misaligned_incentives",
+      "primary_mode": "Critical",
+      "primary_principle": "Stakeholder",
+      "detection_markers": [
+        "Stakeholder principle consistently triggered",
+        "incentive misalignment repeatedly detected",
+        "others' perspectives absent from reasoning"
+      ],
+      "fraud_categories": [],
+      "threshold": 0.65
+    },
+    {
+      "id": "risk_minimiser",
+      "label": "Risk Minimiser",
+      "description": "Inward-facing: User consistently underweights downside risk in their reasoning. Optimism bias shapes conclusions.",
+      "direction": "inward",
+      "primary_driver": "status_quo_bias",
+      "primary_mode": "Critical",
+      "primary_principle": "Risk",
+      "detection_markers": [
+        "Risk principle consistently triggered",
+        "downside scenarios absent from reasoning",
+        "worst-case not considered"
+      ],
+      "fraud_categories": [],
+      "threshold": 0.65
+    }
+  ]
+}

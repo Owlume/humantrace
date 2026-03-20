@@ -1,0 +1,157 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "$id": "https://owlume.com/schemas/bias_signature.schema.json",
+  "title": "Owlume Bias Signature (v1)",
+  "description": "Schema for a BSE bias signature record — the cognitive fingerprint of a user or sender's recurring reasoning distortions.",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "entity_hash",
+    "entity_type",
+    "first_seen",
+    "last_seen",
+    "scan_count",
+    "reasoning_vector",
+    "signature_ids"
+  ],
+  "properties": {
+    "entity_hash": {
+      "type": "string",
+      "description": "Privacy-preserving SHA-256 hash of the entity identifier. Raw identifier never stored.",
+      "minLength": 8,
+      "maxLength": 64
+    },
+    "entity_type": {
+      "type": "string",
+      "enum": ["sender", "user"],
+      "description": "sender = outward-facing fraud detection. user = inward-facing Owlume reflection."
+    },
+    "id_method": {
+      "type": "string",
+      "enum": ["email", "phone", "domain", "manual", "labelled"],
+      "description": "How the entity was identified."
+    },
+    "first_seen": {
+      "type": "string",
+      "format": "date-time"
+    },
+    "last_seen": {
+      "type": "string",
+      "format": "date-time"
+    },
+    "scan_count": {
+      "type": "integer",
+      "minimum": 1
+    },
+    "reasoning_vector": {
+      "type": "object",
+      "description": "Weighted vector of reasoning distortion signals accumulated over time.",
+      "additionalProperties": false,
+      "required": [
+        "mode_distribution",
+        "principle_distribution",
+        "driver_distribution",
+        "pattern_distribution",
+        "human_marker_absence_rate",
+        "avg_confidence",
+        "signal_distribution"
+      ],
+      "properties": {
+        "mode_distribution": {
+          "type": "object",
+          "description": "Frequency distribution of detected modes across scans.",
+          "additionalProperties": {
+            "type": "number",
+            "minimum": 0.0,
+            "maximum": 1.0
+          }
+        },
+        "principle_distribution": {
+          "type": "object",
+          "description": "Frequency distribution of detected principles across scans.",
+          "additionalProperties": {
+            "type": "number",
+            "minimum": 0.0,
+            "maximum": 1.0
+          }
+        },
+        "driver_distribution": {
+          "type": "object",
+          "description": "Frequency distribution of detected context drivers across scans.",
+          "additionalProperties": {
+            "type": "number",
+            "minimum": 0.0,
+            "maximum": 1.0
+          }
+        },
+        "pattern_distribution": {
+          "type": "object",
+          "description": "Frequency distribution of detected fraud patterns across scans.",
+          "additionalProperties": {
+            "type": "number",
+            "minimum": 0.0,
+            "maximum": 1.0
+          }
+        },
+        "human_marker_absence_rate": {
+          "type": "number",
+          "minimum": 0.0,
+          "maximum": 1.0,
+          "description": "Rate at which human reasoning markers are absent. High = synthetic."
+        },
+        "avg_confidence": {
+          "type": "number",
+          "minimum": 0.0,
+          "maximum": 1.0,
+          "description": "Rolling average detection confidence across all scans."
+        },
+        "signal_distribution": {
+          "type": "object",
+          "description": "Distribution of RED/YELLOW/GREEN signals across scans.",
+          "additionalProperties": {
+            "type": "number",
+            "minimum": 0.0,
+            "maximum": 1.0
+          }
+        }
+      }
+    },
+    "signature_ids": {
+      "type": "array",
+      "description": "Matched bias signature IDs from bias_signature_catalog.json.",
+      "items": {
+        "type": "string"
+      }
+    },
+    "fraud_categories": {
+      "type": "array",
+      "description": "Fraud categories detected across scans.",
+      "items": {
+        "type": "string"
+      }
+    },
+    "temporal_drift": {
+      "type": "array",
+      "description": "How the reasoning vector has shifted over time. Detects evolving fraud tactics.",
+      "items": {
+        "type": "object",
+        "properties": {
+          "timestamp": {"type": "string", "format": "date-time"},
+          "avg_confidence": {"type": "number"},
+          "dominant_signal": {"type": "string"}
+        }
+      }
+    },
+    "bse_signal": {
+      "type": "string",
+      "enum": ["known_fraud", "known_safe", "mixed_history", "insufficient_history"],
+      "description": "Derived BSE signal from accumulated reasoning vector."
+    },
+    "confidence_adjustment": {
+      "type": "number",
+      "minimum": -0.30,
+      "maximum": 0.30,
+      "description": "Confidence delta applied to new scans from this sender. Positive = boost RED. Negative = reduce RED."
+    }
+  }
+}
