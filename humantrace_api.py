@@ -2,19 +2,11 @@
 # HumanTrace — FastAPI Backend
 # Powered by Owlume
 #
-# Purpose:
-#   Bridges the HumanTrace interface (HTML/browser/iPhone)
-#   to the humantrace_scanner.py Python engine.
-#
 # How to run:
-#   uvicorn humantrace_api:app --reload --host 0.0.0.0 --port 8000
+#   python -m uvicorn humantrace_api:app --reload --host 0.0.0.0 --port 8000
 #
-# Then open in browser or iPhone (same WiFi):
-#   http://YOUR_THINKPAD_IP:8000
-#
-# Find your ThinkPad IP:
-#   Windows: open Command Prompt → type: ipconfig
-#   Look for "IPv4 Address" e.g. 192.168.1.42
+# Open in browser:      http://localhost:8000
+# Open on iPhone:       http://192.168.0.42:8000  (your ThinkPad IP)
 
 from fastapi import FastAPI, Request
 from fastapi.responses import HTMLResponse, JSONResponse
@@ -25,13 +17,18 @@ import json
 import os
 import sys
 import time
+import glob
+import base64
+import io
 
-# Add src/ to path so we can import humantrace_scanner
+# ── Path setup ────────────────────────────────────────────────────────────────
+
 sys.path.insert(0, os.path.join(os.path.dirname(__file__), "src"))
+
+# ── Import engine ─────────────────────────────────────────────────────────────
 
 from humantrace_logger import log_humantrace_session
 
-# Use adapter (ElenxEngine) with automatic fallback to scanner
 try:
     from humantrace_adapter import scan_message_via_engine as scan_message
     ADAPTER_AVAILABLE = True
@@ -39,27 +36,41 @@ except Exception:
     from humantrace_scanner import scan_message
     ADAPTER_AVAILABLE = False
 
-# Import BSE sender fingerprint store
+# ── Import OCR ────────────────────────────────────────────────────────────────
+
+try:
+    import pytesseract
+    from PIL import Image
+    _tess_paths = [
+        r"C:\Users\Brian-Owlume\AppData\Local\Programs\Tesseract-OCR\tesseract.exe",
+        r"C:\Program Files\Tesseract-OCR\tesseract.exe",
+        r"C:\Program Files (x86)\Tesseract-OCR\tesseract.exe",
+    ]
+    for _tp in _tess_paths:
+        if os.path.exists(_tp):
+            pytesseract.pytesseract.tesseract_cmd = _tp
+            break
+    OCR_AVAILABLE = True
+except Exception:
+    OCR_AVAILABLE = False
+
+# ── Import BSE ────────────────────────────────────────────────────────────────
+
 try:
     from humantrace_bse import get_bse_context, store_scan_fingerprint, build_bse_meta
     BSE_AVAILABLE = True
 except Exception:
     BSE_AVAILABLE = False
 
-# Import governance gate (single call site per runtime_finalize.py)
+# ── Import governance gate ────────────────────────────────────────────────────
+
 try:
     from runtime_finalize import finalize_output
     GOVERNANCE_AVAILABLE = True
-except ImportError:
+except Exception:
     GOVERNANCE_AVAILABLE = False
 
-# ── Session store ─────────────────────────────────────────────────────────────
-# File-based persistence — survives server restarts.
-# Stage 1 design: single-user local/pilot deployment.
-# Stage 2: replace with Redis or database for concurrent users.
-
-import tempfile
-import glob
+# ── Session store (file-based, survives restarts) ─────────────────────────────
 
 SESSION_DIR = os.path.join(os.path.dirname(__file__), "data", "sessions")
 
@@ -93,7 +104,6 @@ def _delete_session(scan_id: str) -> None:
         pass
 
 def _cleanup_old_sessions(max_age_hours: int = 24) -> None:
-    """Remove session files older than max_age_hours."""
     try:
         cutoff = time.time() - (max_age_hours * 3600)
         for path in glob.glob(os.path.join(SESSION_DIR, "*.json")):
@@ -102,7 +112,6 @@ def _cleanup_old_sessions(max_age_hours: int = 24) -> None:
     except Exception:
         pass
 
-# Run cleanup on startup
 try:
     _cleanup_old_sessions()
 except Exception:
@@ -113,10 +122,9 @@ except Exception:
 app = FastAPI(
     title="HumanTrace API",
     description="Human reasoning presence verification. Powered by Owlume.",
-    version="0.1.0",
+    version="1.0.0",
 )
 
-# Allow browser requests from any origin (needed for iPhone access)
 app.add_middleware(
     CORSMiddleware,
     allow_origins=["*"],
@@ -124,11 +132,9 @@ app.add_middleware(
     allow_headers=["*"],
 )
 
-# ── Load interface HTML ───────────────────────────────────────────────────────
+# ── Load interface ────────────────────────────────────────────────────────────
 
 def _load_interface() -> str:
-    """Load the HumanTrace HTML interface from assets folder."""
-    # Try common locations
     candidates = [
         os.path.join(os.path.dirname(__file__), "assets", "humantrace_interface.html"),
         os.path.join(os.path.dirname(__file__), "interface", "humantrace_interface.html"),
@@ -140,13 +146,11 @@ def _load_interface() -> str:
                 return f.read()
     return "<h1>Interface file not found. Check humantrace_interface.html location.</h1>"
 
-
-# ── Request / Response models ─────────────────────────────────────────────────
+# ── Request models ────────────────────────────────────────────────────────────
 
 class ScanRequest(BaseModel):
     message: str
     context_hint: Optional[str] = None
-
 
 class JudgmentRequest(BaseModel):
     scan_id: str
@@ -156,132 +160,147 @@ class JudgmentRequest(BaseModel):
     acknowledged: bool
     share_status: str = "skipped"
 
+# ── Helper: run scan with BSE and governance ──────────────────────────────────
+
+def _run_scan(message: str, context_hint: Optional[str], input_method: str = "text") -> dict:
+    """Shared scan logic for both text and image endpoints."""
+    _t0 = time.time()
+
+    bse_context = {}
+    if BSE_AVAILABLE:
+        try:
+            bse_context = get_bse_context(message=message, sender_id=None)
+        except Exception:
+            pass
+
+    result = scan_message(
+        message=message,
+        context_hint=context_hint or None,
+        bse_history=bse_context.get("history") if bse_context else None,
+    )
+    _scan_ms = round((time.time() - _t0) * 1000)
+
+    result_dict = result.to_dict()
+    result_dict.setdefault("meta", {}).update({
+        "scan_time_ms": _scan_ms,
+        "input_method": input_method,
+        "message_preview": message[:120],
+    })
+
+    if BSE_AVAILABLE and bse_context:
+        result_dict["meta"].update(build_bse_meta(bse_context))
+        adj = bse_context.get("confidence_adjustment", 0.0)
+        if adj != 0.0:
+            result_dict["confidence"] = round(
+                min(max(result_dict["confidence"] + adj, 0.0), 0.99), 3
+            )
+
+    if GOVERNANCE_AVAILABLE:
+        try:
+            final_kind, final_content, decision_info = finalize_output(
+                did=result.scan_id,
+                input_type="EXTERNAL_MESSAGE",
+                output_kind="SIGNAL",
+                content=result.plain_english,
+                irreversible_risk=False,
+                distortion_present=result.signal == "red",
+                insufficient_reflection_window=False,
+            )
+            result_dict["meta"]["governance"] = {"final_kind": final_kind, "passed": True}
+        except Exception as ge:
+            result_dict["meta"]["governance"] = {"passed": False, "error": str(ge)}
+
+    _store_session(result.scan_id, {**result_dict, "_bse_context": bse_context})
+    return result_dict
 
 # ── Routes ────────────────────────────────────────────────────────────────────
 
 @app.get("/", response_class=HTMLResponse)
 async def serve_interface():
-    """Serve the HumanTrace interface to browser or iPhone."""
-    html = _load_interface()
-
-    # Patch the interface to call the real API instead of client-side simulation
-    # Replaces the simulated scan call with a real fetch to /scan
-    patched = html.replace(
-        "// Simulate processing delay (replace with actual API call in production)",
-        "// Calling real Owlume-powered API"
-    ).replace(
-        """  // Simulate processing delay (replace with actual API call in production)
-  setTimeout(() => {
-    const contextHint = document.getElementById('contextSelect').value || null;
-    const result = runDetection(text, contextHint);
-    renderResults(result);
-    btn.disabled = false;
-    btn.classList.remove('loading');
-  }, 900);""",
-        """  const contextHint = document.getElementById('contextSelect').value || null;
-  fetch('/scan', {
-    method: 'POST',
-    headers: { 'Content-Type': 'application/json' },
-    body: JSON.stringify({ message: text, context_hint: contextHint })
-  })
-  .then(r => r.json())
-  .then(result => {
-    renderResults(result);
-    btn.disabled = false;
-    btn.classList.remove('loading');
-  })
-  .catch(err => {
-    alert('Scan failed. Is the server running?');
-    btn.disabled = false;
-    btn.classList.remove('loading');
-  });"""
-    )
-    return HTMLResponse(content=patched)
+    """Serve the HumanTrace interface."""
+    return HTMLResponse(content=_load_interface())
 
 
 @app.post("/scan")
 async def scan(req: ScanRequest):
     """
-    Scan a message for human reasoning presence.
-
-    Returns a ScanResult with signal, confidence, layer findings,
-    plain English summary, and analyst questions.
-
+    Scan a text message for human reasoning presence.
     Output kind: SIGNAL — not advice, not instruction.
-    Human analyst makes the final judgment.
     """
     if not req.message or not req.message.strip():
+        return JSONResponse(status_code=400, content={"error": "No message provided."})
+    try:
+        result_dict = _run_scan(req.message.strip(), req.context_hint, input_method="text")
+        return JSONResponse(content=result_dict)
+    except Exception as e:
+        return JSONResponse(status_code=500, content={"error": f"Scan error: {str(e)}"})
+
+
+@app.post("/scan-image")
+async def scan_image(request: Request):
+    """
+    Scan a screenshot image for human reasoning presence.
+    Accepts: JSON with base64 image OR multipart form upload.
+    """
+    if not OCR_AVAILABLE:
         return JSONResponse(
-            status_code=400,
-            content={"error": "No message provided."}
+            status_code=503,
+            content={
+                "error": "OCR not available on this server.",
+                "fallback": "Please copy and paste the message text manually."
+            }
         )
 
     try:
-        _t0 = time.time()
+        content_type = request.headers.get("content-type", "")
+        context_hint = None
 
-        # Get BSE context before scanning
-        bse_context = {}
-        if BSE_AVAILABLE:
-            try:
-                bse_context = get_bse_context(
-                    message=req.message.strip(),
-                    sender_id=None,  # Option B — automatic extraction
-                )
-            except Exception:
-                bse_context = {}
+        if "multipart/form-data" in content_type:
+            form = await request.form()
+            file = form.get("file")
+            if not file:
+                return JSONResponse(status_code=400, content={"error": "No file provided."})
+            image_bytes = await file.read()
+            context_hint = form.get("context_hint")
 
-        result = scan_message(
-            message=req.message.strip(),
-            context_hint=req.context_hint or None,
-            bse_history=bse_context.get("history") if bse_context else None,
-        )
-        _scan_ms = round((time.time() - _t0) * 1000)
-        result_dict = result.to_dict()
-        result_dict.setdefault("meta", {})["scan_time_ms"] = _scan_ms
+        elif "application/json" in content_type:
+            body = await request.json()
+            b64 = body.get("image", "")
+            context_hint = body.get("context_hint")
+            if not b64:
+                return JSONResponse(status_code=400, content={"error": "No image provided."})
+            if "," in b64:
+                b64 = b64.split(",", 1)[1]
+            image_bytes = base64.b64decode(b64)
 
-        # Attach BSE metadata to result
-        if BSE_AVAILABLE and bse_context:
-            bse_meta = build_bse_meta(bse_context)
-            result_dict["meta"].update(bse_meta)
-            # Apply confidence adjustment from BSE history
-            adj = bse_context.get("confidence_adjustment", 0.0)
-            if adj != 0.0:
-                result_dict["confidence"] = round(
-                    min(max(result_dict["confidence"] + adj, 0.0), 0.99), 3
-                )
+        else:
+            return JSONResponse(status_code=400, content={"error": "Unsupported content type."})
 
-        # Store BSE fingerprint after scan (if sender identified)
-        _store_session(result.scan_id, {**result_dict, "_bse_context": bse_context})
+        # OCR
+        image = Image.open(io.BytesIO(image_bytes))
+        if image.mode not in ("RGB", "L"):
+            image = image.convert("RGB")
 
-        # Add message preview for logging (first 120 chars)
-        result_dict.setdefault("meta", {})["message_preview"] = req.message.strip()[:120]
+        extracted_text = pytesseract.image_to_string(image, config="--psm 6").strip()
 
-        # Pass through governance gate (runtime_finalize.py — single call site)
-        if GOVERNANCE_AVAILABLE:
-            try:
-                final_kind, final_content, decision_info = finalize_output(
-                    did=result.scan_id,
-                    input_type="EXTERNAL_MESSAGE",
-                    output_kind="SIGNAL",
-                    content=result.plain_english,
-                    irreversible_risk=False,
-                    distortion_present=result.signal == "red",
-                    insufficient_reflection_window=False,
-                )
-                result_dict["governance"] = {
-                    "final_kind": final_kind,
-                    "passed": True,
+        if not extracted_text or len(extracted_text) < 10:
+            return JSONResponse(
+                status_code=422,
+                content={
+                    "error": "Could not extract readable text from this image.",
+                    "suggestion": "Try a clearer screenshot or copy and paste the text manually.",
+                    "extracted_text": extracted_text,
                 }
-            except Exception as ge:
-                result_dict["governance"] = {"passed": False, "error": str(ge)}
+            )
+
+        result_dict = _run_scan(extracted_text, context_hint, input_method="screenshot")
+        result_dict["meta"]["extracted_text"] = extracted_text
+        result_dict["meta"]["extracted_text_length"] = len(extracted_text)
 
         return JSONResponse(content=result_dict)
 
     except Exception as e:
-        return JSONResponse(
-            status_code=500,
-            content={"error": f"Scan engine error: {str(e)}"}
-        )
+        return JSONResponse(status_code=500, content={"error": f"Image scan error: {str(e)}"})
 
 
 @app.post("/judgment")
@@ -289,17 +308,10 @@ async def judgment(req: JudgmentRequest):
     """
     Receive judgment landing from user.
     Logs completed session to DilemmaNet.
-
-    Governance alignment:
-    - Validates judgment type, statement, acknowledgment
-    - Logs via humantrace_logger → clarity_logger → DilemmaNet
-    - Share status is user-controlled
-    - Failure to log does NOT block user session completion
+    Governance: user owns the decision. HumanTrace does not decide.
     """
-    # Retrieve stored scan result
     scan_result = _load_session(req.scan_id)
     if not scan_result:
-        # Scan not found — still accept judgment, log what we have
         scan_result = {
             "scan_id": req.scan_id,
             "signal": "yellow",
@@ -318,24 +330,22 @@ async def judgment(req: JudgmentRequest):
             share_status=req.share_status,
         )
 
-        # Store BSE fingerprint if sender was identified and user opted in
+        # Store BSE fingerprint if sender identified and user opted in
         if BSE_AVAILABLE:
             try:
-                stored = _load_session(req.scan_id)
-                bse_ctx = stored.get("_bse_context", {})
+                bse_ctx = scan_result.get("_bse_context", {})
                 sender_hash = bse_ctx.get("sender_hash")
                 id_method = bse_ctx.get("id_method")
                 if sender_hash and id_method:
                     store_scan_fingerprint(
                         sender_hash=sender_hash,
                         id_method=id_method,
-                        scan_result=stored,
+                        scan_result=scan_result,
                         share_status=req.share_status,
                     )
             except Exception:
                 pass
 
-        # Clean up scan store
         _delete_session(req.scan_id)
 
         return JSONResponse(content={
@@ -346,12 +356,8 @@ async def judgment(req: JudgmentRequest):
         })
 
     except ValueError as ve:
-        return JSONResponse(
-            status_code=400,
-            content={"error": str(ve)}
-        )
+        return JSONResponse(status_code=400, content={"error": str(ve)})
     except Exception as e:
-        # Log failure does not block session completion
         return JSONResponse(content={
             "logged": False,
             "error": str(e),
@@ -361,23 +367,18 @@ async def judgment(req: JudgmentRequest):
 
 @app.get("/health")
 async def health():
-    """Health check — confirms API and scanner are running."""
     return {
         "status": "running",
         "product": "HumanTrace",
         "powered_by": "Owlume",
-        "scanner": "humantrace_scanner.py",
-        "governance": "Stage 14 compliant",
+        "version": "1.0.0",
+        "ocr_available": OCR_AVAILABLE,
+        "bse_available": BSE_AVAILABLE,
+        "adapter_available": ADAPTER_AVAILABLE,
+        "governance_available": GOVERNANCE_AVAILABLE,
     }
 
 
-# ── Entry point ───────────────────────────────────────────────────────────────
-
 if __name__ == "__main__":
     import uvicorn
-    uvicorn.run(
-        "humantrace_api:app",
-        host="0.0.0.0",
-        port=8000,
-        reload=True,
-    )
+    uvicorn.run("humantrace_api:app", host="0.0.0.0", port=8000, reload=True)

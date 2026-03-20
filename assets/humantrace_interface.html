@@ -1070,6 +1070,152 @@
       font-size: 28px;
     }
   }
+
+  /* ── Screenshot upload ── */
+  .input-methods {
+    display: flex;
+    gap: 8px;
+    margin-bottom: 16px;
+  }
+
+  .method-tab {
+    flex: 1;
+    padding: 8px 12px;
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    background: transparent;
+    color: var(--text-dim);
+    font-family: 'DM Mono', monospace;
+    font-size: 11px;
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+    cursor: pointer;
+    transition: all 0.2s;
+    text-align: center;
+  }
+
+  .method-tab.active {
+    border-color: var(--accent);
+    color: var(--accent);
+    background: var(--accent-dim);
+  }
+
+  .method-tab:hover:not(.active) {
+    border-color: var(--border-hi);
+    color: var(--text-mid);
+  }
+
+  .method-panel {
+    display: none;
+  }
+
+  .method-panel.active {
+    display: block;
+  }
+
+  .upload-zone {
+    border: 2px dashed var(--border-hi);
+    border-radius: 10px;
+    padding: 32px 20px;
+    text-align: center;
+    cursor: pointer;
+    transition: all 0.2s;
+    position: relative;
+    min-height: 140px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 10px;
+  }
+
+  .upload-zone:hover {
+    border-color: var(--accent);
+    background: var(--accent-dim);
+  }
+
+  .upload-zone.dragover {
+    border-color: var(--accent);
+    background: var(--accent-dim);
+  }
+
+  .upload-zone.has-image {
+    border-color: var(--accent);
+    border-style: solid;
+    padding: 12px;
+  }
+
+  .upload-icon {
+    font-size: 28px;
+    opacity: 0.6;
+  }
+
+  .upload-text {
+    font-size: 13px;
+    color: var(--text-mid);
+    line-height: 1.5;
+  }
+
+  .upload-sub {
+    font-size: 11px;
+    color: var(--text-dim);
+    font-family: 'DM Mono', monospace;
+  }
+
+  .upload-preview {
+    max-width: 100%;
+    max-height: 200px;
+    border-radius: 6px;
+    object-fit: contain;
+  }
+
+  .upload-preview-name {
+    font-size: 12px;
+    color: var(--text-mid);
+    font-family: 'DM Mono', monospace;
+  }
+
+  .upload-clear {
+    background: transparent;
+    border: 1px solid var(--border-hi);
+    color: var(--text-dim);
+    padding: 4px 10px;
+    border-radius: 5px;
+    font-size: 11px;
+    cursor: pointer;
+    font-family: 'DM Mono', monospace;
+  }
+
+  .upload-clear:hover {
+    border-color: var(--red);
+    color: var(--red);
+  }
+
+  #fileInput {
+    display: none;
+  }
+
+  .extracted-text-note {
+    font-size: 12px;
+    color: var(--text-dim);
+    font-family: 'DM Mono', monospace;
+    margin-top: 8px;
+    padding: 8px 12px;
+    background: var(--bg);
+    border-radius: 6px;
+    border: 1px solid var(--border);
+    display: none;
+  }
+
+  @media (max-width: 480px) {
+    .method-tab {
+      font-size: 10px;
+      padding: 7px 8px;
+    }
+    .upload-zone {
+      padding: 24px 16px;
+    }
+  }
 </style>
 </head>
 <body>
@@ -1145,12 +1291,53 @@
 
   <!-- Input -->
   <div class="input-section" id="inputSection">
-    <label class="input-label" for="msgInput">Paste the suspicious message</label>
-    <textarea
-      id="msgInput"
-      placeholder="Paste an email, text message, or any communication you want to verify..."
-      rows="6"
-    ></textarea>
+
+    <!-- Input method tabs -->
+    <div class="input-methods">
+      <button class="method-tab active" id="tabText" onclick="switchMethod('text')">
+        ✎ Paste text
+      </button>
+      <button class="method-tab" id="tabImage" onclick="switchMethod('image')">
+        ⊞ Screenshot
+      </button>
+    </div>
+
+    <!-- Text input panel -->
+    <div class="method-panel active" id="panelText">
+      <label class="input-label" for="msgInput">Paste the suspicious message</label>
+      <textarea
+        id="msgInput"
+        placeholder="Paste an email, text message, or any communication you want to verify..."
+        rows="6"
+      ></textarea>
+    </div>
+
+    <!-- Screenshot upload panel -->
+    <div class="method-panel" id="panelImage">
+      <label class="input-label">Upload a screenshot</label>
+      <div class="upload-zone" id="uploadZone"
+           onclick="document.getElementById('fileInput').click()"
+           ondragover="onDragOver(event)"
+           ondragleave="onDragLeave(event)"
+           ondrop="onDrop(event)">
+        <div id="uploadEmpty">
+          <div class="upload-icon">📷</div>
+          <div class="upload-text">
+            Tap to upload a screenshot<br>
+            <span style="color:var(--text-dim)">or drag and drop</span>
+          </div>
+          <div class="upload-sub">PNG · JPG · WEBP · up to 10MB</div>
+        </div>
+        <div id="uploadPreviewWrap" style="display:none; flex-direction:column; align-items:center; gap:8px;">
+          <img id="uploadPreview" class="upload-preview" src="" alt="Screenshot preview">
+          <div class="upload-preview-name" id="uploadFileName"></div>
+          <button class="upload-clear" onclick="clearImage(event)">✕ Remove</button>
+        </div>
+      </div>
+      <input type="file" id="fileInput" accept="image/*" onchange="onFileSelect(event)">
+      <div class="extracted-text-note" id="extractedNote"></div>
+    </div>
+
     <div class="input-footer">
       <select class="context-select" id="contextSelect">
         <option value="">Context: Auto-detect</option>
@@ -1616,17 +1803,114 @@ function buildAction(signal) {
 
 // ── UI functions ──────────────────────────────────────────────────────────────
 
+// ── Screenshot / image upload ─────────────────────────────────────────────────
+
+let _uploadedImageB64 = null;
+let _activeMethod = 'text';
+
+function switchMethod(method) {
+  _activeMethod = method;
+  document.getElementById('tabText').classList.toggle('active', method === 'text');
+  document.getElementById('tabImage').classList.toggle('active', method === 'image');
+  document.getElementById('panelText').classList.toggle('active', method === 'text');
+  document.getElementById('panelImage').classList.toggle('active', method === 'image');
+}
+
+function onFileSelect(e) {
+  const file = e.target.files[0];
+  if (file) loadImageFile(file);
+}
+
+function onDragOver(e) {
+  e.preventDefault();
+  document.getElementById('uploadZone').classList.add('dragover');
+}
+
+function onDragLeave(e) {
+  document.getElementById('uploadZone').classList.remove('dragover');
+}
+
+function onDrop(e) {
+  e.preventDefault();
+  document.getElementById('uploadZone').classList.remove('dragover');
+  const file = e.dataTransfer.files[0];
+  if (file && file.type.startsWith('image/')) loadImageFile(file);
+}
+
+function loadImageFile(file) {
+  if (file.size > 10 * 1024 * 1024) {
+    alert('Image too large. Please use an image under 10MB.');
+    return;
+  }
+  const reader = new FileReader();
+  reader.onload = (e) => {
+    _uploadedImageB64 = e.target.result;
+    document.getElementById('uploadEmpty').style.display = 'none';
+    document.getElementById('uploadPreviewWrap').style.display = 'flex';
+    document.getElementById('uploadPreview').src = e.target.result;
+    document.getElementById('uploadFileName').textContent = file.name;
+    document.getElementById('uploadZone').classList.add('has-image');
+  };
+  reader.readAsDataURL(file);
+}
+
+function clearImage(e) {
+  e.stopPropagation();
+  _uploadedImageB64 = null;
+  document.getElementById('uploadEmpty').style.display = 'flex';
+  document.getElementById('uploadPreviewWrap').style.display = 'none';
+  document.getElementById('uploadZone').classList.remove('has-image');
+  document.getElementById('fileInput').value = '';
+  document.getElementById('extractedNote').style.display = 'none';
+}
+
 function runScan() {
+  const btn = document.getElementById('scanBtn');
+  const contextHint = document.getElementById('contextSelect').value || null;
+
+  // Image scan path
+  if (_activeMethod === 'image') {
+    if (!_uploadedImageB64) {
+      alert('Please upload a screenshot first.');
+      return;
+    }
+    btn.disabled = true;
+    btn.classList.add('loading');
+
+    fetch('/scan-image', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ image: _uploadedImageB64, context_hint: contextHint })
+    })
+    .then(r => r.json())
+    .then(result => {
+      // Show extracted text note
+      const extracted = (result.meta || {}).extracted_text || '';
+      if (extracted) {
+        const note = document.getElementById('extractedNote');
+        note.textContent = `Text extracted from image: "${extracted.substring(0,80)}${extracted.length > 80 ? '...' : ''}"`;
+        note.style.display = 'block';
+      }
+      renderResults(result);
+      btn.disabled = false;
+      btn.classList.remove('loading');
+    })
+    .catch(err => {
+      console.error('Image scan error:', err);
+      alert('Image scan failed. Is the server running?');
+      btn.disabled = false;
+      btn.classList.remove('loading');
+    });
+    return;
+  }
+
+  // Text scan path
   const text = document.getElementById('msgInput').value.trim();
   if (!text) return;
 
-  const btn = document.getElementById('scanBtn');
   btn.disabled = true;
   btn.classList.add('loading');
 
-  const contextHint = document.getElementById('contextSelect').value || null;
-
-  // Call real Owlume-powered Python API
   fetch('/scan', {
     method: 'POST',
     headers: { 'Content-Type': 'application/json' },
@@ -1651,8 +1935,9 @@ function renderResults(r) {
   document.getElementById('results').style.display = 'block';
 
   // Scan ID
+  const inputMethod = r.meta && r.meta.input_method;
   const scanMs = r.meta && r.meta.scan_time_ms;
-  document.getElementById('scanId').textContent = `Scan ID: ${r.scan_id || r.scanId}` + (scanMs ? `  ·  ${scanMs}ms` : '');
+  document.getElementById('scanId').textContent = `Scan ID: ${r.scan_id || r.scanId}` + (scanMs ? `  ·  ${scanMs}ms` : '') + (inputMethod === 'screenshot' ? '  ·  screenshot' : '');
 
   // Signal card
   const card = document.getElementById('signalCard');
@@ -1687,10 +1972,30 @@ function renderResults(r) {
     fraudBadge.innerHTML = '';
   }
 
-  // First contact badge
+  // First contact / BSE badge
   const fcBadge = document.getElementById('firstContactBadge');
-  if (r.first_contact || r.firstContact) {
+  const bseMeta = r.meta || {};
+  if (bseMeta.sender_known) {
+    const scanCount = bseMeta.sender_scan_count || 0;
+    const bseSignal = bseMeta.bse_signal || '';
+    const fraudCats = (bseMeta.fraud_categories_seen || []).join(', ');
+    let bseBadgeColor = 'var(--accent)';
+    let bseIcon = '◉';
+    let bseText = `Known sender — ${scanCount} previous scan${scanCount !== 1 ? 's' : ''}`;
+    if (bseSignal === 'known_fraud') {
+      bseBadgeColor = 'var(--red)';
+      bseIcon = '⚠';
+      bseText = `Known fraud sender — ${scanCount} previous scan${scanCount !== 1 ? 's' : ''}`;
+    } else if (bseSignal === 'known_safe') {
+      bseBadgeColor = 'var(--green)';
+      bseIcon = '✓';
+      bseText = `Known sender — ${scanCount} previous scan${scanCount !== 1 ? 's' : ''}`;
+    }
+    fcBadge.innerHTML = `<div class="first-contact-badge" style="color:${bseBadgeColor};border-color:${bseBadgeColor}33;">${bseIcon} ${bseText}</div>`;
+  } else if (r.first_contact || r.firstContact) {
     fcBadge.innerHTML = `<div class="first-contact-badge">⊙ First contact — no longitudinal data</div>`;
+  } else {
+    fcBadge.innerHTML = '';
   }
 
   // Recommended action
