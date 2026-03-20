@@ -1,0 +1,411 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>HumanTrace</title>
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=DM+Mono:wght@400;500&family=DM+Sans:wght@400;500&family=Instrument+Serif&display=swap');
+
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+
+  body {
+    width: 360px;
+    min-height: 200px;
+    background: #0a0a0f;
+    color: #e8e8f0;
+    font-family: 'DM Sans', sans-serif;
+    font-size: 13px;
+  }
+
+  :root {
+    --accent: #7c6dfa;
+    --accent-dim: #1a1640;
+    --border: #1e1e2e;
+    --border-hi: #2e2e42;
+    --text-dim: #6e6e88;
+    --text-mid: #9e9eb8;
+    --red: #ff4458;
+    --red-dim: #3d1018;
+    --yellow: #f0b429;
+    --yellow-dim: #2e2200;
+    --green: #2ecc71;
+    --green-dim: #0a2e18;
+    --surface: #111118;
+  }
+
+  /* Header */
+  .header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 12px 16px;
+    border-bottom: 1px solid var(--border);
+  }
+
+  .logo {
+    font-family: 'Instrument Serif', serif;
+    font-size: 18px;
+  }
+
+  .logo span { color: var(--accent); }
+
+  .powered {
+    font-family: 'DM Mono', monospace;
+    font-size: 9px;
+    color: var(--text-dim);
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+  }
+
+  .settings-btn {
+    background: transparent;
+    border: none;
+    color: var(--text-dim);
+    cursor: pointer;
+    font-size: 14px;
+    padding: 2px 4px;
+    border-radius: 4px;
+  }
+
+  .settings-btn:hover { color: var(--text-mid); }
+
+  /* Server status */
+  .server-status {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    padding: 6px 16px;
+    background: var(--surface);
+    font-family: 'DM Mono', monospace;
+    font-size: 10px;
+    color: var(--text-dim);
+    border-bottom: 1px solid var(--border);
+  }
+
+  .status-dot {
+    width: 6px;
+    height: 6px;
+    border-radius: 50%;
+    background: var(--text-dim);
+  }
+
+  .status-dot.online { background: var(--green); }
+  .status-dot.offline { background: var(--red); }
+
+  /* Scan section */
+  .scan-section {
+    padding: 14px 16px;
+  }
+
+  .scan-label {
+    font-family: 'DM Mono', monospace;
+    font-size: 10px;
+    color: var(--text-dim);
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+    margin-bottom: 8px;
+  }
+
+  textarea {
+    width: 100%;
+    background: var(--surface);
+    border: 1px solid var(--border-hi);
+    border-radius: 6px;
+    color: #e8e8f0;
+    font-family: 'DM Sans', sans-serif;
+    font-size: 12px;
+    padding: 8px 10px;
+    resize: none;
+    outline: none;
+    line-height: 1.5;
+    min-height: 70px;
+    transition: border-color 0.2s;
+  }
+
+  textarea:focus { border-color: var(--accent); }
+  textarea::placeholder { color: var(--text-dim); font-style: italic; }
+
+  .scan-row {
+    display: flex;
+    gap: 8px;
+    margin-top: 8px;
+    align-items: center;
+  }
+
+  select {
+    flex: 1;
+    background: var(--surface);
+    border: 1px solid var(--border-hi);
+    color: var(--text-mid);
+    font-family: 'DM Mono', monospace;
+    font-size: 10px;
+    padding: 5px 8px;
+    border-radius: 5px;
+    outline: none;
+  }
+
+  .scan-btn {
+    background: var(--accent);
+    color: white;
+    border: none;
+    padding: 6px 14px;
+    border-radius: 6px;
+    font-family: 'DM Sans', sans-serif;
+    font-size: 12px;
+    font-weight: 500;
+    cursor: pointer;
+    transition: background 0.2s;
+    white-space: nowrap;
+  }
+
+  .scan-btn:hover { background: #9280fc; }
+  .scan-btn:disabled { opacity: 0.5; cursor: not-allowed; }
+
+  /* Result */
+  .result-section {
+    padding: 12px 16px;
+    border-top: 1px solid var(--border);
+  }
+
+  .result-card {
+    border-radius: 8px;
+    padding: 12px 14px;
+    border: 1px solid;
+  }
+
+  .result-card.red {
+    background: var(--red-dim);
+    border-color: var(--red);
+  }
+
+  .result-card.yellow {
+    background: var(--yellow-dim);
+    border-color: var(--yellow);
+  }
+
+  .result-card.green {
+    background: var(--green-dim);
+    border-color: var(--green);
+  }
+
+  .result-header {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    margin-bottom: 6px;
+  }
+
+  .result-icon { font-size: 16px; }
+
+  .result-label {
+    font-family: 'DM Mono', monospace;
+    font-size: 9px;
+    text-transform: uppercase;
+    letter-spacing: 0.1em;
+  }
+
+  .red .result-label { color: var(--red); }
+  .yellow .result-label { color: var(--yellow); }
+  .green .result-label { color: var(--green); }
+
+  .result-conf {
+    margin-left: auto;
+    font-family: 'DM Mono', monospace;
+    font-size: 11px;
+    font-weight: 500;
+  }
+
+  .red .result-conf { color: var(--red); }
+  .yellow .result-conf { color: var(--yellow); }
+  .green .result-conf { color: var(--green); }
+
+  .result-text {
+    font-size: 12px;
+    color: #9e9eb8;
+    line-height: 1.5;
+    font-style: italic;
+  }
+
+  .result-action {
+    font-size: 11px;
+    color: var(--text-dim);
+    margin-top: 6px;
+    padding-top: 6px;
+    border-top: 1px solid rgba(255,255,255,0.06);
+    line-height: 1.4;
+  }
+
+  .open-full-btn {
+    display: block;
+    width: 100%;
+    margin-top: 8px;
+    background: transparent;
+    border: 1px solid var(--border-hi);
+    color: var(--text-mid);
+    padding: 5px;
+    border-radius: 5px;
+    font-family: 'DM Mono', monospace;
+    font-size: 10px;
+    cursor: pointer;
+    text-align: center;
+    transition: all 0.2s;
+  }
+
+  .open-full-btn:hover {
+    border-color: var(--accent);
+    color: var(--accent);
+  }
+
+  /* Loading */
+  .loading {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+    padding: 16px;
+    color: var(--text-dim);
+    font-family: 'DM Mono', monospace;
+    font-size: 11px;
+  }
+
+  .spinner {
+    width: 14px;
+    height: 14px;
+    border: 2px solid var(--border-hi);
+    border-top-color: var(--accent);
+    border-radius: 50%;
+    animation: spin 0.7s linear infinite;
+  }
+
+  @keyframes spin { to { transform: rotate(360deg); } }
+
+  /* Settings panel */
+  .settings-panel {
+    display: none;
+    padding: 14px 16px;
+    border-top: 1px solid var(--border);
+  }
+
+  .settings-panel.visible { display: block; }
+
+  .settings-label {
+    font-family: 'DM Mono', monospace;
+    font-size: 10px;
+    color: var(--text-dim);
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+    margin-bottom: 6px;
+  }
+
+  .settings-input {
+    width: 100%;
+    background: var(--surface);
+    border: 1px solid var(--border-hi);
+    border-radius: 5px;
+    color: #e8e8f0;
+    font-family: 'DM Mono', monospace;
+    font-size: 11px;
+    padding: 6px 10px;
+    outline: none;
+    margin-bottom: 8px;
+  }
+
+  .settings-input:focus { border-color: var(--accent); }
+
+  .save-btn {
+    background: var(--accent);
+    color: white;
+    border: none;
+    padding: 5px 14px;
+    border-radius: 5px;
+    font-family: 'DM Sans', sans-serif;
+    font-size: 11px;
+    cursor: pointer;
+  }
+
+  .save-btn:hover { background: #9280fc; }
+
+  /* Footer */
+  .footer {
+    padding: 8px 16px;
+    border-top: 1px solid var(--border);
+    font-family: 'DM Mono', monospace;
+    font-size: 9px;
+    color: var(--text-dim);
+    text-align: center;
+  }
+</style>
+</head>
+<body>
+
+<!-- Header -->
+<div class="header">
+  <div>
+    <div class="logo">Human<span>Trace</span></div>
+    <div class="powered">Powered by Owlume</div>
+  </div>
+  <button class="settings-btn" id="settingsToggle" title="Settings">⚙</button>
+</div>
+
+<!-- Server status -->
+<div class="server-status">
+  <div class="status-dot" id="statusDot"></div>
+  <span id="statusText">Checking server...</span>
+</div>
+
+<!-- Scan section -->
+<div class="scan-section">
+  <div class="scan-label">Paste or type suspicious message</div>
+  <textarea id="msgInput" placeholder="Paste a suspicious message, email, or URL here..."></textarea>
+  <div class="scan-row">
+    <select id="contextSelect">
+      <option value="">Auto-detect</option>
+      <option value="bank_officer">Bank / Institution</option>
+      <option value="investment_opportunity">Investment</option>
+      <option value="friend_in_distress">Friend / Family</option>
+    </select>
+    <button class="scan-btn" id="scanBtn">Scan</button>
+  </div>
+</div>
+
+<!-- Result section -->
+<div class="result-section" id="resultSection" style="display:none;">
+  <div id="loadingIndicator" class="loading" style="display:none;">
+    <div class="spinner"></div>
+    <span>Scanning...</span>
+  </div>
+  <div id="resultCard" class="result-card" style="display:none;">
+    <div class="result-header">
+      <span class="result-icon" id="resultIcon"></span>
+      <span class="result-label" id="resultLabel"></span>
+      <span class="result-conf" id="resultConf"></span>
+    </div>
+    <div class="result-text" id="resultText"></div>
+    <div class="result-action" id="resultAction"></div>
+    <button class="open-full-btn" id="openFullBtn">
+      Open full analysis in HumanTrace →
+    </button>
+  </div>
+</div>
+
+<!-- Settings panel -->
+<div class="settings-panel" id="settingsPanel">
+  <div class="settings-label">HumanTrace Server URL</div>
+  <input
+    type="text"
+    class="settings-input"
+    id="serverUrlInput"
+    placeholder="http://localhost:8000"
+  >
+  <button class="save-btn" id="saveSettingsBtn">Save</button>
+</div>
+
+<!-- Footer -->
+<div class="footer">
+  HumanTrace surfaces signals. The judgment is yours.
+</div>
+
+<script src="popup.js"></script>
+</body>
+</html>
