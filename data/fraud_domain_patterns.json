@@ -1,0 +1,45 @@
+{
+  "$schema": "schemas/fraud_domains.schema.json",
+  "spec": {
+    "name": "fraud_domain_patterns",
+    "version": "1.0.0",
+    "updated": "2026-03-21",
+    "owner": "HumanTrace / Owlume",
+    "description": "Domain reputation patterns for URL/domain scanning. Based on ACCC Scamwatch, ASIC, and known fraud typologies."
+  },
+  "suspicious_tld_patterns": [
+    ".tk", ".ml", ".ga", ".cf", ".gq",
+    ".top", ".click", ".link", ".online", ".site",
+    ".xyz", ".work", ".loan", ".win", ".racing",
+    ".download", ".stream", ".gdn", ".accountant"
+  ],
+  "suspicious_domain_patterns": [
+    "secure.*bank", "bank.*secure", "account.*verify",
+    "verify.*account", "login.*secure", "secure.*login",
+    "paypal.*secure", "apple.*id.*verify", "microsoft.*support",
+    "ato.*gov.*au.*[0-9]", "myg0v", "centrelink.*online",
+    "amazon.*verify", "netflix.*billing", "update.*payment",
+    "confirm.*identity", "suspended.*account", "unlock.*account",
+    "prize.*winner", "lottery.*claim", "inheritance.*fund",
+    "crypto.*profit", "bitcoin.*investment", "forex.*guaranteed",
+    "urgent.*action", "final.*notice", "act.*immediately"
+  ],
+  "legitimate_Australian_domains": [
+    "ato.gov.au", "servicesaustralia.gov.au", "mygov.au",
+    "australia.gov.au", "afca.org.au", "asic.gov.au",
+    "accc.gov.au", "abcbank.com.au", "commbank.com.au",
+    "nab.com.au", "anz.com.au", "westpac.com.au",
+    "macquarie.com.au", "bendigo.com.au", "suncorp.com.au"
+  ],
+  "known_fraud_indicators": {
+    "typosquatting_targets": [
+      "paypa1", "paypai", "amaz0n", "arnazon",
+      "rnyGov", "myg0v", "g00gle", "micros0ft",
+      "app1e", "netf1ix", "cornmbank", "rnessengerbank"
+    ],
+    "excessive_subdomains": 3,
+    "suspicious_port": [8080, 8443, 4443, 9000],
+    "ip_address_as_host": true,
+    "redirect_chains": true
+  }
+}

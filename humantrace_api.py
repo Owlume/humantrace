@@ -30,6 +30,12 @@ sys.path.insert(0, os.path.join(os.path.dirname(__file__), "src"))
 from humantrace_logger import log_humantrace_session
 
 try:
+    from humantrace_url_scanner import scan_url
+    URL_SCANNER_AVAILABLE = True
+except Exception:
+    URL_SCANNER_AVAILABLE = False
+
+try:
     from humantrace_adapter import scan_message_via_engine as scan_message
     ADAPTER_AVAILABLE = True
 except Exception:
@@ -363,6 +369,36 @@ async def judgment(req: JudgmentRequest):
             "error": str(e),
             "note": "Session complete for user. Logging failed silently."
         })
+
+
+@app.post("/scan-url")
+async def scan_url_endpoint(request: Request):
+    """
+    Scan a URL, domain, or email address for fraud signals.
+    Lightweight scan when user has a link but not the full message.
+    Output kind: SIGNAL — not advice, not instruction.
+    """
+    if not URL_SCANNER_AVAILABLE:
+        return JSONResponse(
+            status_code=503,
+            content={"error": "URL scanner not available."}
+        )
+    try:
+        body = await request.json()
+        url_input = (body.get("url") or body.get("domain") or "").strip()
+        if not url_input:
+            return JSONResponse(
+                status_code=400,
+                content={"error": "No URL or domain provided."}
+            )
+        result = scan_url(url_input)
+        _store_session(result["scan_id"], result)
+        return JSONResponse(content=result)
+    except Exception as e:
+        return JSONResponse(
+            status_code=500,
+            content={"error": f"URL scan error: {str(e)}"}
+        )
 
 
 @app.get("/health")
