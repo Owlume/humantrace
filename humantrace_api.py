@@ -28,8 +28,15 @@ import sys
 # Add src/ to path so we can import humantrace_scanner
 sys.path.insert(0, os.path.join(os.path.dirname(__file__), "src"))
 
-from humantrace_scanner import scan_message
 from humantrace_logger import log_humantrace_session
+
+# Use adapter (ElenxEngine) with automatic fallback to scanner
+try:
+    from humantrace_adapter import scan_message_via_engine as scan_message
+    ADAPTER_AVAILABLE = True
+except Exception:
+    from humantrace_scanner import scan_message
+    ADAPTER_AVAILABLE = False
 
 # Import governance gate (single call site per runtime_finalize.py)
 try:
