@@ -7,12 +7,10 @@
 #
 # Open in browser:      http://localhost:8000
 # Open on iPhone:       http://192.168.0.42:8000  (your ThinkPad IP)
+# Institutional UI:     http://localhost:8000/institutional
 
-from fastapi import FastAPI, Request
-from fastapi.responses import HTMLResponse, JSONResponse
-from fastapi.middleware.cors import CORSMiddleware
-from pydantic import BaseModel
-from typing import Optional
+# ── Standard library ──────────────────────────────────────────────────────────
+
 import json
 import os
 import sys
@@ -20,6 +18,15 @@ import time
 import glob
 import base64
 import io
+
+# ── FastAPI ───────────────────────────────────────────────────────────────────
+
+from fastapi import FastAPI, Request, UploadFile, File, Form
+from fastapi.responses import HTMLResponse, JSONResponse, FileResponse
+from fastapi.middleware.cors import CORSMiddleware
+from fastapi.staticfiles import StaticFiles
+from pydantic import BaseModel
+from typing import Optional
 
 # ── Path setup ────────────────────────────────────────────────────────────────
 
@@ -75,6 +82,18 @@ try:
     GOVERNANCE_AVAILABLE = True
 except Exception:
     GOVERNANCE_AVAILABLE = False
+
+# ── Import institutional modules ──────────────────────────────────────────────
+
+from src.humantrace_consistency import (
+    DocumentInput, score_consistency, consistency_report_to_dict
+)
+from src.humantrace_bse_matcher import (
+    match_across_applications, match_report_to_dict
+)
+from src.humantrace_document_extractor import (
+    extract_text, check_dependencies
+)
 
 # ── Session store (file-based, survives restarts) ─────────────────────────────
 
@@ -138,7 +157,7 @@ app.add_middleware(
     allow_headers=["*"],
 )
 
-# ── Load interface ────────────────────────────────────────────────────────────
+# ── Load consumer interface ───────────────────────────────────────────────────
 
 def _load_interface() -> str:
     candidates = [
@@ -165,6 +184,24 @@ class JudgmentRequest(BaseModel):
     confidence: float
     acknowledged: bool
     share_status: str = "skipped"
+
+class DocPayload(BaseModel):
+    doc_id:   str
+    doc_type: str    # "applicant_authored" | "employer_authored" | "third_party"
+    text:     str
+    label:    str = ""
+
+class BatchConsistencyRequest(BaseModel):
+    application_id: str
+    documents:      list[DocPayload]
+
+class BSEMatchRequest(BaseModel):
+    application_id: str
+    documents:      list[DocPayload]
+
+class FullInstitutionalRequest(BaseModel):
+    application_id: str
+    documents:      list[DocPayload]
 
 # ── Helper: run scan with BSE and governance ──────────────────────────────────
 
@@ -219,11 +256,25 @@ def _run_scan(message: str, context_hint: Optional[str], input_method: str = "te
     _store_session(result.scan_id, {**result_dict, "_bse_context": bse_context})
     return result_dict
 
-# ── Routes ────────────────────────────────────────────────────────────────────
+# ── Startup event ─────────────────────────────────────────────────────────────
+
+@app.on_event("startup")
+async def check_institutional_deps():
+    deps = check_dependencies()
+    missing = [name for name, ok in deps.items() if not ok]
+    if missing:
+        print(f"[HumanTrace] WARNING: Missing optional dependencies: {missing}")
+        print(f"[HumanTrace] Install with: pip install {' '.join(missing)}")
+    else:
+        print("[HumanTrace] Institutional dependencies: all present.")
+
+# ═════════════════════════════════════════════════════════════════════════════
+# CONSUMER ROUTES
+# ═════════════════════════════════════════════════════════════════════════════
 
 @app.get("/", response_class=HTMLResponse)
 async def serve_interface():
-    """Serve the HumanTrace interface."""
+    """Serve the HumanTrace consumer interface."""
     return HTMLResponse(content=_load_interface())
 
 
@@ -375,7 +426,6 @@ async def judgment(req: JudgmentRequest):
 async def scan_url_endpoint(request: Request):
     """
     Scan a URL, domain, or email address for fraud signals.
-    Lightweight scan when user has a link but not the full message.
     Output kind: SIGNAL — not advice, not instruction.
     """
     if not URL_SCANNER_AVAILABLE:
@@ -414,6 +464,140 @@ async def health():
         "governance_available": GOVERNANCE_AVAILABLE,
     }
 
+
+# ═════════════════════════════════════════════════════════════════════════════
+# INSTITUTIONAL ROUTES
+# ═════════════════════════════════════════════════════════════════════════════
+
+@app.get("/institutional")
+async def institutional_interface():
+    """Serve the HumanTrace institutional interface."""
+    return FileResponse("assets/humantrace_institutional.html")
+
+
+@app.post("/institutional/consistency")
+async def institutional_consistency(req: BatchConsistencyRequest):
+    """
+    Score cross-document consistency for a batch of documents
+    from a single loan application.
+    Output kind: SIGNAL — not advice, not instruction.
+    """
+    docs = [
+        DocumentInput(
+            doc_id   = d.doc_id,
+            doc_type = d.doc_type,
+            text     = d.text,
+            label    = d.label,
+        )
+        for d in req.documents
+    ]
+    report = score_consistency(req.application_id, docs)
+    return consistency_report_to_dict(report)
+
+
+@app.post("/institutional/bse-match")
+async def institutional_bse_match(req: BSEMatchRequest):
+    """
+    Compare reasoning vectors from a target application against all
+    stored BSE fingerprints. Returns cluster signals.
+    Output kind: SIGNAL — not advice, not instruction.
+    """
+    docs = [
+        DocumentInput(
+            doc_id   = d.doc_id,
+            doc_type = d.doc_type,
+            text     = d.text,
+            label    = d.label,
+        )
+        for d in req.documents
+    ]
+    report = match_across_applications(req.application_id, docs)
+    return match_report_to_dict(report)
+
+
+@app.post("/institutional/scan")
+async def institutional_scan(req: FullInstitutionalRequest):
+    """
+    Full institutional scan: consistency scoring + BSE matching in one call.
+    Primary endpoint used by the institutional UI.
+    Output kind: SIGNAL — not advice, not instruction.
+    """
+    docs = [
+        DocumentInput(
+            doc_id   = d.doc_id,
+            doc_type = d.doc_type,
+            text     = d.text,
+            label    = d.label,
+        )
+        for d in req.documents
+    ]
+
+    consistency_report = score_consistency(req.application_id, docs)
+    bse_report         = match_across_applications(req.application_id, docs)
+
+    # Overall signal — worst of the two analyses
+    signals = [consistency_report.overall_signal, bse_report.overall_signal]
+    if "RED" in signals:
+        overall = "RED"
+    elif "YELLOW" in signals:
+        overall = "YELLOW"
+    else:
+        overall = "GREEN"
+
+    return {
+        "application_id": req.application_id,
+        "overall_signal": overall,
+        "consistency":    consistency_report_to_dict(consistency_report),
+        "bse_match":      match_report_to_dict(bse_report),
+    }
+
+
+@app.post("/institutional/upload")
+async def institutional_upload(
+    file:     UploadFile = File(...),
+    doc_type: str        = Form("applicant_authored"),
+    doc_id:   str        = Form(""),
+    label:    str        = Form(""),
+):
+    """
+    Extract text from an uploaded .docx, .pdf, .txt, or image file.
+    Returns extracted text + metadata ready for /institutional/scan.
+    """
+    data     = await file.read()
+    filename = file.filename or ""
+    result   = extract_text(data, filename=filename)
+
+    # Auto-generate doc_id from filename if not supplied
+    if not doc_id:
+        stem   = filename.rsplit(".", 1)[0] if "." in filename else filename
+        doc_id = stem.lower().replace(" ", "_")[:40] or "doc_001"
+
+    if not result.ok:
+        return JSONResponse(content={
+            "success":  False,
+            "doc_id":   doc_id,
+            "filename": filename,
+            "error":    result.warning or "Text extraction failed.",
+            "text":     "",
+            "method":   result.method,
+        })
+
+    return JSONResponse(content={
+        "success":    True,
+        "doc_id":     doc_id,
+        "filename":   filename,
+        "label":      label or filename,
+        "doc_type":   doc_type,
+        "text":       result.text,
+        "method":     result.method,
+        "warning":    result.warning,
+        "char_count": len(result.text),
+    })
+
+
+# ═════════════════════════════════════════════════════════════════════════════
+# ENTRY POINT
+# ═════════════════════════════════════════════════════════════════════════════
 
 if __name__ == "__main__":
     import uvicorn

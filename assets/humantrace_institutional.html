@@ -1,0 +1,994 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>HumanTrace Institutional</title>
+<style>
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+  :root {
+    --navy:       #1A3C5E;
+    --navy-mid:   #2E5C8A;
+    --navy-light: #E6EFF7;
+    --red:        #C0392B;
+    --red-bg:     #FDEDEC;
+    --yellow:     #B7770D;
+    --yellow-bg:  #FEF9E7;
+    --green:      #1E8449;
+    --green-bg:   #EAFAF1;
+    --border:     #DDE3EA;
+    --text:       #1A1A2E;
+    --muted:      #6B7A8D;
+    --surface:    #F4F7FA;
+    --white:      #FFFFFF;
+    --font:       -apple-system, BlinkMacSystemFont, 'Segoe UI', system-ui, sans-serif;
+    --mono:       'Cascadia Code', 'Consolas', monospace;
+  }
+
+  body {
+    font-family: var(--font);
+    background: var(--surface);
+    color: var(--text);
+    min-height: 100vh;
+    font-size: 14px;
+  }
+
+  /* ── Header ── */
+  .header {
+    background: var(--navy);
+    padding: 0 24px;
+    height: 52px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+  }
+  .header-brand {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+  }
+  .header-logo {
+    font-size: 15px;
+    font-weight: 700;
+    color: #fff;
+    letter-spacing: 0.04em;
+  }
+  .header-tag {
+    font-size: 11px;
+    color: rgba(255,255,255,0.5);
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+  }
+  .header-nav a {
+    color: rgba(255,255,255,0.65);
+    text-decoration: none;
+    font-size: 13px;
+    margin-left: 20px;
+  }
+  .header-nav a:hover { color: #fff; }
+
+  /* ── Layout ── */
+  .shell {
+    display: grid;
+    grid-template-columns: 280px minmax(0, 1fr);
+    height: calc(100vh - 52px);
+  }
+
+  /* ── Sidebar ── */
+  .sidebar {
+    background: var(--white);
+    border-right: 1px solid var(--border);
+    display: flex;
+    flex-direction: column;
+    padding: 16px;
+    gap: 14px;
+    overflow-y: auto;
+  }
+
+  .app-ref-block { }
+  .field-label {
+    font-size: 10px;
+    font-weight: 600;
+    letter-spacing: 0.08em;
+    color: var(--muted);
+    text-transform: uppercase;
+    margin-bottom: 4px;
+  }
+  .app-ref-input {
+    width: 100%;
+    padding: 7px 10px;
+    border: 1px solid var(--border);
+    border-radius: 6px;
+    font-size: 13px;
+    font-family: var(--mono);
+    color: var(--text);
+    background: var(--surface);
+  }
+  .app-ref-input:focus { outline: 2px solid var(--navy-mid); border-color: transparent; }
+
+  .divider { height: 1px; background: var(--border); }
+
+  /* ── Document list ── */
+  .doc-list { display: flex; flex-direction: column; gap: 4px; flex: 1; }
+
+  .doc-item {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    padding: 8px 10px;
+    border-radius: 6px;
+    border: 1px solid transparent;
+    cursor: pointer;
+    transition: background 0.1s;
+  }
+  .doc-item:hover { background: var(--surface); border-color: var(--border); }
+  .doc-item.active { background: var(--navy-light); border-color: var(--navy-mid); }
+
+  .doc-badge {
+    width: 28px;
+    height: 34px;
+    border-radius: 3px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 9px;
+    font-weight: 700;
+    flex-shrink: 0;
+    letter-spacing: 0.02em;
+  }
+  .doc-badge.pdf { background: #FDECEA; color: #922B21; }
+  .doc-badge.doc { background: #EBF5FB; color: #1A5276; }
+  .doc-badge.img { background: #F4ECF7; color: #6C3483; }
+
+  .doc-meta { flex: 1; min-width: 0; }
+  .doc-name {
+    font-size: 12px;
+    font-weight: 500;
+    color: var(--text);
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
+  .doc-type-label { font-size: 11px; color: var(--muted); }
+
+  .signal-dot {
+    width: 8px;
+    height: 8px;
+    border-radius: 50%;
+    flex-shrink: 0;
+  }
+  .signal-dot.red    { background: var(--red); }
+  .signal-dot.yellow { background: #E67E22; }
+  .signal-dot.green  { background: var(--green); }
+  .signal-dot.pending { background: var(--border); }
+  .signal-dot.scanning { background: var(--navy-mid); animation: pulse 1s infinite; }
+
+  @keyframes pulse { 0%,100%{opacity:1} 50%{opacity:0.3} }
+
+  /* ── Drop zone ── */
+  .drop-zone {
+    border: 1.5px dashed var(--border);
+    border-radius: 8px;
+    padding: 14px 10px;
+    text-align: center;
+    cursor: pointer;
+    transition: border-color 0.15s, background 0.15s;
+  }
+  .drop-zone:hover, .drop-zone.drag-over {
+    border-color: var(--navy-mid);
+    background: var(--navy-light);
+  }
+  .drop-zone-text { font-size: 12px; color: var(--muted); }
+  .drop-zone-sub  { font-size: 11px; color: #AAB4BE; margin-top: 2px; }
+  #file-input { display: none; }
+
+  /* ── Doc type selector ── */
+  .doc-type-select {
+    width: 100%;
+    padding: 7px 10px;
+    border: 1px solid var(--border);
+    border-radius: 6px;
+    font-size: 12px;
+    color: var(--text);
+    background: var(--white);
+  }
+  .doc-type-select:focus { outline: 2px solid var(--navy-mid); border-color: transparent; }
+
+  /* ── Scan button ── */
+  .scan-btn {
+    width: 100%;
+    padding: 9px;
+    background: var(--navy);
+    color: #fff;
+    border: none;
+    border-radius: 6px;
+    font-size: 13px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: background 0.15s;
+    letter-spacing: 0.02em;
+  }
+  .scan-btn:hover { background: var(--navy-mid); }
+  .scan-btn:disabled { background: var(--border); color: var(--muted); cursor: default; }
+
+  /* ── Main panel ── */
+  .main {
+    display: flex;
+    flex-direction: column;
+    overflow: hidden;
+  }
+
+  .topbar {
+    padding: 12px 24px;
+    border-bottom: 1px solid var(--border);
+    background: var(--white);
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    flex-shrink: 0;
+  }
+  .topbar-title { font-size: 14px; font-weight: 600; color: var(--text); }
+  .topbar-meta  { font-size: 12px; color: var(--muted); }
+
+  /* ── Tabs ── */
+  .tab-bar {
+    display: flex;
+    border-bottom: 1px solid var(--border);
+    background: var(--white);
+    padding: 0 24px;
+    flex-shrink: 0;
+  }
+  .tab {
+    font-size: 13px;
+    font-weight: 500;
+    padding: 10px 16px;
+    cursor: pointer;
+    color: var(--muted);
+    border-bottom: 2px solid transparent;
+    margin-bottom: -1px;
+    transition: color 0.1s;
+  }
+  .tab:hover { color: var(--text); }
+  .tab.active { color: var(--navy); border-bottom-color: var(--navy); }
+
+  /* ── Content area ── */
+  .content {
+    flex: 1;
+    overflow-y: auto;
+    padding: 20px 24px;
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+  }
+
+  .panel { display: none; flex-direction: column; gap: 16px; }
+  .panel.active { display: flex; }
+
+  /* ── Empty state ── */
+  .empty-state {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 10px;
+    color: var(--muted);
+    padding: 60px 20px;
+    text-align: center;
+  }
+  .empty-icon { font-size: 32px; opacity: 0.3; }
+  .empty-title { font-size: 15px; font-weight: 600; color: var(--text); opacity: 0.5; }
+  .empty-sub { font-size: 13px; }
+
+  /* ── Section header ── */
+  .section-header {
+    font-size: 11px;
+    font-weight: 600;
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+    color: var(--muted);
+    margin-bottom: 8px;
+  }
+
+  /* ── Verdict bar ── */
+  .verdict-bar {
+    display: flex;
+    align-items: center;
+    gap: 14px;
+    padding: 14px 18px;
+    border-radius: 8px;
+    border: 1px solid var(--border);
+    background: var(--surface);
+  }
+  .verdict-signal {
+    font-size: 20px;
+    font-weight: 800;
+    letter-spacing: 0.04em;
+    flex-shrink: 0;
+  }
+  .verdict-signal.RED    { color: var(--red); }
+  .verdict-signal.YELLOW { color: #E67E22; }
+  .verdict-signal.GREEN  { color: var(--green); }
+  .verdict-text { flex: 1; }
+  .verdict-label { font-size: 13px; font-weight: 600; color: var(--text); }
+  .verdict-sub   { font-size: 12px; color: var(--muted); margin-top: 2px; }
+  .verdict-score {
+    font-size: 24px;
+    font-weight: 700;
+    color: var(--text);
+    font-family: var(--mono);
+  }
+
+  /* ── Topology grid ── */
+  .topology-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 10px;
+  }
+  .topo-card {
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    padding: 12px 14px;
+    background: var(--white);
+  }
+  .topo-label { font-size: 11px; color: var(--muted); margin-bottom: 4px; }
+  .topo-value { font-size: 13px; font-weight: 600; color: var(--text); }
+  .topo-bar-track {
+    height: 3px;
+    background: var(--surface);
+    border-radius: 2px;
+    margin-top: 8px;
+    overflow: hidden;
+  }
+  .topo-bar-fill { height: 3px; border-radius: 2px; transition: width 0.6s ease; }
+
+  /* ── Signal table ── */
+  .signal-table { width: 100%; border-collapse: collapse; font-size: 13px; }
+  .signal-table th {
+    font-size: 11px;
+    font-weight: 600;
+    color: var(--muted);
+    text-align: left;
+    padding: 6px 10px;
+    border-bottom: 1px solid var(--border);
+    letter-spacing: 0.04em;
+  }
+  .signal-table td {
+    padding: 8px 10px;
+    border-bottom: 1px solid var(--border);
+    color: var(--text);
+  }
+  .signal-table tr:last-child td { border-bottom: none; }
+
+  /* ── Badges ── */
+  .badge {
+    display: inline-block;
+    font-size: 11px;
+    font-weight: 600;
+    padding: 2px 8px;
+    border-radius: 20px;
+  }
+  .badge.absent  { background: var(--red-bg);    color: var(--red); }
+  .badge.weak    { background: var(--yellow-bg);  color: var(--yellow); }
+  .badge.present { background: var(--green-bg);   color: var(--green); }
+
+  /* ── Consistency bars ── */
+  .con-row {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    padding: 8px 0;
+    border-bottom: 1px solid var(--border);
+  }
+  .con-row:last-child { border-bottom: none; }
+  .con-label { font-size: 12px; color: var(--muted); width: 160px; flex-shrink: 0; }
+  .con-track { flex: 1; height: 3px; background: var(--surface); border-radius: 2px; overflow: hidden; }
+  .con-fill  { height: 3px; border-radius: 2px; transition: width 0.6s ease; }
+  .con-score { font-size: 12px; font-weight: 600; font-family: var(--mono); width: 36px; text-align: right; }
+
+  /* ── Alert box ── */
+  .alert-box {
+    padding: 12px 14px;
+    border-radius: 8px;
+    border: 1px solid;
+    font-size: 13px;
+  }
+  .alert-box.red    { background: var(--red-bg);    border-color: #F1948A; }
+  .alert-box.yellow { background: var(--yellow-bg); border-color: #F8C471; }
+  .alert-box.green  { background: var(--green-bg);  border-color: #82E0AA; }
+  .alert-title { font-weight: 600; margin-bottom: 4px; }
+  .alert-box.red    .alert-title { color: var(--red); }
+  .alert-box.yellow .alert-title { color: var(--yellow); }
+  .alert-box.green  .alert-title { color: var(--green); }
+  .alert-body { color: var(--muted); line-height: 1.5; }
+
+  /* ── BSE match cards ── */
+  .bse-card {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    padding: 10px 14px;
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    background: var(--white);
+  }
+  .bse-avatar {
+    width: 36px;
+    height: 36px;
+    border-radius: 50%;
+    background: var(--navy-light);
+    color: var(--navy);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 13px;
+    font-weight: 700;
+    flex-shrink: 0;
+  }
+  .bse-name  { font-size: 13px; font-weight: 600; color: var(--text); }
+  .bse-sub   { font-size: 11px; color: var(--muted); margin-top: 1px; }
+  .bse-score { margin-left: auto; text-align: right; }
+  .bse-score-label { font-size: 10px; color: var(--muted); }
+  .bse-score-val   { font-size: 18px; font-weight: 700; font-family: var(--mono); }
+  .bse-score-val.HIGH   { color: var(--red); }
+  .bse-score-val.MEDIUM { color: #E67E22; }
+
+  /* ── Audit log ── */
+  .audit-row {
+    display: flex;
+    gap: 10px;
+    padding: 6px 0;
+    border-bottom: 1px solid var(--border);
+    font-size: 12px;
+  }
+  .audit-row:last-child { border-bottom: none; }
+  .audit-time  { color: var(--muted); width: 50px; flex-shrink: 0; font-family: var(--mono); }
+  .audit-event { color: var(--text); flex: 1; line-height: 1.4; }
+  .audit-red    { color: var(--red);    font-weight: 600; }
+  .audit-yellow { color: #E67E22;       font-weight: 600; }
+  .audit-green  { color: var(--green);  font-weight: 600; }
+
+  /* ── Error / loading ── */
+  .loading-row {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    padding: 12px;
+    color: var(--muted);
+    font-size: 13px;
+  }
+  .spinner {
+    width: 16px; height: 16px;
+    border: 2px solid var(--border);
+    border-top-color: var(--navy-mid);
+    border-radius: 50%;
+    animation: spin 0.7s linear infinite;
+    flex-shrink: 0;
+  }
+  @keyframes spin { to { transform: rotate(360deg); } }
+
+  .error-msg {
+    padding: 10px 14px;
+    background: var(--red-bg);
+    border: 1px solid #F1948A;
+    border-radius: 6px;
+    font-size: 13px;
+    color: var(--red);
+  }
+</style>
+</head>
+<body>
+
+<div class="header">
+  <div class="header-brand">
+    <span class="header-logo">HUMANTRACE</span>
+    <span class="header-tag">Institutional</span>
+  </div>
+  <nav class="header-nav">
+    <a href="/">Consumer</a>
+    <a href="/institutional" style="color:#fff;">Institutional</a>
+  </nav>
+</div>
+
+<div class="shell">
+
+  <!-- ── Sidebar ── -->
+  <div class="sidebar">
+
+    <div class="app-ref-block">
+      <div class="field-label">Application reference</div>
+      <input class="app-ref-input" id="app-ref" type="text"
+             placeholder="APP-2026-XXXXX" value="APP-2026-03847">
+    </div>
+
+    <div class="divider"></div>
+
+    <div class="field-label">Documents (<span id="doc-count">0</span>)</div>
+    <div class="doc-list" id="doc-list">
+      <div class="empty-state" style="padding:20px 0;gap:4px;">
+        <div style="font-size:11px;color:var(--muted);">No documents added yet</div>
+      </div>
+    </div>
+
+    <div>
+      <div class="field-label" style="margin-bottom:6px;">Document type</div>
+      <select class="doc-type-select" id="doc-type-select">
+        <option value="applicant_authored">Applicant authored</option>
+        <option value="employer_authored">Employer authored</option>
+        <option value="third_party">Third party</option>
+      </select>
+    </div>
+
+    <div class="drop-zone" id="drop-zone" onclick="document.getElementById('file-input').click()">
+      <div class="drop-zone-text">Drop files or click to upload</div>
+      <div class="drop-zone-sub">.docx · .pdf · .txt · .png · .jpg</div>
+    </div>
+    <input type="file" id="file-input" multiple accept=".docx,.pdf,.txt,.png,.jpg,.jpeg,.webp">
+
+    <button class="scan-btn" id="scan-btn" onclick="runScan()" disabled>
+      Run batch scan
+    </button>
+
+  </div>
+
+  <!-- ── Main ── -->
+  <div class="main">
+    <div class="topbar">
+      <div class="topbar-title" id="topbar-title">No document selected</div>
+      <div class="topbar-meta" id="topbar-meta"></div>
+    </div>
+
+    <div class="tab-bar">
+      <div class="tab active" onclick="showTab('analysis',this)">Reasoning analysis</div>
+      <div class="tab" onclick="showTab('consistency',this)">Cross-doc consistency</div>
+      <div class="tab" onclick="showTab('bse',this)">BSE matching</div>
+      <div class="tab" onclick="showTab('audit',this)">Audit trail</div>
+    </div>
+
+    <div class="content" id="content">
+
+      <div id="tab-analysis" class="panel active">
+        <div class="empty-state">
+          <div class="empty-icon">⬡</div>
+          <div class="empty-title">No scan results yet</div>
+          <div class="empty-sub">Upload documents and run a batch scan to see reasoning analysis.</div>
+        </div>
+      </div>
+
+      <div id="tab-consistency" class="panel">
+        <div class="empty-state">
+          <div class="empty-icon">⬡</div>
+          <div class="empty-title">No consistency data</div>
+          <div class="empty-sub">Add two or more documents and run the batch scan.</div>
+        </div>
+      </div>
+
+      <div id="tab-bse" class="panel">
+        <div class="empty-state">
+          <div class="empty-icon">⬡</div>
+          <div class="empty-title">No BSE match data</div>
+          <div class="empty-sub">Run a batch scan to compare against stored fingerprints.</div>
+        </div>
+      </div>
+
+      <div id="tab-audit" class="panel">
+        <div class="empty-state">
+          <div class="empty-icon">⬡</div>
+          <div class="empty-title">No audit trail yet</div>
+          <div class="empty-sub">Scan events will appear here.</div>
+        </div>
+      </div>
+
+    </div>
+  </div>
+</div>
+
+<script>
+// ── State ──────────────────────────────────────────────────────────────────
+const state = {
+  docs: [],           // { doc_id, filename, doc_type, label, text, signal }
+  activeDocIdx: null,
+  scanResult: null,
+  auditLog: [],
+  scanning: false,
+};
+
+// ── Utility ────────────────────────────────────────────────────────────────
+const $ = id => document.getElementById(id);
+const ts = () => new Date().toLocaleTimeString('en-AU', {hour:'2-digit',minute:'2-digit',second:'2-digit'});
+
+function scoreColour(score) {
+  if (score >= 0.70) return 'var(--green)';
+  if (score >= 0.40) return '#E67E22';
+  return 'var(--red)';
+}
+
+function signalClass(sig) {
+  if (sig === 'RED')    return 'red';
+  if (sig === 'YELLOW') return 'yellow';
+  return 'green';
+}
+
+function initials(label) {
+  return label.split(/[\s_\-]+/).map(w => w[0]).join('').toUpperCase().slice(0,2) || '??';
+}
+
+function ext(filename) {
+  return (filename.split('.').pop() || 'txt').toLowerCase();
+}
+
+// ── Document management ────────────────────────────────────────────────────
+function renderDocList() {
+  const list = $('doc-list');
+  $('doc-count').textContent = state.docs.length;
+
+  if (state.docs.length === 0) {
+    list.innerHTML = `<div style="padding:16px 0;text-align:center;font-size:11px;color:var(--muted);">No documents added yet</div>`;
+    $('scan-btn').disabled = true;
+    return;
+  }
+
+  list.innerHTML = state.docs.map((doc, i) => {
+    const dotClass = doc.signal
+      ? signalClass(doc.signal)
+      : (state.scanning ? 'scanning' : 'pending');
+    const badgeExt = ['pdf','docx','doc'].includes(ext(doc.filename)) ? ext(doc.filename).replace('docx','doc') : ['png','jpg','jpeg','webp'].includes(ext(doc.filename)) ? 'img' : 'txt';
+    const active = state.activeDocIdx === i ? 'active' : '';
+    return `
+      <div class="doc-item ${active}" onclick="selectDoc(${i})">
+        <div class="doc-badge ${badgeExt}">${badgeExt.toUpperCase()}</div>
+        <div class="doc-meta">
+          <div class="doc-name" title="${doc.label}">${doc.label}</div>
+          <div class="doc-type-label">${doc.doc_type.replace('_',' ')}</div>
+        </div>
+        <div class="signal-dot ${dotClass}"></div>
+        <button onclick="removeDoc(event,${i})" style="background:none;border:none;color:var(--muted);cursor:pointer;font-size:14px;padding:0 2px;line-height:1;">×</button>
+      </div>`;
+  }).join('');
+
+  $('scan-btn').disabled = state.docs.length === 0 || state.scanning;
+}
+
+function removeDoc(e, i) {
+  e.stopPropagation();
+  state.docs.splice(i, 1);
+  if (state.activeDocIdx >= state.docs.length) state.activeDocIdx = state.docs.length - 1;
+  renderDocList();
+  updateTopbar();
+}
+
+function selectDoc(i) {
+  state.activeDocIdx = i;
+  renderDocList();
+  updateTopbar();
+  if (state.scanResult) renderAnalysisTab(state.docs[i]);
+}
+
+function updateTopbar() {
+  if (state.activeDocIdx === null || state.docs.length === 0) {
+    $('topbar-title').textContent = 'No document selected';
+    $('topbar-meta').textContent = '';
+    return;
+  }
+  const doc = state.docs[state.activeDocIdx];
+  $('topbar-title').textContent = doc.label;
+  $('topbar-meta').textContent = `${doc.doc_type.replace('_',' ')} · ${doc.text.length.toLocaleString()} chars`;
+}
+
+// ── File upload ────────────────────────────────────────────────────────────
+async function uploadFile(file) {
+  const docType = $('doc-type-select').value;
+  const formData = new FormData();
+  formData.append('file', file);
+  formData.append('doc_type', docType);
+  formData.append('label', file.name);
+
+  try {
+    const res = await fetch('/institutional/upload', { method: 'POST', body: formData });
+    const data = await res.json();
+    if (data.success) {
+      state.docs.push({
+        doc_id:   data.doc_id,
+        filename: data.filename,
+        doc_type: data.doc_type,
+        label:    data.filename,
+        text:     data.text,
+        signal:   null,
+        method:   data.method,
+        warning:  data.warning,
+      });
+      auditEvent(`Uploaded: ${data.filename} (${data.method}, ${data.char_count.toLocaleString()} chars)`);
+      if (data.warning) auditEvent(`Warning: ${data.warning}`, 'yellow');
+    } else {
+      auditEvent(`Upload failed: ${data.filename} — ${data.error}`, 'red');
+    }
+  } catch (err) {
+    auditEvent(`Upload error: ${file.name} — ${err.message}`, 'red');
+  }
+}
+
+$('file-input').addEventListener('change', async e => {
+  const files = Array.from(e.target.files);
+  for (const f of files) await uploadFile(f);
+  e.target.value = '';
+  renderDocList();
+  updateTopbar();
+});
+
+// Drag and drop
+const dropZone = $('drop-zone');
+dropZone.addEventListener('dragover', e => { e.preventDefault(); dropZone.classList.add('drag-over'); });
+dropZone.addEventListener('dragleave', () => dropZone.classList.remove('drag-over'));
+dropZone.addEventListener('drop', async e => {
+  e.preventDefault();
+  dropZone.classList.remove('drag-over');
+  const files = Array.from(e.dataTransfer.files);
+  for (const f of files) await uploadFile(f);
+  renderDocList();
+  updateTopbar();
+});
+
+// ── Scan ───────────────────────────────────────────────────────────────────
+async function runScan() {
+  if (state.docs.length === 0 || state.scanning) return;
+  state.scanning = true;
+  state.scanResult = null;
+  state.docs.forEach(d => d.signal = null);
+  $('scan-btn').disabled = true;
+  $('scan-btn').textContent = 'Scanning…';
+  renderDocList();
+
+  const appId = $('app-ref').value.trim() || 'APP-UNKNOWN';
+  auditEvent(`Batch scan started — ${state.docs.length} document(s) — ${appId}`);
+
+  const payload = {
+    application_id: appId,
+    documents: state.docs.map(d => ({
+      doc_id:   d.doc_id,
+      doc_type: d.doc_type,
+      text:     d.text,
+      label:    d.label,
+    }))
+  };
+
+  try {
+    const res = await fetch('/institutional/scan', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify(payload),
+    });
+
+    if (!res.ok) throw new Error(`API error ${res.status}`);
+    const data = await res.json();
+    state.scanResult = data;
+
+    // Update per-document signals from consistency dimensions
+    state.docs.forEach(doc => {
+      const dimSignals = data.consistency.dimensions || [];
+      // Use overall consistency signal as per-doc proxy
+      doc.signal = data.overall_signal;
+    });
+
+    auditEvent(`Scan complete — overall: ${data.overall_signal}`, signalClass(data.overall_signal));
+    auditEvent(`Consistency score: ${data.consistency.overall_score} (${data.consistency.overall_signal})`);
+    auditEvent(`BSE matches found: ${data.bse_match.document_matches.length} — clusters: ${data.bse_match.application_clusters.length}`);
+    auditEvent(`DilemmaNet log: ${data.consistency.log_record.timestamp}`);
+
+    renderAllTabs(data);
+
+    if (state.activeDocIdx === null && state.docs.length > 0) {
+      state.activeDocIdx = 0;
+    }
+
+  } catch (err) {
+    auditEvent(`Scan failed: ${err.message}`, 'red');
+    showError('tab-analysis', `Scan failed: ${err.message}`);
+  }
+
+  state.scanning = false;
+  $('scan-btn').disabled = false;
+  $('scan-btn').textContent = 'Run batch scan';
+  renderDocList();
+  updateTopbar();
+}
+
+// ── Render tabs ────────────────────────────────────────────────────────────
+function renderAllTabs(data) {
+  renderAnalysisTab(state.docs[state.activeDocIdx || 0], data);
+  renderConsistencyTab(data.consistency);
+  renderBSETab(data.bse_match);
+  renderAuditTab();
+}
+
+function renderAnalysisTab(doc, data) {
+  data = data || state.scanResult;
+  if (!data) return;
+  const cons = data.consistency;
+  const overall = cons.overall_signal;
+  const score = cons.overall_score;
+
+  const verdictLabels = {
+    RED:    'Synthetic reasoning detected',
+    YELLOW: 'Mixed signals — analyst review recommended',
+    GREEN:  'Genuine human reasoning present',
+  };
+  const verdictSubs = {
+    RED:    'Low conviction cost · absent epistemic markers · inconsistent authorship',
+    YELLOW: 'Some signals present — insufficient for confident verdict',
+    GREEN:  'Conviction cost, contextual markers and authorial voice all present',
+  };
+
+  const dims = cons.dimensions || [];
+  const topoCards = dims.map(d => {
+    const pct = Math.round(d.score * 100);
+    const colour = scoreColour(d.score);
+    const label = d.score >= 0.70 ? 'strong' : (d.score >= 0.40 ? 'weak' : 'absent');
+    return `
+      <div class="topo-card">
+        <div class="topo-label">${d.name.replace(/_/g,' ')}</div>
+        <div class="topo-value">${d.score.toFixed(3)} — ${label}</div>
+        <div class="topo-bar-track">
+          <div class="topo-bar-fill" style="width:${pct}%;background:${colour};"></div>
+        </div>
+      </div>`;
+  }).join('');
+
+  const signalRows = dims.flatMap(d =>
+    (d.anomalies || []).map(a => `
+      <tr>
+        <td>${a}</td>
+        <td>${d.name.replace(/_/g,' ')}</td>
+        <td><span class="badge absent">Flag</span></td>
+      </tr>`)
+  ).join('') || `<tr><td colspan="3" style="color:var(--muted);font-style:italic;">No anomalies detected.</td></tr>`;
+
+  $('tab-analysis').innerHTML = `
+    <div>
+      <div class="section-header">Signal verdict</div>
+      <div class="verdict-bar">
+        <div class="verdict-signal ${overall}">${overall}</div>
+        <div class="verdict-text">
+          <div class="verdict-label">${verdictLabels[overall] || overall}</div>
+          <div class="verdict-sub">${verdictSubs[overall] || ''}</div>
+        </div>
+        <div class="verdict-score">${score.toFixed(2)}</div>
+      </div>
+    </div>
+    <div>
+      <div class="section-header">Reasoning topology</div>
+      <div class="topology-grid">${topoCards}</div>
+    </div>
+    <div>
+      <div class="section-header">Anomaly signals</div>
+      <table class="signal-table">
+        <thead><tr><th>Signal</th><th>Dimension</th><th>Status</th></tr></thead>
+        <tbody>${signalRows}</tbody>
+      </table>
+    </div>`;
+}
+
+function renderConsistencyTab(cons) {
+  const dims = cons.dimensions || [];
+  const bars = dims.map(d => {
+    const pct = Math.round(d.score * 100);
+    const colour = scoreColour(d.score);
+    const scoreStr = d.score.toFixed(2);
+    return `
+      <div class="con-row">
+        <div class="con-label">${d.name.replace(/_/g,' ')}</div>
+        <div class="con-track">
+          <div class="con-fill" style="width:${pct}%;background:${colour};"></div>
+        </div>
+        <div class="con-score" style="color:${colour};">${scoreStr}</div>
+      </div>`;
+  }).join('');
+
+  const flags = cons.cross_doc_flags || [];
+  const alertClass = signalClass(cons.overall_signal);
+  const alertContent = flags.length > 0
+    ? flags.map(f => `<div style="margin-bottom:4px;">⚑ ${f.replace(/^\[.*?\]\s*/,'')}</div>`).join('')
+    : 'No consistency anomalies detected across documents.';
+
+  $('tab-consistency').innerHTML = `
+    <div>
+      <div class="section-header">Cross-document consistency — ${cons.application_id}</div>
+      <div>${bars}</div>
+    </div>
+    <div class="alert-box ${alertClass}">
+      <div class="alert-title">Consistency ${cons.overall_signal} — score ${cons.overall_score.toFixed(2)}</div>
+      <div class="alert-body">${alertContent}</div>
+    </div>`;
+}
+
+function renderBSETab(bse) {
+  const matches = bse.document_matches || [];
+  const clusters = bse.application_clusters || [];
+
+  if (matches.length === 0) {
+    $('tab-bse').innerHTML = `
+      <div class="section-header">BSE match — reasoning fingerprint across applications</div>
+      <div class="alert-box green">
+        <div class="alert-title">No matches found</div>
+        <div class="alert-body">No stored fingerprints matched above the similarity threshold.</div>
+      </div>`;
+    return;
+  }
+
+  const matchCards = matches.slice(0,8).map(m => `
+    <div class="bse-card">
+      <div class="bse-avatar">${initials(m.matched_sender_id)}</div>
+      <div>
+        <div class="bse-name">${m.matched_sender_id.replace(/^(auto:|manual:|labelled:)/,'')}</div>
+        <div class="bse-sub">${m.matched_application_id} · ${m.matched_label} · ${m.matched_created_at.slice(0,10)}</div>
+      </div>
+      <div class="bse-score">
+        <div class="bse-score-label">Vector similarity</div>
+        <div class="bse-score-val ${m.strength}">${m.similarity.toFixed(2)}</div>
+      </div>
+    </div>`).join('');
+
+  const clusterAlert = clusters.length > 0 ? `
+    <div class="alert-box ${signalClass(bse.overall_signal)}">
+      <div class="alert-title">Identity clustering signal — ${clusters.length} cluster(s) detected</div>
+      <div class="alert-body">
+        ${clusters.map(c => `⚑ ${c.interpretation}`).join('<br><br>')}
+      </div>
+    </div>` : '';
+
+  $('tab-bse').innerHTML = `
+    <div>
+      <div class="section-header">Document-level matches (${matches.length} found)</div>
+      <div style="display:flex;flex-direction:column;gap:8px;">${matchCards}</div>
+    </div>
+    ${clusterAlert}`;
+}
+
+function renderAuditTab() {
+  if (state.auditLog.length === 0) {
+    $('tab-audit').innerHTML = `<div class="empty-state"><div class="empty-title">No audit events yet</div></div>`;
+    return;
+  }
+  const rows = state.auditLog.map(e => `
+    <div class="audit-row">
+      <div class="audit-time">${e.time}</div>
+      <div class="audit-event ${e.cls || ''}">${e.text}</div>
+    </div>`).join('');
+
+  const gov = state.scanResult
+    ? `<div style="padding:10px 14px;border-radius:6px;border:1px solid var(--border);font-size:12px;color:var(--muted);">
+        This audit trail is immutable. All scan results are HumanTrace signals only.
+        Judgment ownership: analyst. No action has been taken or recommended by HumanTrace.
+       </div>`
+    : '';
+
+  $('tab-audit').innerHTML = `
+    <div>
+      <div class="section-header">Audit trail</div>
+      <div>${rows}</div>
+    </div>
+    ${gov}`;
+}
+
+function auditEvent(text, cls) {
+  state.auditLog.push({ time: ts(), text, cls: cls ? `audit-${cls}` : '' });
+  renderAuditTab();
+}
+
+function showError(tabId, msg) {
+  $(tabId).innerHTML = `<div class="error-msg">${msg}</div>`;
+}
+
+// ── Tab switching ──────────────────────────────────────────────────────────
+function showTab(id, el) {
+  document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
+  document.querySelectorAll('.panel').forEach(p => p.classList.remove('active'));
+  el.classList.add('active');
+  $('tab-' + id).classList.add('active');
+}
+
+// ── Init ───────────────────────────────────────────────────────────────────
+renderDocList();
+</script>
+</body>
+</html>
