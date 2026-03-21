@@ -391,8 +391,8 @@ def _map_engine_to_signal(
         mixed_meta = {
             "mixed_content_warning": True,
             "mixed_content_note": (
-                "Reasoning signals are internally inconsistent - "
-                "consistent with human-edited synthetic content."
+                "Mixed signals detected across reasoning layers — "
+                "result is uncertain. Verify sender independently."
             ),
             "layer_spread": round(spread, 3),
         }
@@ -503,14 +503,15 @@ class HumanTraceAdapter:
                     f"({pct}% confidence). Pattern consistent with {cat}. "
                     f"Treat with extreme caution.")
             if mixed_meta.get("mixed_content_warning"):
-                base += " Note: message shows signs of human-edited synthetic content."
+                base += " Note: message shows mixed reasoning signals — treat with caution."
             return base
         if signal == "green":
             return (f"Human reasoning presence detected ({pct}% confidence). "
                     f"Standard caution still applies.")
         if mixed_meta.get("mixed_content_warning"):
-            return (f"Warning: reasoning signals are internally inconsistent ({pct}% confidence). "
-                    f"Consistent with human-edited synthetic content. Verify sender independently.")
+            return (f"Mixed signals detected ({pct}% confidence) — "
+                    f"some human indicators present alongside structured patterns. "
+                    f"Result is uncertain. Verify sender independently.")
         if self.first_contact:
             return (f"Reasoning signal is unclear ({pct}% confidence) - "
                     f"no prior communication history for this sender. "
