@@ -1662,7 +1662,7 @@ function runDetection(text, contextHint) {
   if (correctionHits.length) { humScore += 0.25; l1findings.push('Self-correction detected — strong human signal'); }
   const uniformityPenalty = checkSentenceUniformity(text);
   if (uniformityPenalty > 0) { synScore += uniformityPenalty; l1findings.push('Sentence structure shows high uniformity — consistent with synthetic generation'); }
-  if (!l1findings.length) l1findings.push('No strong structural reasoning signals detected');
+  if (!l1findings.length) l1findings.push('No writing consistency issues detected');
   const l1net = humScore - synScore;
   const l1 = {
     name: 'Structural Reasoning',
@@ -1687,10 +1687,10 @@ function runDetection(text, contextHint) {
     if (violations.length) {
       l2signal = 'synthetic';
       l2conf = Math.min(0.55 + violations.length * rules.penalty, 0.92);
-      l2findings.push(`Context '${detectedContext.replace(/_/g,' ')}': ${violations.length} plausibility violation(s) detected`);
+      l2findings.push(`Context '${detectedContext.replace(/_/g,' ')}': ${violations.length} detail inconsistencies detected`);
       l2findings.push('Real people in this context do not communicate this way');
     } else {
-      l2findings.push(`Context '${detectedContext.replace(/_/g,' ')}': No obvious plausibility violations`);
+      l2findings.push(`Context '${detectedContext.replace(/_/g,' ')}': No detail inconsistencies found`);
     }
   } else {
     l2findings.push('No context available — first contact analysis only');
@@ -1713,7 +1713,7 @@ function runDetection(text, contextHint) {
     l3findings.push('Costless confidence detected — no evidence of personal stakes or doubt');
   } else {
     l3signal = 'uncertain'; l3conf = 0.45;
-    l3findings.push('No conviction cost signals detected');
+    l3findings.push('No personal investment signals detected');
   }
   layers.push({ name: 'Conviction Cost', signal: l3signal, confidence: l3conf, findings: l3findings });
 
@@ -1737,7 +1737,7 @@ function runDetection(text, contextHint) {
   } else {
     l4findings.push('No known fraud pattern signatures detected');
   }
-  layers.push({ name: 'Pattern Library', signal: l4signal, confidence: l4conf, findings: l4findings, category: topCategory });
+  layers.push({ name: 'Known Fraud Patterns', signal: l4signal, confidence: l4conf, findings: l4findings, category: topCategory });
 
   // ── L5: Absence Signals ──
   const l5findings = [];
@@ -2060,8 +2060,11 @@ function renderResults(r) {
     'structural_reasoning': 'Writing Consistency',
     'contextual_plausibility': 'Specific Detail',
     'conviction_cost': 'Personal Investment',
-    'pattern_library': 'Pattern Library',
-    'absence_signals': 'Absence Signals',
+    'pattern_library': 'Known Fraud Patterns',
+    'absence_signals': 'Missing Human Signals',
+    'engine_mode_detection': 'Reasoning Analysis',
+    'manipulation_driver_analysis': 'Influence Patterns',
+    'engine_question_quality': 'Investigation Questions',
   };
 
   // Layers
