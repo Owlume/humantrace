@@ -220,22 +220,22 @@ def _map_engine_to_signal(
     mode_weight = MODE_FRAUD_WEIGHTS.get(det.mode, 0.45)
     principle_tactic = PRINCIPLE_FRAUD_MAP.get(det.principle, None)
 
-    l1_findings = [f"Reasoning pattern detected: {det.mode} x {det.principle} (conf: {det.confidence:.2f})"]
+    l1_findings = [f"Reasoning pattern detected — confidence: {det.confidence:.0%}"]
     if det.mode == "Critical":
         l1_findings.append("High-confidence synthetic reasoning pattern detected")
         l1_signal = "synthetic"
         l1_conf = min(mode_weight * det.confidence + 0.15, 0.85)
     elif det.mode == "Analytical":
-        l1_findings.append("Analytical mode - structured reasoning present, authenticity unclear")
+        l1_findings.append("Structured reasoning present — authenticity unclear")
         l1_signal = "uncertain"
         l1_conf = 0.50
     else:
-        l1_findings.append(f"{det.mode} mode - low fraud signal")
+        l1_findings.append(f"Low synthetic reasoning indicators detected")
         l1_signal = "human"
         l1_conf = 0.45
 
     if principle_tactic:
-        l1_findings.append(f"Principle '{det.principle}' associated with influence tactic: {principle_tactic}")
+        l1_findings.append(f"Associated influence pattern: {principle_tactic.replace('_', ' ')}")
 
     layers.append(LayerResult(
         layer="engine_mode_detection",
@@ -261,7 +261,7 @@ def _map_engine_to_signal(
     else:
         l2_signal = "uncertain"
         l2_conf = 0.45
-        l2_findings.append("No manipulation drivers detected")
+        l2_findings.append("No influence patterns detected")
 
     layers.append(LayerResult(
         layer="manipulation_driver_analysis",
