@@ -220,9 +220,9 @@ def _map_engine_to_signal(
     mode_weight = MODE_FRAUD_WEIGHTS.get(det.mode, 0.45)
     principle_tactic = PRINCIPLE_FRAUD_MAP.get(det.principle, None)
 
-    l1_findings = [f"Engine detected: {det.mode} x {det.principle} (conf: {det.confidence:.2f})"]
+    l1_findings = [f"Reasoning pattern detected: {det.mode} x {det.principle} (conf: {det.confidence:.2f})"]
     if det.mode == "Critical":
-        l1_findings.append("Critical mode - reasoning exploitation pattern detected")
+        l1_findings.append("High-confidence synthetic reasoning pattern detected")
         l1_signal = "synthetic"
         l1_conf = min(mode_weight * det.confidence + 0.15, 0.85)
     elif det.mode == "Analytical":
@@ -235,7 +235,7 @@ def _map_engine_to_signal(
         l1_conf = 0.45
 
     if principle_tactic:
-        l1_findings.append(f"Principle '{det.principle}' maps to fraud tactic: {principle_tactic}")
+        l1_findings.append(f"Principle '{det.principle}' associated with influence tactic: {principle_tactic}")
 
     layers.append(LayerResult(
         layer="engine_mode_detection",
@@ -281,7 +281,7 @@ def _map_engine_to_signal(
 
     if cost_hits:
         human_score += 0.30
-        l3_findings.append("Genuine conviction cost present - personal stakes visible")
+        l3_findings.append("Personal investment present — genuine stakes visible")
     if noise_hits:
         human_score += 0.20
         l3_findings.append("Off-topic human noise present")
@@ -302,7 +302,7 @@ def _map_engine_to_signal(
             l3_signal = "synthetic"
             l3_conf = 0.65
         else:
-            l3_findings.append("No conviction cost signals detected")
+            l3_findings.append("No personal investment signals detected")
             l3_signal = "uncertain"
             l3_conf = 0.45
     else:
@@ -348,13 +348,13 @@ def _map_engine_to_signal(
         )
         if critical_hits >= 2:
             l5_findings.append(
-                f"Engine generated {critical_hits} critical reasoning questions - "
-                f"consistent with detected reasoning exploitation"
+                f"Generated {critical_hits} investigation questions — "
+                f"pattern consistent with synthetic reasoning"
             )
             l5_signal = "synthetic"
             l5_conf = min(0.55 + critical_hits * 0.08, 0.80)
         else:
-            l5_findings.append("Engine questions do not strongly indicate reasoning exploitation")
+            l5_findings.append("Investigation questions show low synthetic reasoning indicators")
             l5_signal = "uncertain"
             l5_conf = 0.45
     else:
