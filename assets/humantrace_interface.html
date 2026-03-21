@@ -2002,7 +2002,7 @@ function renderResults(r) {
   const mixedWarning = r.meta && r.meta.mixed_content_warning;
   const titles = {
     red: 'No genuine human reasoning detected',
-    yellow: mixedWarning ? 'Mixed content detected — human-edited synthetic message' : 'Insufficient signal to determine',
+    yellow: mixedWarning ? 'Mixed signals detected — uncertain result' : 'Insufficient signal to determine',
     green: 'Human reasoning presence detected',
   };
 

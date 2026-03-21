@@ -722,10 +722,9 @@ class HumanTraceScanner:
             mixed_content_meta = {
                 "mixed_content_warning": True,
                 "mixed_content_note": (
-                    "Reasoning signals are internally inconsistent across layers. "
-                    "This pattern is consistent with human-edited synthetic content — "
-                    "AI scaffolding with human modifications. "
-                    "Treat with significant caution."
+                    "Mixed signals detected across reasoning layers. "
+                    "Result is uncertain — some human indicators present alongside structured patterns. "
+                    "Verify the sender independently before responding."
                 ),
                 "layer_spread": round(spread, 3),
             }
@@ -784,7 +783,7 @@ class HumanTraceScanner:
             if mixed_meta.get("mixed_content_warning"):
                 base += (
                     " Note: reasoning signals show internal inconsistency — "
-                    "this message may contain human-edited synthetic content."
+                    "this message shows mixed reasoning signals — treat with caution."
                 )
             return base
 
@@ -797,10 +796,9 @@ class HumanTraceScanner:
         # Yellow
         if mixed_meta.get("mixed_content_warning"):
             return (
-                f"Warning: reasoning signals are internally inconsistent ({pct}% confidence). "
-                f"This pattern is consistent with human-edited synthetic content — "
-                f"AI scaffolding with human modifications. "
-                f"Do not respond until sender is independently verified."
+                f"Mixed signals detected ({pct}% confidence) — "
+                f"some human indicators present alongside structured patterns. "
+                f"Result is uncertain. Verify the sender independently before responding."
             )
         if self.first_contact:
             return (
