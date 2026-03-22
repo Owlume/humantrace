@@ -1,4 +1,4 @@
-name: L2 — CI Validation Pipeline
+name: L2 — CI Validation Pipelin
 
 on:
   pull_request:
