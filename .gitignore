@@ -22,3 +22,5 @@ trial_proof_packet_obj7/
 # Stage14 runtime logs (append-only, never commit)
 data/logs/block_events.jsonl
 
+data/sessions/
+data/logs/

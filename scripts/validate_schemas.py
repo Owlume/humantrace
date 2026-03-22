@@ -126,6 +126,17 @@ def collect_data_files():
         DATA_DIR / "runtime",
         DATA_DIR / "metrics",
         DATA_DIR / "golden",   # <-- key fix: do not schema-validate baseline snapshots
+        DATA_DIR / "sessions", # runtime scan sessions — no schema required
+        DATA_DIR / "logs",     # runtime logs — no schema required
+        DATA_DIR / "bse",      # runtime BSE fingerprints — no schema required
+        DATA_DIR / "validation", # validation datasets — no schema required
+    }
+    # HumanTrace-specific files without schemas — skipped intentionally
+    ignore_files = {
+        "bias_signal_weights.json",
+        "bias_signature_catelog.json",
+        "fraud_domain_patterns.json",
+        "humantrace_signals.json",
     }
 
     files = []
@@ -134,6 +145,8 @@ def collect_data_files():
             continue
         # OS-agnostic: skip if the file lives under any ignored dir
         if any(ig in p.parents for ig in ignore_dirs):
+            continue
+        if p.name in ignore_files:
             continue
         files.append(p)
     return files

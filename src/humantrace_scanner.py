@@ -287,6 +287,23 @@ class HumanTraceScanner:
         l4 = self._layer4_pattern_library(message)
         l5 = self._layer5_absence_signals(message)
 
+        # Run behavioural signal library (Hughes framework)
+        try:
+            from trace_signals.humantrace_behavioural_signals import analyse as behavioural_analyse
+            bsl = behavioural_analyse(message, context=detected_context)
+            if bsl.human_score > 0.20:
+                l3.confidence = round(min(l3.confidence + (bsl.human_score * 0.30), 0.85), 3)
+                if l3.signal == "uncertain" and bsl.human_score > 0.25:
+                    l3.signal = "human"
+                l3.findings.extend([f for f in bsl.findings if "human" in f.lower() or "genuine" in f.lower()])
+            if bsl.synthetic_score > 0.15:
+                l3.confidence = round(max(l3.confidence - (bsl.synthetic_score * 0.20), 0.30), 3)
+                if l3.signal == "uncertain" and bsl.synthetic_score > 0.20:
+                    l3.signal = "synthetic"
+                l3.findings.extend([f for f in bsl.findings if "synthetic" in f.lower() or "costless" in f.lower() or "uniform" in f.lower()])
+        except Exception:
+            pass
+
         layers = [l1, l2, l3, l4, l5]
 
         # Aggregate signal
