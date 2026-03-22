@@ -159,6 +159,11 @@ HUMAN_MARKERS = {
 
 # Contextual plausibility rules — does reasoning match claimed context?
 CONTEXT_PLAUSIBILITY = {
+    "authored_document": {
+        "never_says": [],
+        "confidence_penalty": 0.0,
+        "document_mode": True,
+    },
     "bank_officer": {
         "never_says": [
             r"\b(gift card|itunes|google play|wire (to|me)|send (cash|money) to)\b",
@@ -272,6 +277,11 @@ class HumanTraceScanner:
 
         # Run all five layers
         l1 = self._layer1_structural_reasoning(message)
+        # Store detected context for use by other layers
+        detected_context = context_hint
+        if not detected_context or detected_context not in CONTEXT_PLAUSIBILITY:
+            detected_context = self._auto_detect_context(message.lower())
+        self._current_context = detected_context
         l2 = self._layer2_contextual_plausibility(message, context_hint)
         l3 = self._layer3_conviction_cost(message)
         l4 = self._layer4_pattern_library(message)
@@ -467,6 +477,21 @@ class HumanTraceScanner:
     def _auto_detect_context(self, text: str) -> Optional[str]:
         """Infer likely claimed context from message content."""
         t = text.lower()
+        # Authored document detection — long structured text with intellectual markers
+        word_count = len(text.split())
+        intellectual_markers = bool(re.search(
+            r"\b(chapter|section|argument|thesis|hypothesis|evidence|research|analysis|"
+            r"conclusion|therefore|furthermore|moreover|however|nevertheless|"
+            r"we propose|this paper|this book|the author|studies show|data suggests)\b",
+            t, re.IGNORECASE
+        ))
+        personal_assertion = bool(re.search(
+            r"\b(i argue|i believe|i contend|i propose|in my view|in my experience|"
+            r"i have found|my research|my analysis|i suggest)\b",
+            t, re.IGNORECASE
+        ))
+        if word_count > 80 and (intellectual_markers or personal_assertion):
+            return "authored_document"
         if re.search(r"\b(bank|account|transaction|financial institution)\b", t):
             return "bank_officer"
         if re.search(r"\b(invest|return|profit|trading|opportunity|portfolio)\b", t):
@@ -494,10 +519,32 @@ class HumanTraceScanner:
         findings = []
         human_score = 0.0
 
-        cost_hits = self._match_any(t, HUMAN_MARKERS["cost_of_conclusion"])
-        if cost_hits:
-            human_score += 0.30
-            findings.append("Evidence of personal cost behind communication — genuine human signal")
+        # Document mode — look for intellectual conviction signals instead
+        doc_mode = hasattr(self, '_current_context') and self._current_context == "authored_document"
+        if doc_mode:
+            intellectual_cost = bool(re.search(
+                r"\b(i argue|i believe|i contend|i propose|in my view|in my experience|"
+                r"i have found|my research|i suggest|we found|our analysis|i am convinced)\b",
+                t, re.IGNORECASE
+            ))
+            specific_example = bool(re.search(
+                r"\b(for example|for instance|specifically|in particular|"
+                r"consider|take the case|as illustrated|as shown)\b",
+                t, re.IGNORECASE
+            ))
+            if intellectual_cost:
+                human_score += 0.35
+                findings.append("Personal intellectual assertion present — genuine human authorship signal")
+            if specific_example:
+                human_score += 0.20
+                findings.append("Specific examples present — synthetic text favours generalities")
+            if not intellectual_cost and not specific_example:
+                findings.append("No personal intellectual investment detected")
+        else:
+            cost_hits = self._match_any(t, HUMAN_MARKERS["cost_of_conclusion"])
+            if cost_hits:
+                human_score += 0.30
+                findings.append("Evidence of personal cost behind communication — genuine human signal")
 
         noise_hits = self._match_any(t, HUMAN_MARKERS["irrelevant_human_noise"])
         if noise_hits:
@@ -615,7 +662,9 @@ class HumanTraceScanner:
             t, re.IGNORECASE
         ))
         # Reduce absence penalties for formal/institutional content
-        penalty_multiplier = 0.40 if (institutional_present or formal_register) else 1.0
+        # Document mode removes absence penalties entirely — authored documents are legitimately purpose-pure
+        doc_mode = hasattr(self, '_current_context') and self._current_context == "authored_document"
+        penalty_multiplier = 0.0 if doc_mode else (0.40 if (institutional_present or formal_register) else 1.0)
 
         # No acknowledgment of recipient's possible doubt
         doubt_acknowledgment = re.search(
