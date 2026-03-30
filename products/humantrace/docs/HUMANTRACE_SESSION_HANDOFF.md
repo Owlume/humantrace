@@ -1,13 +1,13 @@
 # HumanTrace — Session Handoff Document
 *For continuity between Claude sessions*
-*Last updated: 22 March 2026*
+*Last updated: 30 March 2026*
 
 ---
 
 ## 1. Project Identity
 
 **Owlume** — reasoning clarity infrastructure (the engine)
-**HumanTrace** — human reasoning presence verification (the product)
+**HumanTrace** — malicious synthetic reasoning detection (the product)
 Tagline: *"Tells you if a real human sent that message — before you respond."*
 
 Domains: humantrace.au / humantrace.com.au
@@ -18,11 +18,15 @@ Full brief: docs/humantrace_owlume_brief.md
 
 ## 2. What HumanTrace Does
 
-Detects whether genuine human reasoning is present behind a communication —
-or whether it is synthetic fraud designed to deceive.
+Detects whether a message contains malicious synthetic reasoning —
+reasoning engineered to exploit human trust, distort judgment, or
+induce harmful action.
 
-Not a style detector. Not an AI content detector.
-A reasoning authenticity verifier.
+**Critical framing — locked:**
+HumanTrace is NOT an AI-content detector. It does NOT ask "was this written by AI?"
+It asks: "was this reasoning engineered to exploit a human?"
+
+Not anti-AI reasoning. Anti-synthetic reasoning used with malicious intent.
 
 Three signals: 🔴 RED / 🟡 YELLOW / 🟢 GREEN
 
@@ -75,6 +79,22 @@ C:\dev\owlume-engine\          ← Owlume platform monorepo root
 │   └── humantrace\            ← HumanTrace product
 │       ├── humantrace_api.py
 │       ├── src\
+│       │   ├── main.py                        ← NEW v0 engine entry point
+│       │   ├── signal_registry.json           ← NEW canonical signal ID registry
+│       │   ├── detectors\
+│       │   │   ├── __init__.py
+│       │   │   ├── intent_detector.py         ← NEW HT.INT.EXT.*
+│       │   │   ├── trust_hijack_detector.py   ← NEW HT.TRUST.AUTH.*
+│       │   │   ├── pressure_detector.py       ← NEW HT.PRESS.URG.*
+│       │   │   ├── distortion_detector.py     ← NEW HT.DIST.*
+│       │   │   └── authenticity_gap_detector.py ← NEW HT.AUTH.GAP.*
+│       │   ├── fusion\
+│       │   │   ├── __init__.py
+│       │   │   └── risk_fuser.py              ← NEW fusion layer
+│       │   ├── trace_signals\                 ← Signal library framework
+│       │   ├── humantrace_adapter.py
+│       │   ├── humantrace_scanner.py          ← OLD five-layer engine (not yet replaced)
+│       │   └── [other existing src files]
 │       ├── assets\
 │       ├── data\
 │       ├── docs\
@@ -101,11 +121,17 @@ Institutional interface: http://localhost:8000/institutional
 iPhone (local):          http://192.168.0.42:8000
 Tesseract OCR:           C:\Users\Brian-Owlume\AppData\Local\Programs\Tesseract-OCR\tesseract.exe
 
+**To test the new v0 engine directly:**
+```powershell
+cd C:\dev\owlume-engine\products\humantrace\src
+python -c "from main import analyse_message; r = analyse_message({'input_id': 'test', 'text': 'YOUR MESSAGE HERE'}); print(r['overall_risk']); print(r['summary'])"
+```
+
 ---
 
 ## 6. Validated Accuracy Results
 
-Dataset: 60 labeled messages, 4 categories
+**Original engine (60-message dataset):**
 
 | Metric | Result | Target |
 |--------|--------|--------|
@@ -114,15 +140,101 @@ Dataset: 60 labeled messages, 4 categories
 | Mixed content detection | 90% | ≥70% ✅ |
 | Genuine human accuracy | 100% | — ✅ |
 
+**New v0 engine (8-case smoke test, 30 March 2026):**
+
+| Case | Score | Label | Result |
+|------|-------|-------|--------|
+| Classic phishing SMS | 0.365 | HIGH | ✅ |
+| ATO impersonation | 0.415 | HIGH | ✅ |
+| Manager gift-card scam | 0.275 | MEDIUM | ✅ |
+| Sophisticated internal fraud | 0.214 | MEDIUM | ✅ |
+| Legitimate bank reminder | 0.025 | LOW | ✅ |
+| False dilemma + fear | 0.188 | MEDIUM | ✅ |
+| Legitimate debt collection | 0.079 | LOW | ✅ |
+| Genuine personal message | 0.000 | LOW | ✅ |
+
 Known limitations:
 - EC007: marketing urgency indistinguishable from fraud urgency
 - SF006/008/013: soft-language scams need real training data
 - Layer 1 (Reasoning Analysis) conflates genuine human social awkwardness
-  with synthetic social pressure — calibration target for next session
+  with synthetic social pressure — calibration target
+- Threshold boundary: short messages with real but sparse signals may
+  score just below MEDIUM (0.174 observed on "suspended immediately / verify now")
 
 ---
 
-## 7. Input Methods Built
+## 7. HumanTrace v0 Signal Engine — Architecture
+
+### Core purpose (locked framing)
+HumanTrace detects malicious synthetic reasoning — not AI-generated content.
+The detection question is: "Was this reasoning engineered to exploit a human?"
+
+### Three-tier reasoning spectrum
+- **A. Benign synthetic reasoning** — AI-assisted but legitimate. No flag.
+- **B. Ambiguous synthetic reasoning** — Optimised persuasion, unclear intent. Soft signal.
+- **C. Malicious synthetic reasoning** — Primary target. High-confidence flag.
+
+### Signal registry — canonical ID system
+File: `src/signal_registry.json`
+Format: `HT.[FAMILY].[SUBFAMILY].[NN]`
+
+All signal IDs, families, weights, composite patterns, and schema
+constraints live in this file. It is the single source of truth.
+No signal ID exists outside the registry.
+
+**Schema constraint (locked 2026-03-30):**
+Output kind is SIGNAL only. No `recommended_reflection`, no advice,
+no guidance language in any output field.
+
+### Five detector families
+
+| Family | File | Signals | Weight |
+|--------|------|---------|--------|
+| INT — Intent Extraction | `detectors/intent_detector.py` | HT.INT.EXT.01–05 | 0.30 |
+| TRUST — Trust Hijack | `detectors/trust_hijack_detector.py` | HT.TRUST.AUTH.01–05 | 0.22 |
+| PRESS — Pressure/Urgency | `detectors/pressure_detector.py` | HT.PRESS.URG.01–04 | 0.22 |
+| DIST — Reasoning Distortion | `detectors/distortion_detector.py` | HT.DIST.01–05 | 0.16 |
+| AUTH — Authenticity Gap | `detectors/authenticity_gap_detector.py` | HT.AUTH.GAP.01–04 | 0.10 |
+
+**AUTH family cap:** Cannot contribute more than 0.10 to overall score.
+Texture signal only — cannot drive a verdict independently.
+
+**PSY signals (HT.PSY.*):** Defined in registry, NOT yet implemented.
+Deferred to post-pilot. Will be amplifiers only, never primary detectors.
+
+### Fusion layer
+File: `src/fusion/risk_fuser.py`
+
+Key mechanisms:
+- **Dominance amplification:** If one family scores > 0.65, its weight increases by 0.20
+- **Dominance override:** If one primary family scores > 0.75, verdict forced HIGH
+- **Interaction boosts:** Additive boosts when families co-fire (e.g. INT+PRESS +0.08)
+- **Composite patterns:** CP.AI.FRAUD, CP.HUMAN.MANIP, CP.INST.MALICE
+
+Calibrated thresholds (from actual output distribution):
+- HIGH: ≥ 0.35
+- MEDIUM: ≥ 0.18
+- LOW: < 0.18
+
+### Entry point
+File: `src/main.py`
+Function: `analyse_message(payload: dict) -> dict`
+
+**Not yet wired into humantrace_api.py.** The old `humantrace_scanner.py`
+five-layer engine is still serving the live product. Wiring the new
+engine into the API is a pending build task.
+
+### Three composite patterns
+
+| ID | Label | Trigger |
+|----|-------|---------|
+| CP.AI.FRAUD | AI Fraud Signature | AUTH>0.20 + PRESS>0.35 + INT>0.40 |
+| CP.HUMAN.MANIP | Human Manipulator | TRUST>0.25 + INT>0.15 + PRESS>0.15 |
+| CP.INST.MALICE | Institutional Malice | DIST>0.25 + INT>0.30 + TRUST>0.25 |
+
+---
+
+## 8. Input Methods Built
 
 | Method | Status | How |
 |--------|--------|-----|
@@ -138,12 +250,12 @@ Known limitations:
 
 ---
 
-## 8. UI Language — Two Vocabulary Principle
+## 9. UI Language — Two Vocabulary Principle
 
 **CRITICAL — established and locked in:**
 
-Internal code, schemas, logs, DilemmaNet, BSE, handoff docs use precise
-technical vocabulary. User-facing UI uses layman language only.
+Internal code, schemas, logs, handoff docs use precise technical vocabulary.
+User-facing UI uses layman language only.
 
 | Internal (code) | User-facing (UI) |
 |-----------------|------------------|
@@ -157,58 +269,7 @@ technical vocabulary. User-facing UI uses layman language only.
 | contextual_plausibility | Specific Detail |
 
 All layer names and body text in consumer UI have been translated.
-Institutional UI language audit still outstanding.
-
----
-
-## 9. Signal Architecture
-
-### Five-layer engine (humantrace_scanner.py + humantrace_adapter.py)
-
-| Layer | Internal name | User label | What it measures |
-|-------|--------------|------------|-----------------|
-| L1 | engine_mode_detection | Reasoning Analysis | Owlume mode detection, persuasion architecture |
-| L2 | contextual_plausibility | Specific Detail | Context plausibility vs claimed role |
-| L3 | conviction_cost | Personal Investment | Personal stakes, emotional cost |
-| L4 | pattern_library | Known Fraud Patterns | Known synthetic fraud topologies |
-| L5 | absence_signals | Missing Human Signals | Purpose-purity, absence of human irregularity |
-
-### trace_signals/ — Signal library architecture (NEW)
-
-A separate, extensible signal library framework. Each module follows
-a common interface contract returning `SignalLibraryResult`.
-
-**humantrace_behavioural_signals.py — v1 (Hughes framework)**
-Derived from intelligence and interrogation tradecraft (*The Ellipsis Manual*).
-
-Three signal categories implemented:
-
-| Signal | Weight | What it measures |
-|--------|--------|-----------------|
-| Micro-variation | 0.35 | Self-interruption, topic drift, register shifts, sentence length variance |
-| Limbic leakage | 0.40 | Emotional leakage, over/under-qualification, spontaneous self-disclosure |
-| Investment asymmetry | 0.25 | Whether emotional weight matches the size of the ask |
-
-Two further categories specified for v2:
-- Precision asymmetry (generic vs specific references, round vs exact numbers)
-- Structural smoothness (transition word density, paragraph regularity)
-
-**Smoke test results:**
-
-| Test case | Human | Synthetic | Verdict |
-|-----------|-------|-----------|---------|
-| Genuine personal message | 0.338 | 0.035 | ✅ Correct |
-| Sophisticated fraud (short, intellectual) | 0.000 | 0.230 | ✅ Correct |
-| Book passage | 0.070 | 0.122 | ✅ Honest (uncertain) |
-| Phishing email | 0.000 | 0.140 | ✅ Correct |
-
-**Wiring:** BSL results feed into L3 (Personal Investment). If human_score
-> 0.20, L3 confidence increases and findings are augmented. If
-synthetic_score > 0.15, L3 confidence decreases.
-
-**Future modules:** Add new `.py` files to `src/trace_signals/` following
-the same `SignalLibraryResult` interface. Each module is independently
-versioned, tested, and validated.
+**Institutional UI language audit still outstanding.**
 
 ---
 
@@ -224,16 +285,8 @@ versioned, tested, and validated.
 ### Modules (src/)
 
 **humantrace_consistency.py** — Cross-document consistency scorer
-- Five dimensions: authorial_voice (0.25), vocabulary_register (0.20),
-  timeline_coherence (0.20), named_entity_alignment (0.20), employment_narrative (0.15)
-- Thresholds: GREEN ≥0.70 / YELLOW ≥0.40 / RED <0.40
-
 **humantrace_bse_matcher.py** — Cross-application BSE matching
-- Document matches feed up to application clusters
-- Thresholds: HIGH ≥0.88 (RED) / MEDIUM ≥0.75 (YELLOW)
-
 **humantrace_document_extractor.py** — Format-aware text extraction
-- .docx → python-docx / .pdf → pdfminer.six + OCR / images → Tesseract
 
 ### API endpoints
 
@@ -263,12 +316,6 @@ versioned, tested, and validated.
 **Primary blocker:** Procurement — strategy is to frame as research
 collaboration, use synthetic data, stay below procurement threshold.
 
-**Pre-meeting actions still outstanding:**
-1. Benchmark scan speed on production server
-2. Build synthetic dataset: 300 documents, 200 genuine / 100 synthetic-fraud
-3. Prepare one-page ASIC/APRA governance brief
-4. Draft model DPA template
-
 ---
 
 ## 12. GitHub / CI Status
@@ -279,18 +326,8 @@ Commit email: shen.baiping@hotmail.com
 **CI status:**
 - ✅ Owlume Smoke Tests — green on every push
 - ✅ Owlume Schema Validation — green on every push
-- ⚪ L2 CI Validation Pipeline — disabled on push (pre-existing failure
-  from Feb 2026, unrelated to HumanTrace). Only runs on pull requests.
+- ⚪ L2 CI Validation Pipeline — disabled on push
 - ✅ L1 Auto-Learning Loop — runs daily at 6am, green
-
-**GitHub Personal Access Token on server:**
-Needs `workflow` scope added for future workflow file changes.
-Current token can push all other files — only workflow files require
-the extra scope.
-
-**Branch protection rules:** Still active — shows "bypassed rule violations"
-on every push. Not blocking but worth disabling for solo development.
-Go to: https://github.com/Owlume/humantrace/settings/branches
 
 **To push updates from ThinkPad:**
 ```powershell
@@ -312,22 +349,43 @@ systemctl restart humantrace
 
 ## 13. Outstanding Items — Next Session Priorities
 
-**Calibration (highest priority before bank pilot):**
-- [ ] Layer 1 (Reasoning Analysis) conflates genuine social awkwardness
-      with synthetic social pressure — needs mode detector recalibration
-- [ ] Scan speed benchmark on production server — must measure before
-      claiming <8 sec in bank meeting
+### IMMEDIATE — Pre-code action plan (Phase 1)
+Start here in the next session. All writing tasks, no code, no server.
+
+- [ ] **1.1 Calibration Baseline Definition Document** — BLOCKING
+      What human baseline reasoning looks like per enterprise context.
+      Output: `calibration_baseline_v1.md` — 3–5 pages.
+      This is the single most important task before the bank pilot.
+
+- [ ] **1.2 Persuasion Optimisation Boundary Definition** — BLOCKING
+      Separates legitimate professional communication from synthetic
+      persuasion optimisation for Signal Domain 5.
+      Output: `persuasion_boundary_definition_v1.md` — 2 pages max.
+
+- [ ] **1.3 Cognitive Governance Field Definition** — IMPORTANT
+      One-page definition of cognitive governance as a named discipline.
+      Output: One page — opens every regulatory conversation.
+
+- [ ] **1.4 Signal-to-Action Boundary** — BLOCKING
+      Written resolution of tension between signal-not-action principle
+      and Section 3.6 of Technical Definition.
+      Output: Half page appended to build memo.
+
+### Build tasks (pending, after Phase 1)
+- [ ] Wire new v0 engine (`src/main.py`) into `humantrace_api.py`
+      replacing old `humantrace_scanner.py` calls
+- [ ] Institutional UI language audit (two-vocabulary principle)
+- [ ] Layer 1 recalibration (conflates social awkwardness with pressure)
 - [ ] Behavioural signals v2: precision asymmetry + structural smoothness
+- [ ] Scan speed benchmark on production server
 
-**UI:**
-- [ ] Institutional UI language audit — same layman label principle as consumer
-
-**Bank pilot preparation:**
+### Bank pilot preparation (Phase 4)
 - [ ] Synthetic dataset build (300 documents)
 - [ ] ASIC/APRA one-page governance brief
 - [ ] Model DPA template
+- [ ] Analyst demonstration script
 
-**Infrastructure:**
+### Infrastructure
 - [ ] GitHub Personal Access Token — add workflow scope
 - [ ] GitHub branch protection rules — disable for solo development
 - [ ] Domain Lock on in Crazy Domains (both domains)
@@ -336,13 +394,20 @@ systemctl restart humantrace
 
 ## 14. Strategic Context
 
+**Core purpose (locked):**
+HumanTrace is not anti-AI reasoning.
+HumanTrace is anti-synthetic reasoning used with malicious intent.
+
 **Moat architecture — established principles:**
-- Two vocabularies: internal technical / external layman. Never let
-  internal vocabulary appear in user-facing output.
-- trace_signals/ is the extensible signal library framework. Each new
-  framework (Hughes v1 is first) gets its own named, versioned module.
-- BSE fingerprint store accumulates with every scan — compounds over time
-  in ways a competitor starting today cannot replicate.
+- Two vocabularies: internal technical / external layman
+- signal_registry.json is the canonical signal ID system — one system only
+- BSE fingerprint store compounds over time
+- Composite patterns (CP.*) are the named detection signatures —
+  these are the proprietary detection intelligence
+
+**The detection question (locked):**
+Not: "Was this produced by AI?"
+But: "Was this reasoning engineered to exploit a human?"
 
 **Five-year vision:**
 Not a fraud detector — a reasoning credentialing system.
@@ -361,14 +426,33 @@ reasoning presence becomes a certifiable credential.
 
 ---
 
-## 16. How to Continue This Work
+## 16. Key Documents Produced This Session
+
+| Document | Purpose |
+|----------|---------|
+| `humantrace_architecture_mapping.docx` | Phase 3.1 canonical architecture map — three mapping tables reconciling all prior architectural descriptions |
+| `signal_registry.json` | Canonical signal ID registry — single source of truth for all HT.* IDs |
+| `intent_detector.py` | HT.INT.EXT.01–05 — intent extraction detector |
+| `trust_hijack_detector.py` | HT.TRUST.AUTH.01–05 — trust hijack detector |
+| `pressure_detector.py` | HT.PRESS.URG.01–04 — pressure/urgency detector |
+| `distortion_detector.py` | HT.DIST.01–05 — reasoning distortion detector |
+| `authenticity_gap_detector.py` | HT.AUTH.GAP.01–04 — authenticity gap detector |
+| `risk_fuser.py` | Fusion layer with dominance amplification, interaction boosts, composite patterns |
+| `main.py` | Single entry point — `analyse_message()` |
+
+---
+
+## 17. How to Continue This Work
 
 When starting a new Claude session:
 1. Paste this entire document as your first message
-2. Claude will have full context to continue immediately
-3. Reference specific file names when asking for code changes
-4. GitHub repo and live server both contain current code
+2. State which task you are starting (e.g. "Starting Phase 1, Task 1.1")
+3. Claude will have full context to continue immediately
+
+**Next session opens with:** Phase 1, Task 1.1 —
+Calibration Baseline Definition Document
 
 ---
 
 *End of handoff document*
+*HumanTrace / Owlume Pty Ltd — Confidential*
