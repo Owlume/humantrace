@@ -1,0 +1,444 @@
+{
+  "_meta": {
+    "document": "HumanTrace Signal Registry",
+    "version": "1.0",
+    "date": "2026-03-30",
+    "owner": "Owlume Pty Ltd",
+    "status": "canonical",
+    "supersedes": [
+      "HT-* hyphenated ID system (v0 spec)",
+      "PSY-*/BEH-*/RSN-* taxonomy ID system",
+      "existing five-layer internal names"
+    ],
+    "description": "Single canonical reference for all HumanTrace signal IDs. Every detector, test fixture, and build session references this file. No signal ID exists outside this registry."
+  },
+
+  "_schema_constraints": {
+    "output_fields_permitted": ["summary", "plain_reasoning", "signal_scores", "detected_features", "overall_risk"],
+    "output_fields_prohibited": ["recommended_reflection", "advice", "action_prompt", "guidance"],
+    "output_kind": "SIGNAL only — not ACTION, ADVICE, or INSTRUCTIONS",
+    "rationale": "Option A decision locked 2026-03-30. Reflection/guidance output removed entirely. Signal-only output is cleanest for APRA regulatory defensibility.",
+    "psychological_signals_rule": "HT.PSY.* signals MUST NOT be used as primary detectors. Permitted as score amplifiers only, and only when combined with one or more L2 or L3 signals scoring above 0.45. Standalone HT.PSY.* signals cannot produce a risk flag."
+  },
+
+  "_families": {
+    "INT": "Intent Extraction — detects reasoning steered toward harmful or extractive outcomes",
+    "TRUST": "Trust Hijack — detects illegitimate borrowing of authority or legitimacy",
+    "PRESS": "Pressure / Urgency — detects forced narrowing of decision space or time compression",
+    "AUTH": "Authenticity Gap — detects absence of natural human cognitive texture",
+    "DIST": "Reasoning Distortion — detects manipulative logic patterns",
+    "PSY": "Psychological — amplifiers only, derived from intent-origin indicators"
+  },
+
+  "_layers": {
+    "L1": "Psychological — intent origin signals",
+    "L2": "Behavioural — execution pattern signals",
+    "L3": "Reasoning — cognitive structure signals"
+  },
+
+  "signals": [
+
+    {
+      "id": "HT.INT.EXT.01",
+      "label": "Direct money or payment extraction",
+      "family": "INT",
+      "subfamily": "EXT",
+      "layer": "L2",
+      "role": "primary_detector",
+      "status": "new",
+      "description": "Message contains explicit request for payment, transfer, or financial action.",
+      "example_evidence": ["pay", "transfer funds", "send payment", "wire", "gift card", "crypto"],
+      "build_step": 1
+    },
+    {
+      "id": "HT.INT.EXT.02",
+      "label": "Credential or identity extraction",
+      "family": "INT",
+      "subfamily": "EXT",
+      "layer": "L2",
+      "role": "primary_detector",
+      "status": "new",
+      "description": "Message requests login credentials, identity verification, or account access.",
+      "example_evidence": ["verify your identity", "login", "sign in", "reset password", "confirm account details"],
+      "build_step": 1
+    },
+    {
+      "id": "HT.INT.EXT.03",
+      "label": "Personal data extraction",
+      "family": "INT",
+      "subfamily": "EXT",
+      "layer": "L2",
+      "role": "primary_detector",
+      "status": "new",
+      "description": "Message requests personal or sensitive information beyond what context warrants.",
+      "example_evidence": ["provide your details", "confirm your address", "send your tax file number"],
+      "build_step": 1
+    },
+    {
+      "id": "HT.INT.EXT.04",
+      "label": "Compliance without verification request",
+      "family": "INT",
+      "subfamily": "EXT",
+      "layer": "L2",
+      "role": "primary_detector",
+      "status": "new",
+      "description": "Message requests action or compliance before any independent verification pathway is offered.",
+      "example_evidence": ["act now", "do this immediately", "click here to resolve"],
+      "build_step": 1
+    },
+    {
+      "id": "HT.INT.EXT.05",
+      "label": "Secrecy or isolation request",
+      "family": "INT",
+      "subfamily": "EXT",
+      "layer": "L2",
+      "role": "primary_detector",
+      "status": "new",
+      "description": "Message instructs recipient to keep communication secret or avoid discussing with others.",
+      "example_evidence": ["keep this confidential", "do not tell", "only you", "between us", "discreet"],
+      "build_step": 1
+    },
+
+    {
+      "id": "HT.TRUST.AUTH.01",
+      "label": "Authority invocation without grounding",
+      "family": "TRUST",
+      "subfamily": "AUTH",
+      "layer": "L1",
+      "role": "primary_detector",
+      "status": "new",
+      "description": "Message claims authority (role, rank, institution) without providing verifiable grounding or independent confirmation pathway.",
+      "example_evidence": ["as your manager", "this is official", "on behalf of the board"],
+      "build_step": 2
+    },
+    {
+      "id": "HT.TRUST.AUTH.02",
+      "label": "Institution impersonation",
+      "family": "TRUST",
+      "subfamily": "AUTH",
+      "layer": "L1",
+      "role": "primary_detector",
+      "status": "new",
+      "description": "Message claims to originate from a financial institution, government body, or regulatory authority without verifiable markers.",
+      "example_evidence": ["the bank fraud team", "ATO notification", "ASIC compliance", "police cybercrime unit"],
+      "build_step": 2
+    },
+    {
+      "id": "HT.TRUST.AUTH.03",
+      "label": "Procedural intimidation",
+      "family": "TRUST",
+      "subfamily": "AUTH",
+      "layer": "L1",
+      "role": "primary_detector",
+      "status": "new",
+      "description": "Message uses procedural or legal language to manufacture compliance pressure without genuine process grounding.",
+      "example_evidence": ["final legal notice", "mandatory compliance", "failure to respond constitutes acceptance"],
+      "build_step": 2
+    },
+    {
+      "id": "HT.TRUST.AUTH.04",
+      "label": "Synthetic empathy framing",
+      "family": "TRUST",
+      "subfamily": "AUTH",
+      "layer": "L1",
+      "role": "primary_detector",
+      "status": "new",
+      "description": "Message uses manufactured empathy or concern to disarm scepticism before an extraction or compliance request.",
+      "example_evidence": ["we understand this is stressful", "we are here to help you", "your wellbeing is our priority"],
+      "build_step": 2
+    },
+    {
+      "id": "HT.TRUST.AUTH.05",
+      "label": "False legitimacy markers",
+      "family": "TRUST",
+      "subfamily": "AUTH",
+      "layer": "L1",
+      "role": "primary_detector",
+      "status": "new",
+      "description": "Message uses formatting, reference numbers, or official-sounding language to simulate legitimacy without verifiable substance.",
+      "example_evidence": ["Case ID: 449821", "Reference: ATO-2026-COMP", "Ticket #", "Official Notice"],
+      "build_step": 2
+    },
+
+    {
+      "id": "HT.PRESS.URG.01",
+      "label": "Urgency escalation",
+      "family": "PRESS",
+      "subfamily": "URG",
+      "layer": "L2",
+      "role": "primary_detector",
+      "status": "partial",
+      "description": "Message creates artificial time pressure to suppress deliberation. Partially implemented in existing L4 pattern_library.",
+      "example_evidence": ["act now", "immediately", "today only", "urgent", "within 24 hours"],
+      "build_step": 3
+    },
+    {
+      "id": "HT.PRESS.URG.02",
+      "label": "Threat of immediate loss",
+      "family": "PRESS",
+      "subfamily": "URG",
+      "layer": "L2",
+      "role": "primary_detector",
+      "status": "partial",
+      "description": "Message threatens concrete negative consequence if action is not taken immediately.",
+      "example_evidence": ["account will be suspended", "you will lose access", "funds will be frozen", "legal action will proceed"],
+      "build_step": 3
+    },
+    {
+      "id": "HT.PRESS.URG.03",
+      "label": "False deadline",
+      "family": "PRESS",
+      "subfamily": "URG",
+      "layer": "L2",
+      "role": "primary_detector",
+      "status": "new",
+      "description": "Message imposes a specific deadline that cannot be independently verified and serves only to compress decision time.",
+      "example_evidence": ["by midnight tonight", "expires in 2 hours", "last chance — closes today"],
+      "build_step": 3
+    },
+    {
+      "id": "HT.PRESS.URG.04",
+      "label": "Option narrowing",
+      "family": "PRESS",
+      "subfamily": "URG",
+      "layer": "L2",
+      "role": "primary_detector",
+      "status": "new",
+      "description": "Message presents only one acceptable path forward, eliminating alternatives without justification.",
+      "example_evidence": ["the only way to resolve this", "you must use this link", "no other option is available"],
+      "build_step": 3
+    },
+
+    {
+      "id": "HT.AUTH.GAP.01",
+      "label": "Unnatural fluency",
+      "family": "AUTH",
+      "subfamily": "GAP",
+      "layer": "L3",
+      "role": "primary_detector",
+      "status": "exists",
+      "description": "Message exhibits frictionless, over-optimised language in a context where natural human communication would show hesitation, imprecision, or effort. Primary implementation: humantrace_behavioural_signals.py (micro-variation signal).",
+      "maps_from": ["HT-AUTHGAP-1", "RSN-SYNTHETIC-CERTAINTY", "L5 absence_signals"],
+      "build_step": 5
+    },
+    {
+      "id": "HT.AUTH.GAP.02",
+      "label": "Absence of bounded uncertainty",
+      "family": "AUTH",
+      "subfamily": "GAP",
+      "layer": "L3",
+      "role": "primary_detector",
+      "status": "exists",
+      "description": "Message shows zero hedging or uncertainty where authentic human reasoning would acknowledge limits. Primary implementation: humantrace_behavioural_signals.py (limbic leakage signal — inverse).",
+      "maps_from": ["HT-AUTHGAP-2", "RSN-FRICTION-ABSENT", "L3 conviction_cost"],
+      "build_step": 5
+    },
+    {
+      "id": "HT.AUTH.GAP.03",
+      "label": "Investment asymmetry",
+      "family": "AUTH",
+      "subfamily": "GAP",
+      "layer": "L3",
+      "role": "primary_detector",
+      "status": "exists",
+      "description": "Emotional weight or urgency expressed is disproportionate to the actual size or nature of the request. Primary implementation: humantrace_behavioural_signals.py (investment asymmetry signal).",
+      "maps_from": ["HT-AUTHGAP-3", "RSN-COMPRESSION", "L3 conviction_cost"],
+      "build_step": 5
+    },
+    {
+      "id": "HT.AUTH.GAP.04",
+      "label": "Low lived specificity",
+      "family": "AUTH",
+      "subfamily": "GAP",
+      "layer": "L3",
+      "role": "primary_detector",
+      "status": "new",
+      "description": "Message lacks the concrete personal detail, named reference, or contextual anchoring that genuine human communication in this context would naturally contain.",
+      "maps_from": ["HT-AUTHGAP-4", "L2 contextual_plausibility"],
+      "build_step": 5
+    },
+
+    {
+      "id": "HT.DIST.01",
+      "label": "False dilemma",
+      "family": "DIST",
+      "subfamily": null,
+      "layer": "L3",
+      "role": "primary_detector",
+      "status": "new",
+      "description": "Message presents a binary choice that eliminates valid alternatives, forcing the recipient into a constructed either/or decision.",
+      "example_evidence": ["either you do this or", "your only options are", "if you don't act, then"],
+      "build_step": 4
+    },
+    {
+      "id": "HT.DIST.02",
+      "label": "Circular legitimacy",
+      "family": "DIST",
+      "subfamily": null,
+      "layer": "L3",
+      "role": "primary_detector",
+      "status": "new",
+      "description": "Message justifies its own authority or legitimacy by reference to itself or to unverifiable claims, creating a closed reasoning loop.",
+      "example_evidence": ["trust us because this is official", "this is legitimate because we say so"],
+      "build_step": 4
+    },
+    {
+      "id": "HT.DIST.03",
+      "label": "Fear override",
+      "family": "DIST",
+      "subfamily": null,
+      "layer": "L3",
+      "role": "primary_detector",
+      "status": "new",
+      "description": "Message uses fear of consequence to bypass rational evaluation, substituting emotional pressure for reasoned justification.",
+      "example_evidence": ["if you fail to act", "the consequences will be severe", "you will be held responsible"],
+      "build_step": 4
+    },
+    {
+      "id": "HT.DIST.04",
+      "label": "Post-hoc justification structure",
+      "family": "DIST",
+      "subfamily": null,
+      "layer": "L3",
+      "role": "primary_detector",
+      "status": "new",
+      "description": "Message reaches its conclusion first and constructs supporting reasoning afterward. Detectable as conclusion-first structure with selectively assembled evidence.",
+      "maps_from": ["RSN-POST-HOC-JUSTIFICATION"],
+      "build_step": 4
+    },
+    {
+      "id": "HT.DIST.05",
+      "label": "Contradiction masking",
+      "family": "DIST",
+      "subfamily": null,
+      "layer": "L3",
+      "role": "primary_detector",
+      "status": "new",
+      "description": "Message contains conflicting statements that are presented without acknowledgment or reconciliation.",
+      "maps_from": ["RSN-CONTRADICTION-MASK"],
+      "build_step": 4
+    },
+
+    {
+      "id": "HT.PSY.CONS.01",
+      "label": "Absence of harm acknowledgment",
+      "family": "PSY",
+      "subfamily": "CONS",
+      "layer": "L1",
+      "role": "amplifier_only",
+      "status": "new",
+      "description": "AMPLIFIER ONLY. Message shows no acknowledgment of harm, risk, or negative impact on the recipient. Must not be used as primary detector. Boosts overall score only when combined with HT.INT.* or HT.PRESS.* signals above 0.45.",
+      "maps_from": ["PSY-CONSCIENCE-ABSENT"],
+      "build_step": 7
+    },
+    {
+      "id": "HT.PSY.INST.01",
+      "label": "Instrumental treatment of recipient",
+      "family": "PSY",
+      "subfamily": "INST",
+      "layer": "L1",
+      "role": "amplifier_only",
+      "status": "new",
+      "description": "AMPLIFIER ONLY. Message treats the recipient as a means to an end with no recognition of their autonomy or right to decline. Must not be used as primary detector.",
+      "maps_from": ["PSY-INSTRUMENTALIZATION"],
+      "build_step": 7
+    },
+    {
+      "id": "HT.PSY.CHARM.01",
+      "label": "Rapid alignment mimicry",
+      "family": "PSY",
+      "subfamily": "CHARM",
+      "layer": "L1",
+      "role": "amplifier_only",
+      "status": "new",
+      "description": "AMPLIFIER ONLY. Message exhibits rapid mirroring of recipient tone, values, or stated preferences to manufacture false rapport. Must not be used as primary detector.",
+      "maps_from": ["PSY-CHARM-MIMICRY"],
+      "build_step": 7
+    }
+
+  ],
+
+  "_composite_patterns": {
+    "description": "Named composite patterns triggered when multiple signal families fire together. Composite patterns amplify overall risk score.",
+    "patterns": [
+      {
+        "id": "CP.AI.FRAUD",
+        "label": "AI Fraud Signature",
+        "trigger_conditions": {
+          "HT.AUTH.GAP.*": "> 0.45",
+          "HT.PRESS.URG.*": "> 0.60",
+          "HT.INT.EXT.*": "> 0.50"
+        },
+        "score_boost": 0.08,
+        "description": "High authenticity gap combined with urgency pressure and extraction intent. Consistent with AI-assisted fraud generation."
+      },
+      {
+        "id": "CP.HUMAN.MANIP",
+        "label": "Human Manipulator",
+        "trigger_conditions": {
+          "HT.TRUST.AUTH.*": "> 0.55",
+          "HT.PSY.CHARM.*": "> 0.40",
+          "HT.PRESS.URG.*": "> 0.45"
+        },
+        "score_boost": 0.07,
+        "description": "Trust hijack with synthetic empathy and escalating pressure. Consistent with skilled human social engineering."
+      },
+      {
+        "id": "CP.INST.MALICE",
+        "label": "Institutional Malice",
+        "trigger_conditions": {
+          "HT.DIST.*": "> 0.50",
+          "HT.INT.EXT.*": "> 0.45",
+          "HT.PSY.INST.*": "> 0.40"
+        },
+        "score_boost": 0.07,
+        "description": "Reasoning distortion combined with extraction intent and instrumental framing. Consistent with system-driven unethical behaviour."
+      }
+    ]
+  },
+
+  "_fusion_weights": {
+    "version": "1.0",
+    "note": "Starting weights only. To be recalibrated against corpus once Phase 2 corpus is built.",
+    "weights": {
+      "INT": 0.30,
+      "TRUST": 0.22,
+      "PRESS": 0.22,
+      "AUTH": 0.10,
+      "DIST": 0.16
+    },
+    "auth_gap_cap": "Authenticity Gap (AUTH) family cannot contribute more than 0.10 to overall score independently. It is a texture signal, not a primary risk signal.",
+    "psy_amplifier_cap": "PSY signals cannot contribute more than 0.05 to overall score and only when gated by L2/L3 signals above 0.45."
+  },
+
+  "_risk_thresholds": {
+    "low": "0.00 – 0.29",
+    "medium": "0.30 – 0.59",
+    "high": "0.60 – 1.00",
+    "clamp": "Score is clamped at 1.0 after all boosts are applied."
+  },
+
+  "_negative_features": {
+    "description": "Features that reduce risk score. Present when message shows characteristics of legitimate communication.",
+    "features": [
+      "Explicit independent verification pathway provided",
+      "Multiple options presented without narrowing",
+      "No time compression",
+      "Concrete verifiable grounding (names, reference numbers checkable externally)",
+      "No secrecy request",
+      "Balanced acknowledgment of risk or uncertainty",
+      "Process explanation that matches known legitimate institutional behaviour"
+    ]
+  },
+
+  "_build_sequence": {
+    "step_0": "This file. Signal registry created and locked before any detector code.",
+    "step_1": "Intent Extraction detector — HT.INT.EXT.01 through HT.INT.EXT.05",
+    "step_2": "Trust Hijack detector — HT.TRUST.AUTH.01 through HT.TRUST.AUTH.05",
+    "step_3": "Pressure / Urgency detector — HT.PRESS.URG.01 through HT.PRESS.URG.04",
+    "step_4": "Reasoning Distortion detector — HT.DIST.01 through HT.DIST.05",
+    "step_5": "Authenticity Gap wiring — connect existing behavioural_signals.py to HT.AUTH.GAP.01 through HT.AUTH.GAP.04",
+    "step_6": "Fusion layer redesign — new weights, interaction boosts, composite pattern matching",
+    "step_7": "Psychological amplifiers — HT.PSY.* as score modifiers only, post-pilot"
+  }
+}

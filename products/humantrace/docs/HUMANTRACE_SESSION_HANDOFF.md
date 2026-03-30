@@ -67,34 +67,20 @@ journalctl -u humantrace -n 100
 ## 4. Complete File Architecture
 
 ```
-/var/www/humantrace/  (production server)
-C:\dev\owlume-engine\ (local ThinkPad)
-├── humantrace_api.py              ← FastAPI backend
-├── src/
-│   ├── humantrace_scanner.py      ← Five-layer detection engine
-│   ├── humantrace_adapter.py      ← ElenxEngine adapter
-│   ├── humantrace_logger.py       ← DilemmaNet logging
-│   ├── humantrace_bse.py          ← Bias Signature Engine
-│   ├── humantrace_url_scanner.py  ← URL/domain fraud detection
-│   ├── humantrace_consistency.py  ← Cross-doc consistency scorer
-│   ├── humantrace_bse_matcher.py  ← Cross-app BSE matching
-│   ├── humantrace_document_extractor.py ← Format-aware text extraction
-│   ├── elenx_engine.py            ← Core Owlume reasoning engine
-│   ├── trace_signals/             ← Signal library architecture — NEW
-│   │   ├── __init__.py
-│   │   └── humantrace_behavioural_signals.py ← Hughes framework v1
-│   └── [other engine files]
-├── assets/
-│   ├── humantrace_interface.html  ← Consumer UI
-│   └── humantrace_institutional.html ← Institutional UI
-├── data/
-│   ├── bse/                       ← Sender fingerprints (runtime)
-│   ├── logs/                      ← DilemmaNet JSONL logs (gitignored)
-│   └── sessions/                  ← File-based session store (gitignored)
-└── docs/
-    ├── humantrace_owlume_brief.md
-    ├── humantrace_session_handoff.md
-    └── humantrace_deployment_guide.md
+C:\dev\owlume-engine\          ← Owlume platform monorepo root
+├── owlume_core\               ← Shared engine
+│   ├── elenx_engine.py
+│   └── elenx_loader.py
+├── products\
+│   └── humantrace\            ← HumanTrace product
+│       ├── humantrace_api.py
+│       ├── src\
+│       ├── assets\
+│       ├── data\
+│       ├── docs\
+│       ├── extension\
+│       └── reports\
+└── pilot\                     ← Bank pilot materials
 ```
 
 **Pilot documents (saved locally on ThinkPad, NOT in repo):**
@@ -106,8 +92,7 @@ C:\dev\owlume-engine\ (local ThinkPad)
 ## 5. How to Run Locally (ThinkPad)
 
 ```powershell
-cd C:\dev\owlume-engine
-.\.venv\Scripts\Activate.ps1
+cd C:\dev\owlume-engine\products\humantrace
 python -m uvicorn humantrace_api:app --reload --host 0.0.0.0 --port 8000
 ```
 
