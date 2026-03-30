@@ -38,6 +38,10 @@ import datetime as dt
 from typing import Dict, List, Optional, Any, Tuple
 
 # Import Owlume infrastructure
+import sys as _sys
+import os as _os
+_sys.path.insert(0, _os.path.join(_os.path.dirname(__file__), "..", "..", "..", "owlume_core"))
+
 try:
     from elenx_loader import load_all
     from elenx_engine import ElenxEngine, DetectionResult
