@@ -10,7 +10,7 @@ sys.path.insert(0, str(ROOT))
 # Force L1 debug for this run
 os.environ["ELENX_DEBUG_WEIGHTS"] = "1"
 
-import src.elenx_engine as EE
+import owlume_core.elenx_engine as EE
 print("[L1] smoke using engine file:", EE.__file__)
 
 # (then the rest of your existing imports follow)
