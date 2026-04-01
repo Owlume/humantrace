@@ -539,10 +539,11 @@
       <div class="topbar-meta" id="topbar-meta"></div>
     </div>
 
+    <!-- VOCAB: tab labels translated -->
     <div class="tab-bar">
       <div class="tab active" onclick="showTab('analysis',this)">Reasoning analysis</div>
-      <div class="tab" onclick="showTab('consistency',this)">Cross-doc consistency</div>
-      <div class="tab" onclick="showTab('bse',this)">BSE matching</div>
+      <div class="tab" onclick="showTab('consistency',this)">Document consistency</div>
+      <div class="tab" onclick="showTab('bse',this)">Prior history</div>
       <div class="tab" onclick="showTab('audit',this)">Audit trail</div>
     </div>
 
@@ -567,8 +568,8 @@
       <div id="tab-bse" class="panel">
         <div class="empty-state">
           <div class="empty-icon">⬡</div>
-          <div class="empty-title">No BSE match data</div>
-          <div class="empty-sub">Run a batch scan to compare against stored fingerprints.</div>
+          <div class="empty-title">No prior history data</div>
+          <div class="empty-sub">Run a batch scan to compare against stored application history.</div>
         </div>
       </div>
 
@@ -616,6 +617,25 @@ function initials(label) {
 
 function ext(filename) {
   return (filename.split('.').pop() || 'txt').toLowerCase();
+}
+
+// ── VOCAB: dimension name translation ──────────────────────────────────────
+// Internal API dimension names → layman display labels.
+// Internal names never reach the UI.
+const DIMENSION_LABELS = {
+  conviction_cost:         'Personal investment',
+  structural_coherence:    'Writing consistency',
+  contextual_plausibility: 'Specific detail',
+  pattern_library:         'Known fraud patterns',
+  absence_signals:         'Missing human signals',
+  engine_question_quality: 'Investigation questions',
+  manipulation_driver:     'Influence patterns',
+  engine_mode_detection:   'Reasoning analysis',
+  // pass-through for anything not listed
+};
+
+function dimLabel(name) {
+  return DIMENSION_LABELS[name] || name.replace(/_/g, ' ').replace(/\b\w/g, c => c.toUpperCase());
 }
 
 // ── Document management ────────────────────────────────────────────────────
@@ -698,7 +718,7 @@ async function uploadFile(file) {
         method:   data.method,
         warning:  data.warning,
       });
-      auditEvent(`Uploaded: ${data.filename} (${data.method}, ${data.char_count.toLocaleString()} chars)`);
+      auditEvent(`Uploaded: ${data.filename} (${data.char_count.toLocaleString()} chars)`);
       if (data.warning) auditEvent(`Warning: ${data.warning}`, 'yellow');
     } else {
       auditEvent(`Upload failed: ${data.filename} — ${data.error}`, 'red');
@@ -763,17 +783,16 @@ async function runScan() {
     const data = await res.json();
     state.scanResult = data;
 
-    // Update per-document signals from consistency dimensions
+    // Update per-document signals from overall
     state.docs.forEach(doc => {
-      const dimSignals = data.consistency.dimensions || [];
-      // Use overall consistency signal as per-doc proxy
       doc.signal = data.overall_signal;
     });
 
+    // VOCAB: audit log uses layman language — no internal system names
     auditEvent(`Scan complete — overall: ${data.overall_signal}`, signalClass(data.overall_signal));
-    auditEvent(`Consistency score: ${data.consistency.overall_score} (${data.consistency.overall_signal})`);
-    auditEvent(`BSE matches found: ${data.bse_match.document_matches.length} — clusters: ${data.bse_match.application_clusters.length}`);
-    auditEvent(`DilemmaNet log: ${data.consistency.log_record.timestamp}`);
+    auditEvent(`Writing consistency score: ${data.consistency.overall_score} (${data.consistency.overall_signal})`);
+    auditEvent(`History matches found: ${data.bse_match.document_matches.length} — repeated patterns: ${data.bse_match.application_clusters.length}`);
+    auditEvent(`Scan recorded: ${data.consistency.log_record.timestamp}`);
 
     renderAllTabs(data);
 
@@ -808,25 +827,28 @@ function renderAnalysisTab(doc, data) {
   const overall = cons.overall_signal;
   const score = cons.overall_score;
 
+  // VOCAB: verdict labels — no internal vocabulary
   const verdictLabels = {
-    RED:    'Synthetic reasoning detected',
+    RED:    'No genuine human reasoning detected',
     YELLOW: 'Mixed signals — analyst review recommended',
     GREEN:  'Genuine human reasoning present',
   };
   const verdictSubs = {
-    RED:    'Low conviction cost · absent epistemic markers · inconsistent authorship',
-    YELLOW: 'Some signals present — insufficient for confident verdict',
-    GREEN:  'Conviction cost, contextual markers and authorial voice all present',
+    RED:    'Uniform writing style · no personal detail · inconsistent voice across documents',
+    YELLOW: 'Some signals present — insufficient for a confident result',
+    GREEN:  'Personal investment, specific detail and consistent voice all present',
   };
 
   const dims = cons.dimensions || [];
+
+  // VOCAB: dimension names translated via dimLabel()
   const topoCards = dims.map(d => {
     const pct = Math.round(d.score * 100);
     const colour = scoreColour(d.score);
     const label = d.score >= 0.70 ? 'strong' : (d.score >= 0.40 ? 'weak' : 'absent');
     return `
       <div class="topo-card">
-        <div class="topo-label">${d.name.replace(/_/g,' ')}</div>
+        <div class="topo-label">${dimLabel(d.name)}</div>
         <div class="topo-value">${d.score.toFixed(3)} — ${label}</div>
         <div class="topo-bar-track">
           <div class="topo-bar-fill" style="width:${pct}%;background:${colour};"></div>
@@ -834,14 +856,15 @@ function renderAnalysisTab(doc, data) {
       </div>`;
   }).join('');
 
+  // VOCAB: table columns — "Pattern area" not "Dimension"
   const signalRows = dims.flatMap(d =>
     (d.anomalies || []).map(a => `
       <tr>
         <td>${a}</td>
-        <td>${d.name.replace(/_/g,' ')}</td>
+        <td>${dimLabel(d.name)}</td>
         <td><span class="badge absent">Flag</span></td>
       </tr>`)
-  ).join('') || `<tr><td colspan="3" style="color:var(--muted);font-style:italic;">No anomalies detected.</td></tr>`;
+  ).join('') || `<tr><td colspan="3" style="color:var(--muted);font-style:italic;">No flags detected.</td></tr>`;
 
   $('tab-analysis').innerHTML = `
     <div>
@@ -856,13 +879,13 @@ function renderAnalysisTab(doc, data) {
       </div>
     </div>
     <div>
-      <div class="section-header">Reasoning topology</div>
+      <div class="section-header">Writing patterns</div>
       <div class="topology-grid">${topoCards}</div>
     </div>
     <div>
-      <div class="section-header">Anomaly signals</div>
+      <div class="section-header">Flags</div>
       <table class="signal-table">
-        <thead><tr><th>Signal</th><th>Dimension</th><th>Status</th></tr></thead>
+        <thead><tr><th>Detail</th><th>Pattern area</th><th>Status</th></tr></thead>
         <tbody>${signalRows}</tbody>
       </table>
     </div>`;
@@ -870,13 +893,15 @@ function renderAnalysisTab(doc, data) {
 
 function renderConsistencyTab(cons) {
   const dims = cons.dimensions || [];
+
+  // VOCAB: dimension names translated
   const bars = dims.map(d => {
     const pct = Math.round(d.score * 100);
     const colour = scoreColour(d.score);
     const scoreStr = d.score.toFixed(2);
     return `
       <div class="con-row">
-        <div class="con-label">${d.name.replace(/_/g,' ')}</div>
+        <div class="con-label">${dimLabel(d.name)}</div>
         <div class="con-track">
           <div class="con-fill" style="width:${pct}%;background:${colour};"></div>
         </div>
@@ -888,11 +913,11 @@ function renderConsistencyTab(cons) {
   const alertClass = signalClass(cons.overall_signal);
   const alertContent = flags.length > 0
     ? flags.map(f => `<div style="margin-bottom:4px;">⚑ ${f.replace(/^\[.*?\]\s*/,'')}</div>`).join('')
-    : 'No consistency anomalies detected across documents.';
+    : 'No consistency issues detected across documents.';
 
   $('tab-consistency').innerHTML = `
     <div>
-      <div class="section-header">Cross-document consistency — ${cons.application_id}</div>
+      <div class="section-header">Document consistency — ${cons.application_id}</div>
       <div>${bars}</div>
     </div>
     <div class="alert-box ${alertClass}">
@@ -905,16 +930,18 @@ function renderBSETab(bse) {
   const matches = bse.document_matches || [];
   const clusters = bse.application_clusters || [];
 
+  // VOCAB: "Prior application history" not "BSE match — reasoning fingerprint"
   if (matches.length === 0) {
     $('tab-bse').innerHTML = `
-      <div class="section-header">BSE match — reasoning fingerprint across applications</div>
+      <div class="section-header">Prior application history</div>
       <div class="alert-box green">
-        <div class="alert-title">No matches found</div>
-        <div class="alert-body">No stored fingerprints matched above the similarity threshold.</div>
+        <div class="alert-title">No matching history found</div>
+        <div class="alert-body">No matching history found for this applicant.</div>
       </div>`;
     return;
   }
 
+  // VOCAB: "Match strength" not "Vector similarity"
   const matchCards = matches.slice(0,8).map(m => `
     <div class="bse-card">
       <div class="bse-avatar">${initials(m.matched_sender_id)}</div>
@@ -923,14 +950,15 @@ function renderBSETab(bse) {
         <div class="bse-sub">${m.matched_application_id} · ${m.matched_label} · ${m.matched_created_at.slice(0,10)}</div>
       </div>
       <div class="bse-score">
-        <div class="bse-score-label">Vector similarity</div>
+        <div class="bse-score-label">Match strength</div>
         <div class="bse-score-val ${m.strength}">${m.similarity.toFixed(2)}</div>
       </div>
     </div>`).join('');
 
+  // VOCAB: "Repeated pattern detected" not "Identity clustering signal"
   const clusterAlert = clusters.length > 0 ? `
     <div class="alert-box ${signalClass(bse.overall_signal)}">
-      <div class="alert-title">Identity clustering signal — ${clusters.length} cluster(s) detected</div>
+      <div class="alert-title">Repeated pattern detected — ${clusters.length} instance(s)</div>
       <div class="alert-body">
         ${clusters.map(c => `⚑ ${c.interpretation}`).join('<br><br>')}
       </div>
@@ -938,7 +966,7 @@ function renderBSETab(bse) {
 
   $('tab-bse').innerHTML = `
     <div>
-      <div class="section-header">Document-level matches (${matches.length} found)</div>
+      <div class="section-header">Prior application history (${matches.length} match${matches.length !== 1 ? 'es' : ''} found)</div>
       <div style="display:flex;flex-direction:column;gap:8px;">${matchCards}</div>
     </div>
     ${clusterAlert}`;

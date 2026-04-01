@@ -16,8 +16,7 @@ Design decisions made from actual detector output analysis
 
   Solution: peak signal amplification.
   When any single family scores above a dominance threshold (0.65),
-  that signal is given amplified weight. The amplification pulls the
-  overall score toward the peak signal rather than averaging it away.
+  that signal is given amplified weight in the final calculation.
 
   Interaction boosts: applied when two or more families co-fire
   above their individual thresholds. These are additive boosts on
@@ -32,6 +31,24 @@ Design decisions made from actual detector output analysis
   and evidence is explicit.
 
 Build step: 6
+
+Calibration patch (2026-04-01):
+  Fix 1 — DOMINANCE_THRESHOLD lowered from 0.60 to 0.35.
+    Short fraud messages (< 20 words) cannot stack enough tokens
+    to reach 0.60 on any single family. A pressure score of 0.40
+    on an 11-word suspension notice IS dominant — it should amplify.
+
+  Fix 2 — Added CP.PRESS.AUTH composite pattern.
+    Catches suspension/urgency messages that are setup-step fraud
+    (no explicit extraction request, so intent stays zero).
+    These are high-risk precisely because the extraction comes later.
+    Condition: pressure > 0.30 AND auth_gap > 0.20.
+
+  Fix 3 — Short-message confidence penalty replaced with density bonus.
+    An 11-word message with pressure = 0.40 is MORE suspicious per
+    word than a 100-word message with the same score. The old penalty
+    inverted the signal. High signal density in short messages now
+    adds confidence rather than subtracting it.
 """
 
 from dataclasses import dataclass, field
@@ -83,8 +100,15 @@ BASE_WEIGHTS = {
 }
 
 # Dominance threshold: when a single family exceeds this,
-# it receives amplified weight in the final calculation
-DOMINANCE_THRESHOLD = 0.60
+# it receives amplified weight in the final calculation.
+#
+# Calibration note (2026-04-01): lowered from 0.60 to 0.35.
+# Short fraud messages (< 20 words) cannot physically stack enough
+# token-level signals to reach 0.60. A pressure score of 0.40 on
+# an 11-word suspension notice is the dominant signal — it should
+# amplify. The 0.60 threshold was calibrated against longer messages
+# and suppressed genuine short-form fraud signals.
+DOMINANCE_THRESHOLD = 0.35
 DOMINANCE_AMPLIFICATION = 0.20     # added to base weight of dominant family
                                     # redistributed proportionally from others
 
@@ -144,12 +168,27 @@ COMPOSITE_PATTERNS = [
         ),
     },
     {
+        "id": "CP.PRESS.AUTH",
+        "label": "Synthetic Urgency",
+        "condition": lambda s: (
+            s.pressure > 0.30 and
+            s.auth_gap > 0.20
+        ),
+        "boost": 0.07,
+        "description": (
+            "Urgency pressure combined with authenticity gap — consistent "
+            "with a synthetic setup message designed to create compliance "
+            "before an extraction request arrives. No explicit intent "
+            "signal required: absence of extraction is the setup signature."
+        ),
+    },
+    {
         "id": "CP.HUMAN.MANIP",
         "label": "Human Manipulator",
         "condition": lambda s: (
-            s.trust > 0.25 and        # recalibrated from 0.55 — actual outputs show 0.20–0.34
-            s.intent > 0.15 and       # secrecy alone is sufficient
-            s.pressure > 0.15         # urgency or option narrowing present
+            s.trust > 0.25 and
+            s.intent > 0.15 and
+            s.pressure > 0.15
         ),
         "boost": 0.07,
         "description": (
@@ -269,8 +308,14 @@ def _compute_confidence(
     Confidence is separate from risk score.
     High when: multiple families agree, evidence is explicit,
                composite patterns match.
-    Low when: only AUTH fires, message is very short,
-              signals are weak.
+    Low when: only AUTH fires, signals are weak.
+
+    Calibration note (2026-04-01):
+    The short-message penalty (-0.15 for text_length < 30) was removed
+    and replaced with a density bonus. A short message with a high
+    signal score is MORE suspicious per word, not less. The old penalty
+    suppressed confidence on textbook short-form fraud (suspension
+    notices, "act now" messages) — exactly the wrong direction.
     """
     conf = 0.0
 
@@ -295,9 +340,15 @@ def _compute_confidence(
     if primary_above == 0 and scores.auth_gap > 0.10:
         conf -= 0.20
 
-    # Penalty: very short message (harder to assess)
+    # Short-message density bonus (replaces old penalty).
+    # A short message with high primary signal density is more suspicious
+    # per word — reward that, don't penalise it.
     if text_length < 30:
-        conf -= 0.15
+        peak_primary = max(scores.intent, scores.trust, scores.pressure, scores.distortion)
+        if peak_primary > 0.30:
+            conf += 0.15   # high-density short fraud message
+        # No adjustment for short messages with weak signals —
+        # uncertainty is already captured by low families_above count.
 
     return round(min(max(conf, 0.0), 1.0), 3)
 
@@ -321,7 +372,7 @@ def _dominant_family(scores: SignalScores, weights: dict) -> str | None:
         "trust": scores.trust,
         "pressure": scores.pressure,
         "distortion": scores.distortion,
-    }
+      }
     dominant = max(primary, key=primary.get)
     if primary[dominant] >= DOMINANCE_THRESHOLD:
         return dominant

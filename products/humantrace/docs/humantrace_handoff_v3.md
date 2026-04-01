@@ -484,6 +484,14 @@ wiring can be done precisely against the actual file.
 
 ---
 
+## 17 API wiring — COMPLETE
+
+humantrace_adapter.py replaced with thin translation layer over main.py
+risk_fuser.py patched with three calibration fixes (DOMINANCE_THRESHOLD 0.60→0.35, CP.PRESS.AUTH pattern added, short-message density bonus)
+Calibration re-run: 4.1% FP overall (7/170), 3.3% anti-pattern (1/30) — both targets passed
+Four new accepted FPs documented: CB-FIN-003, CB-LEGAL-002, CB-INT-018, CB-ANTI-020 — all MEDIUM, all genuine institutional communications with compliance/debt language
+Live API confirmed: engine_used: true, fallback_used: false
+
 *End of handoff document*
 *HumanTrace / Owlume Pty Ltd — Confidential*
 *Last updated: 1 April 2026*
