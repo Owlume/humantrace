@@ -1,0 +1,1491 @@
+{
+  "timestamp": "2026-04-01T19:38:23.567167",
+  "verdict": "PASS",
+  "overall_fp_rate": 0,
+  "anti_fp_rate": 0,
+  "total_examples": 170,
+  "total_fp": 0,
+  "targets": {
+    "overall": "< 10%",
+    "anti_pattern": "< 5%"
+  },
+  "by_batch": {
+    "1": {
+      "context": "FIN — Collections letters",
+      "total": 10,
+      "fp": 0
+    },
+    "2": {
+      "context": "FIN — Collections letters",
+      "total": 10,
+      "fp": 0
+    },
+    "3": {
+      "context": "FIN — Lending decisions",
+      "total": 20,
+      "fp": 2
+    },
+    "4": {
+      "context": "FIN — Fraud operations",
+      "total": 15,
+      "fp": 0
+    },
+    "5": {
+      "context": "LEGAL — Demand letters",
+      "total": 15,
+      "fp": 0
+    },
+    "6": {
+      "context": "LEGAL — Settlement & regulatory",
+      "total": 20,
+      "fp": 0
+    },
+    "7": {
+      "context": "INT — Manager & executive",
+      "total": 20,
+      "fp": 1
+    },
+    "8": {
+      "context": "INT — IT, HR & policy",
+      "total": 15,
+      "fp": 0
+    },
+    "9": {
+      "context": "ADV — Financial & accounting",
+      "total": 15,
+      "fp": 0
+    },
+    "10": {
+      "context": "ADV — Specialist & consultant",
+      "total": 10,
+      "fp": 0
+    },
+    "11": {
+      "context": "ANTI — Template institutional",
+      "total": 10,
+      "fp": 0
+    },
+    "12": {
+      "context": "ANTI — Regulatory urgency",
+      "total": 10,
+      "fp": 0
+    }
+  },
+  "false_positives": [
+    {
+      "corpus_id": "CB-FIN-038",
+      "batch": 3,
+      "context": "FIN — Fraud operations",
+      "overall_risk": "MEDIUM",
+      "score": 0.182,
+      "subtype": "FIN — fraud prevention — proactive notice, fake investment platform warning",
+      "text_preview": "Dear Meridian Bank Customer,  We are writing to alert you to a fraudulent investment platform that has been targeting me",
+      "summary": "This message shows a medium-risk pattern with elevated extraction intent and trust hijack signals.",
+      "signals_fired": [
+        "HT.INT.EXT.01",
+        "HT.TRUST.AUTH.02",
+        "HT.PRESS.URG.01",
+        "HT.AUTH.GAP.02",
+        "HT.AUTH.GAP.01"
+      ]
+    },
+    {
+      "corpus_id": "CB-FIN-039",
+      "batch": 3,
+      "context": "FIN — Fraud operations",
+      "overall_risk": "MEDIUM",
+      "score": 0.268,
+      "subtype": "FIN — fraud prevention — proactive notice, parcel delivery scam SMS",
+      "text_preview": "Dear Meridian Bank Customer,  We are seeing an increase in fraudulent text messages (SMS) that impersonate parcel delive",
+      "summary": "This message shows a medium-risk pattern with Human Manipulator indicators — elevated extraction intent and trust hijack signals.",
+      "signals_fired": [
+        "HT.INT.EXT.01",
+        "HT.TRUST.AUTH.02",
+        "HT.PRESS.URG.01",
+        "HT.AUTH.GAP.01",
+        "HT.TRUST.AUTH.05",
+        "HT.AUTH.GAP.02"
+      ]
+    },
+    {
+      "corpus_id": "CB-INT-022",
+      "batch": 7,
+      "context": "INT — IT, HR & policy",
+      "overall_risk": "MEDIUM",
+      "score": 0.262,
+      "subtype": "INT — IT security — mandatory password reset, vendor breach notification",
+      "text_preview": "To: All Workday Users (156 staff) From: Sandra Webb, IT Manager Re: MANDATORY — Workday Password Reset Required Within 2",
+      "summary": "This message shows a medium-risk pattern with Human Manipulator indicators — elevated extraction intent and trust hijack signals.",
+      "signals_fired": [
+        "HT.TRUST.AUTH.02",
+        "HT.INT.EXT.02",
+        "HT.PRESS.URG.01",
+        "HT.AUTH.GAP.01",
+        "HT.TRUST.AUTH.05",
+        "HT.AUTH.GAP.02"
+      ]
+    }
+  ],
+  "all_results": [
+    {
+      "corpus_id": "CB-FIN-001",
+      "batch": 1,
+      "context": "FIN — Collections letters",
+      "overall_risk": "LOW",
+      "score": 0.119,
+      "false_positive": false
+    },
+    {
+      "corpus_id": "CB-FIN-002",
+      "batch": 1,
+      "context": "FIN — Collections letters",
+      "overall_risk": "LOW",
+      "score": 0.145,
+      "false_positive": false
+    },
+    {
+      "corpus_id": "CB-FIN-003",
+      "batch": 1,
+      "context": "FIN — Collections letters",
+      "overall_risk": "LOW",
+      "score": 0.133,
+      "false_positive": false
+    },
+    {
+      "corpus_id": "CB-FIN-004",
+      "batch": 1,
+      "context": "FIN — Collections letters",
+      "overall_risk": "LOW",
+      "score": 0.105,
+      "false_positive": false
+    },
+    {
+      "corpus_id": "CB-FIN-005",
+      "batch": 1,
+      "context": "FIN — Collections letters",
+      "overall_risk": "LOW",
+      "score": 0.105,
+      "false_positive": false
+    },
+    {
+      "corpus_id": "CB-FIN-006",
+      "batch": 1,
+      "context": "FIN — Collections letters",
+      "overall_risk": "LOW",
+      "score": 0.173,
+      "false_positive": false
+    },
+    {
+      "corpus_id": "CB-FIN-007",
+      "batch": 1,
+      "context": "FIN — Collections letters",
+      "overall_risk": "LOW",
+      "score": 0.04,
+      "false_positive": false
+    },
+    {
+      "corpus_id": "CB-FIN-008",
+      "batch": 1,
+      "context": "FIN — Collections letters",
+      "overall_risk": "LOW",
+      "score": 0.119,
+      "false_positive": false
+    },
+    {
+      "corpus_id": "CB-FIN-009",
+      "batch": 1,
+      "context": "FIN — Collections letters",
+      "overall_risk": "LOW",
+      "score": 0.105,
+      "false_positive": false
+    },
+    {
+      "corpus_id": "CB-FIN-010",
+      "batch": 1,
+      "context": "FIN — Collections letters",
+      "overall_risk": "LOW",
+      "score": 0.132,
+      "false_positive": false
+    },
+    {
+      "corpus_id": "CB-FIN-011",
+      "batch": 2,
+      "context": "FIN — Lending decisions",
+      "overall_risk": "LOW",
+      "score": 0.154,
+      "false_positive": false
+    },
+    {
+      "corpus_id": "CB-FIN-012",
+      "batch": 2,
+      "context": "FIN — Lending decisions",
+      "overall_risk": "LOW",
+      "score": 0.018,
+      "false_positive": false
+    },
+    {
+      "corpus_id": "CB-FIN-013",
+      "batch": 2,
+      "context": "FIN — Lending decisions",
+      "overall_risk": "LOW",
+      "score": 0.003,
+      "false_positive": false
+    },
+    {
+      "corpus_id": "CB-FIN-014",
+      "batch": 2,
+      "context": "FIN — Lending decisions",
+      "overall_risk": "LOW",
+      "score": 0.114,
+      "false_positive": false
+    },
+    {
+      "corpus_id": "CB-FIN-015",
+      "batch": 2,
+      "context": "FIN — Lending decisions",
+      "overall_risk": "LOW",
+      "score": 0.079,
+      "false_positive": false
+    },
+    {
+      "corpus_id": "CB-FIN-016",
+      "batch": 2,
+      "context": "FIN — Lending decisions",
+      "overall_risk": "LOW",
+      "score": 0.018,
+      "false_positive": false
+    },
+    {
+      "corpus_id": "CB-FIN-017",
+      "batch": 2,
+      "context": "FIN — Lending decisions",
+      "overall_risk": "LOW",
+      "score": 0.127,
+      "false_positive": false
+    },
+    {
+      "corpus_id": "CB-FIN-018",
+      "batch": 2,
+      "context": "FIN — Lending decisions",
+      "overall_risk": "LOW",
+      "score": 0.06,
+      "false_positive": false
+    },
+    {
+      "corpus_id": "CB-FIN-019",
+      "batch": 2,
+      "context": "FIN — Lending decisions",
+      "overall_risk": "LOW",
+      "score": 0.079,
+      "false_positive": false
+    },
+    {
+      "corpus_id": "CB-FIN-020",
+      "batch": 2,
+      "context": "FIN — Lending decisions",
+      "overall_risk": "LOW",
+      "score": 0.105,
+      "false_positive": false
+    },
+    {
+      "corpus_id": "CB-FIN-021",
+      "batch": 3,
+      "context": "FIN — Fraud operations",
+      "overall_risk": "LOW",
+      "score": 0.083,
+      "false_positive": false
+    },
+    {
+      "corpus_id": "CB-FIN-022",
+      "batch": 3,
+      "context": "FIN — Fraud operations",
+      "overall_risk": "LOW",
+      "score": 0.119,
+      "false_positive": false
+    },
+    {
+      "corpus_id": "CB-FIN-023",
+      "batch": 3,
+      "context": "FIN — Fraud operations",
+      "overall_risk": "LOW",
+      "score": 0.053,
+      "false_positive": false
+    },
+    {
+      "corpus_id": "CB-FIN-024",
+      "batch": 3,
+      "context": "FIN — Fraud operations",
+      "overall_risk": "LOW",
+      "score": 0.013,
+      "false_positive": false
+    },
+    {
+      "corpus_id": "CB-FIN-025",
+      "batch": 3,
+      "context": "FIN — Fraud operations",
+      "overall_risk": "LOW",
+      "score": 0.131,
+      "false_positive": false
+    },
+    {
+      "corpus_id": "CB-FIN-026",
+      "batch": 3,
+      "context": "FIN — Fraud operations",
+      "overall_risk": "LOW",
+      "score": 0.166,
+      "false_positive": false
+    },
+    {
+      "corpus_id": "CB-FIN-027",
+      "batch": 3,
+      "context": "FIN — Fraud operations",
+      "overall_risk": "LOW",
+      "score": 0.04,
+      "false_positive": false
+    },
+    {
+      "corpus_id": "CB-FIN-028",
+      "batch": 3,
+      "context": "FIN — Fraud operations",
+      "overall_risk": "LOW",
+      "score": 0.106,
+      "false_positive": false
+    },
+    {
+      "corpus_id": "CB-FIN-029",
+      "batch": 3,
+      "context": "FIN — Fraud operations",
+      "overall_risk": "LOW",
+      "score": 0.061,
+      "false_positive": false
+    },
+    {
+      "corpus_id": "CB-FIN-030",
+      "batch": 3,
+      "context": "FIN — Fraud operations",
+      "overall_risk": "LOW",
+      "score": 0.056,
+      "false_positive": false
+    },
+    {
+      "corpus_id": "CB-FIN-031",
+      "batch": 3,
+      "context": "FIN — Fraud operations",
+      "overall_risk": "LOW",
+      "score": 0.013,
+      "false_positive": false
+    },
+    {
+      "corpus_id": "CB-FIN-032",
+      "batch": 3,
+      "context": "FIN — Fraud operations",
+      "overall_risk": "LOW",
+      "score": 0.066,
+      "false_positive": false
+    },
+    {
+      "corpus_id": "CB-FIN-033",
+      "batch": 3,
+      "context": "FIN — Fraud operations",
+      "overall_risk": "LOW",
+      "score": 0.048,
+      "false_positive": false
+    },
+    {
+      "corpus_id": "CB-FIN-034",
+      "batch": 3,
+      "context": "FIN — Fraud operations",
+      "overall_risk": "LOW",
+      "score": 0.088,
+      "false_positive": false
+    },
+    {
+      "corpus_id": "CB-FIN-035",
+      "batch": 3,
+      "context": "FIN — Fraud operations",
+      "overall_risk": "LOW",
+      "score": 0.018,
+      "false_positive": false
+    },
+    {
+      "corpus_id": "CB-FIN-036",
+      "batch": 3,
+      "context": "FIN — Fraud operations",
+      "overall_risk": "LOW",
+      "score": 0.088,
+      "false_positive": false
+    },
+    {
+      "corpus_id": "CB-FIN-037",
+      "batch": 3,
+      "context": "FIN — Fraud operations",
+      "overall_risk": "LOW",
+      "score": 0.106,
+      "false_positive": false
+    },
+    {
+      "corpus_id": "CB-FIN-038",
+      "batch": 3,
+      "context": "FIN — Fraud operations",
+      "overall_risk": "MEDIUM",
+      "score": 0.182,
+      "false_positive": true
+    },
+    {
+      "corpus_id": "CB-FIN-039",
+      "batch": 3,
+      "context": "FIN — Fraud operations",
+      "overall_risk": "MEDIUM",
+      "score": 0.268,
+      "false_positive": true
+    },
+    {
+      "corpus_id": "CB-FIN-040",
+      "batch": 3,
+      "context": "FIN — Fraud operations",
+      "overall_risk": "LOW",
+      "score": 0.066,
+      "false_positive": false
+    },
+    {
+      "corpus_id": "CB-LEGAL-001",
+      "batch": 4,
+      "context": "LEGAL — Demand letters",
+      "overall_risk": "LOW",
+      "score": 0.123,
+      "false_positive": false
+    },
+    {
+      "corpus_id": "CB-LEGAL-002",
+      "batch": 4,
+      "context": "LEGAL — Demand letters",
+      "overall_risk": "LOW",
+      "score": 0.171,
+      "false_positive": false
+    },
+    {
+      "corpus_id": "CB-LEGAL-003",
+      "batch": 4,
+      "context": "LEGAL — Demand letters",
+      "overall_risk": "LOW",
+      "score": 0.079,
+      "false_positive": false
+    },
+    {
+      "corpus_id": "CB-LEGAL-004",
+      "batch": 4,
+      "context": "LEGAL — Demand letters",
+      "overall_risk": "LOW",
+      "score": 0.013,
+      "false_positive": false
+    },
+    {
+      "corpus_id": "CB-LEGAL-005",
+      "batch": 4,
+      "context": "LEGAL — Demand letters",
+      "overall_risk": "LOW",
+      "score": 0.079,
+      "false_positive": false
+    },
+    {
+      "corpus_id": "CB-LEGAL-006",
+      "batch": 4,
+      "context": "LEGAL — Demand letters",
+      "overall_risk": "LOW",
+      "score": 0.149,
+      "false_positive": false
+    },
+    {
+      "corpus_id": "CB-LEGAL-007",
+      "batch": 4,
+      "context": "LEGAL — Demand letters",
+      "overall_risk": "LOW",
+      "score": 0.066,
+      "false_positive": false
+    },
+    {
+      "corpus_id": "CB-LEGAL-008",
+      "batch": 4,
+      "context": "LEGAL — Demand letters",
+      "overall_risk": "LOW",
+      "score": 0.066,
+      "false_positive": false
+    },
+    {
+      "corpus_id": "CB-LEGAL-009",
+      "batch": 4,
+      "context": "LEGAL — Demand letters",
+      "overall_risk": "LOW",
+      "score": 0.066,
+      "false_positive": false
+    },
+    {
+      "corpus_id": "CB-LEGAL-010",
+      "batch": 4,
+      "context": "LEGAL — Demand letters",
+      "overall_risk": "LOW",
+      "score": 0.079,
+      "false_positive": false
+    },
+    {
+      "corpus_id": "CB-LEGAL-011",
+      "batch": 4,
+      "context": "LEGAL — Demand letters",
+      "overall_risk": "LOW",
+      "score": 0.013,
+      "false_positive": false
+    },
+    {
+      "corpus_id": "CB-LEGAL-012",
+      "batch": 4,
+      "context": "LEGAL — Demand letters",
+      "overall_risk": "LOW",
+      "score": 0.013,
+      "false_positive": false
+    },
+    {
+      "corpus_id": "CB-LEGAL-013",
+      "batch": 4,
+      "context": "LEGAL — Demand letters",
+      "overall_risk": "LOW",
+      "score": 0.102,
+      "false_positive": false
+    },
+    {
+      "corpus_id": "CB-LEGAL-014",
+      "batch": 4,
+      "context": "LEGAL — Demand letters",
+      "overall_risk": "LOW",
+      "score": 0.079,
+      "false_positive": false
+    },
+    {
+      "corpus_id": "CB-LEGAL-015",
+      "batch": 4,
+      "context": "LEGAL — Demand letters",
+      "overall_risk": "LOW",
+      "score": 0.062,
+      "false_positive": false
+    },
+    {
+      "corpus_id": "CB-LEGAL-016",
+      "batch": 5,
+      "context": "LEGAL — Settlement & regulatory",
+      "overall_risk": "LOW",
+      "score": 0.013,
+      "false_positive": false
+    },
+    {
+      "corpus_id": "CB-LEGAL-017",
+      "batch": 5,
+      "context": "LEGAL — Settlement & regulatory",
+      "overall_risk": "LOW",
+      "score": 0.013,
+      "false_positive": false
+    },
+    {
+      "corpus_id": "CB-LEGAL-018",
+      "batch": 5,
+      "context": "LEGAL — Settlement & regulatory",
+      "overall_risk": "LOW",
+      "score": 0.095,
+      "false_positive": false
+    },
+    {
+      "corpus_id": "CB-LEGAL-019",
+      "batch": 5,
+      "context": "LEGAL — Settlement & regulatory",
+      "overall_risk": "LOW",
+      "score": 0.105,
+      "false_positive": false
+    },
+    {
+      "corpus_id": "CB-LEGAL-020",
+      "batch": 5,
+      "context": "LEGAL — Settlement & regulatory",
+      "overall_risk": "LOW",
+      "score": 0.079,
+      "false_positive": false
+    },
+    {
+      "corpus_id": "CB-LEGAL-021",
+      "batch": 5,
+      "context": "LEGAL — Settlement & regulatory",
+      "overall_risk": "LOW",
+      "score": 0.066,
+      "false_positive": false
+    },
+    {
+      "corpus_id": "CB-LEGAL-022",
+      "batch": 5,
+      "context": "LEGAL — Settlement & regulatory",
+      "overall_risk": "LOW",
+      "score": 0.132,
+      "false_positive": false
+    },
+    {
+      "corpus_id": "CB-LEGAL-023",
+      "batch": 5,
+      "context": "LEGAL — Settlement & regulatory",
+      "overall_risk": "LOW",
+      "score": 0.018,
+      "false_positive": false
+    },
+    {
+      "corpus_id": "CB-LEGAL-024",
+      "batch": 5,
+      "context": "LEGAL — Settlement & regulatory",
+      "overall_risk": "LOW",
+      "score": 0.066,
+      "false_positive": false
+    },
+    {
+      "corpus_id": "CB-LEGAL-025",
+      "batch": 5,
+      "context": "LEGAL — Settlement & regulatory",
+      "overall_risk": "LOW",
+      "score": 0.132,
+      "false_positive": false
+    },
+    {
+      "corpus_id": "CB-LEGAL-026",
+      "batch": 5,
+      "context": "LEGAL — Settlement & regulatory",
+      "overall_risk": "LOW",
+      "score": 0.026,
+      "false_positive": false
+    },
+    {
+      "corpus_id": "CB-LEGAL-027",
+      "batch": 5,
+      "context": "LEGAL — Settlement & regulatory",
+      "overall_risk": "LOW",
+      "score": 0.049,
+      "false_positive": false
+    },
+    {
+      "corpus_id": "CB-LEGAL-028",
+      "batch": 5,
+      "context": "LEGAL — Settlement & regulatory",
+      "overall_risk": "LOW",
+      "score": 0.018,
+      "false_positive": false
+    },
+    {
+      "corpus_id": "CB-LEGAL-029",
+      "batch": 5,
+      "context": "LEGAL — Settlement & regulatory",
+      "overall_risk": "LOW",
+      "score": 0.127,
+      "false_positive": false
+    },
+    {
+      "corpus_id": "CB-LEGAL-030",
+      "batch": 5,
+      "context": "LEGAL — Settlement & regulatory",
+      "overall_risk": "LOW",
+      "score": 0.018,
+      "false_positive": false
+    },
+    {
+      "corpus_id": "CB-INT-001",
+      "batch": 6,
+      "context": "INT — Manager & executive",
+      "overall_risk": "LOW",
+      "score": 0.013,
+      "false_positive": false
+    },
+    {
+      "corpus_id": "CB-INT-002",
+      "batch": 6,
+      "context": "INT — Manager & executive",
+      "overall_risk": "LOW",
+      "score": 0.053,
+      "false_positive": false
+    },
+    {
+      "corpus_id": "CB-INT-003",
+      "batch": 6,
+      "context": "INT — Manager & executive",
+      "overall_risk": "LOW",
+      "score": 0.053,
+      "false_positive": false
+    },
+    {
+      "corpus_id": "CB-INT-004",
+      "batch": 6,
+      "context": "INT — Manager & executive",
+      "overall_risk": "LOW",
+      "score": 0.039,
+      "false_positive": false
+    },
+    {
+      "corpus_id": "CB-INT-005",
+      "batch": 6,
+      "context": "INT — Manager & executive",
+      "overall_risk": "LOW",
+      "score": 0.013,
+      "false_positive": false
+    },
+    {
+      "corpus_id": "CB-INT-006",
+      "batch": 6,
+      "context": "INT — Manager & executive",
+      "overall_risk": "LOW",
+      "score": 0.018,
+      "false_positive": false
+    },
+    {
+      "corpus_id": "CB-INT-007",
+      "batch": 6,
+      "context": "INT — Manager & executive",
+      "overall_risk": "LOW",
+      "score": 0.124,
+      "false_positive": false
+    },
+    {
+      "corpus_id": "CB-INT-008",
+      "batch": 6,
+      "context": "INT — Manager & executive",
+      "overall_risk": "LOW",
+      "score": 0.018,
+      "false_positive": false
+    },
+    {
+      "corpus_id": "CB-INT-009",
+      "batch": 6,
+      "context": "INT — Manager & executive",
+      "overall_risk": "LOW",
+      "score": 0.018,
+      "false_positive": false
+    },
+    {
+      "corpus_id": "CB-INT-010",
+      "batch": 6,
+      "context": "INT — Manager & executive",
+      "overall_risk": "LOW",
+      "score": 0.013,
+      "false_positive": false
+    },
+    {
+      "corpus_id": "CB-INT-011",
+      "batch": 6,
+      "context": "INT — Manager & executive",
+      "overall_risk": "LOW",
+      "score": 0.018,
+      "false_positive": false
+    },
+    {
+      "corpus_id": "CB-INT-012",
+      "batch": 6,
+      "context": "INT — Manager & executive",
+      "overall_risk": "LOW",
+      "score": 0.008,
+      "false_positive": false
+    },
+    {
+      "corpus_id": "CB-INT-013",
+      "batch": 6,
+      "context": "INT — Manager & executive",
+      "overall_risk": "LOW",
+      "score": 0.013,
+      "false_positive": false
+    },
+    {
+      "corpus_id": "CB-INT-014",
+      "batch": 6,
+      "context": "INT — Manager & executive",
+      "overall_risk": "LOW",
+      "score": 0.018,
+      "false_positive": false
+    },
+    {
+      "corpus_id": "CB-INT-015",
+      "batch": 6,
+      "context": "INT — Manager & executive",
+      "overall_risk": "LOW",
+      "score": 0.102,
+      "false_positive": false
+    },
+    {
+      "corpus_id": "CB-INT-016",
+      "batch": 6,
+      "context": "INT — Manager & executive",
+      "overall_risk": "LOW",
+      "score": 0.018,
+      "false_positive": false
+    },
+    {
+      "corpus_id": "CB-INT-017",
+      "batch": 6,
+      "context": "INT — Manager & executive",
+      "overall_risk": "LOW",
+      "score": 0.013,
+      "false_positive": false
+    },
+    {
+      "corpus_id": "CB-INT-018",
+      "batch": 6,
+      "context": "INT — Manager & executive",
+      "overall_risk": "LOW",
+      "score": 0.146,
+      "false_positive": false
+    },
+    {
+      "corpus_id": "CB-INT-019",
+      "batch": 6,
+      "context": "INT — Manager & executive",
+      "overall_risk": "LOW",
+      "score": 0.018,
+      "false_positive": false
+    },
+    {
+      "corpus_id": "CB-INT-020",
+      "batch": 6,
+      "context": "INT — Manager & executive",
+      "overall_risk": "LOW",
+      "score": 0.008,
+      "false_positive": false
+    },
+    {
+      "corpus_id": "CB-INT-021",
+      "batch": 7,
+      "context": "INT — IT, HR & policy",
+      "overall_risk": "LOW",
+      "score": 0.166,
+      "false_positive": false
+    },
+    {
+      "corpus_id": "CB-INT-022",
+      "batch": 7,
+      "context": "INT — IT, HR & policy",
+      "overall_risk": "MEDIUM",
+      "score": 0.262,
+      "false_positive": true
+    },
+    {
+      "corpus_id": "CB-INT-023",
+      "batch": 7,
+      "context": "INT — IT, HR & policy",
+      "overall_risk": "LOW",
+      "score": 0.058,
+      "false_positive": false
+    },
+    {
+      "corpus_id": "CB-INT-024",
+      "batch": 7,
+      "context": "INT — IT, HR & policy",
+      "overall_risk": "LOW",
+      "score": 0.013,
+      "false_positive": false
+    },
+    {
+      "corpus_id": "CB-INT-025",
+      "batch": 7,
+      "context": "INT — IT, HR & policy",
+      "overall_risk": "LOW",
+      "score": 0.066,
+      "false_positive": false
+    },
+    {
+      "corpus_id": "CB-INT-026",
+      "batch": 7,
+      "context": "INT — IT, HR & policy",
+      "overall_risk": "LOW",
+      "score": 0.132,
+      "false_positive": false
+    },
+    {
+      "corpus_id": "CB-INT-027",
+      "batch": 7,
+      "context": "INT — IT, HR & policy",
+      "overall_risk": "LOW",
+      "score": 0.058,
+      "false_positive": false
+    },
+    {
+      "corpus_id": "CB-INT-028",
+      "batch": 7,
+      "context": "INT — IT, HR & policy",
+      "overall_risk": "LOW",
+      "score": 0.094,
+      "false_positive": false
+    },
+    {
+      "corpus_id": "CB-INT-029",
+      "batch": 7,
+      "context": "INT — IT, HR & policy",
+      "overall_risk": "LOW",
+      "score": 0.018,
+      "false_positive": false
+    },
+    {
+      "corpus_id": "CB-INT-030",
+      "batch": 7,
+      "context": "INT — IT, HR & policy",
+      "overall_risk": "LOW",
+      "score": 0.079,
+      "false_positive": false
+    },
+    {
+      "corpus_id": "CB-INT-031",
+      "batch": 7,
+      "context": "INT — IT, HR & policy",
+      "overall_risk": "LOW",
+      "score": 0.126,
+      "false_positive": false
+    },
+    {
+      "corpus_id": "CB-INT-032",
+      "batch": 7,
+      "context": "INT — IT, HR & policy",
+      "overall_risk": "LOW",
+      "score": 0.013,
+      "false_positive": false
+    },
+    {
+      "corpus_id": "CB-INT-033",
+      "batch": 7,
+      "context": "INT — IT, HR & policy",
+      "overall_risk": "LOW",
+      "score": 0.066,
+      "false_positive": false
+    },
+    {
+      "corpus_id": "CB-INT-034",
+      "batch": 7,
+      "context": "INT — IT, HR & policy",
+      "overall_risk": "LOW",
+      "score": 0.126,
+      "false_positive": false
+    },
+    {
+      "corpus_id": "CB-INT-035",
+      "batch": 7,
+      "context": "INT — IT, HR & policy",
+      "overall_risk": "LOW",
+      "score": 0.018,
+      "false_positive": false
+    },
+    {
+      "corpus_id": "CB-INT-036",
+      "batch": 7,
+      "context": "INT — IT, HR & policy",
+      "overall_risk": "LOW",
+      "score": 0.073,
+      "false_positive": false
+    },
+    {
+      "corpus_id": "CB-INT-037",
+      "batch": 7,
+      "context": "INT — IT, HR & policy",
+      "overall_risk": "LOW",
+      "score": 0.018,
+      "false_positive": false
+    },
+    {
+      "corpus_id": "CB-INT-038",
+      "batch": 7,
+      "context": "INT — IT, HR & policy",
+      "overall_risk": "LOW",
+      "score": 0.053,
+      "false_positive": false
+    },
+    {
+      "corpus_id": "CB-INT-039",
+      "batch": 7,
+      "context": "INT — IT, HR & policy",
+      "overall_risk": "LOW",
+      "score": 0.084,
+      "false_positive": false
+    },
+    {
+      "corpus_id": "CB-INT-040",
+      "batch": 7,
+      "context": "INT — IT, HR & policy",
+      "overall_risk": "LOW",
+      "score": 0.048,
+      "false_positive": false
+    },
+    {
+      "corpus_id": "CB-ADV-001",
+      "batch": 8,
+      "context": "ADV — Financial & accounting",
+      "overall_risk": "LOW",
+      "score": 0.023,
+      "false_positive": false
+    },
+    {
+      "corpus_id": "CB-ADV-002",
+      "batch": 8,
+      "context": "ADV — Financial & accounting",
+      "overall_risk": "LOW",
+      "score": 0.013,
+      "false_positive": false
+    },
+    {
+      "corpus_id": "CB-ADV-003",
+      "batch": 8,
+      "context": "ADV — Financial & accounting",
+      "overall_risk": "LOW",
+      "score": 0.008,
+      "false_positive": false
+    },
+    {
+      "corpus_id": "CB-ADV-004",
+      "batch": 8,
+      "context": "ADV — Financial & accounting",
+      "overall_risk": "LOW",
+      "score": 0.008,
+      "false_positive": false
+    },
+    {
+      "corpus_id": "CB-ADV-005",
+      "batch": 8,
+      "context": "ADV — Financial & accounting",
+      "overall_risk": "LOW",
+      "score": 0.116,
+      "false_positive": false
+    },
+    {
+      "corpus_id": "CB-ADV-006",
+      "batch": 8,
+      "context": "ADV — Financial & accounting",
+      "overall_risk": "LOW",
+      "score": 0.093,
+      "false_positive": false
+    },
+    {
+      "corpus_id": "CB-ADV-007",
+      "batch": 8,
+      "context": "ADV — Financial & accounting",
+      "overall_risk": "LOW",
+      "score": 0.0,
+      "false_positive": false
+    },
+    {
+      "corpus_id": "CB-ADV-008",
+      "batch": 8,
+      "context": "ADV — Financial & accounting",
+      "overall_risk": "LOW",
+      "score": 0.105,
+      "false_positive": false
+    },
+    {
+      "corpus_id": "CB-ADV-009",
+      "batch": 8,
+      "context": "ADV — Financial & accounting",
+      "overall_risk": "LOW",
+      "score": 0.048,
+      "false_positive": false
+    },
+    {
+      "corpus_id": "CB-ADV-010",
+      "batch": 8,
+      "context": "ADV — Financial & accounting",
+      "overall_risk": "LOW",
+      "score": 0.075,
+      "false_positive": false
+    },
+    {
+      "corpus_id": "CB-ADV-011",
+      "batch": 8,
+      "context": "ADV — Financial & accounting",
+      "overall_risk": "LOW",
+      "score": 0.058,
+      "false_positive": false
+    },
+    {
+      "corpus_id": "CB-ADV-012",
+      "batch": 8,
+      "context": "ADV — Financial & accounting",
+      "overall_risk": "LOW",
+      "score": 0.018,
+      "false_positive": false
+    },
+    {
+      "corpus_id": "CB-ADV-013",
+      "batch": 8,
+      "context": "ADV — Financial & accounting",
+      "overall_risk": "LOW",
+      "score": 0.013,
+      "false_positive": false
+    },
+    {
+      "corpus_id": "CB-ADV-014",
+      "batch": 8,
+      "context": "ADV — Financial & accounting",
+      "overall_risk": "LOW",
+      "score": 0.018,
+      "false_positive": false
+    },
+    {
+      "corpus_id": "CB-ADV-015",
+      "batch": 8,
+      "context": "ADV — Financial & accounting",
+      "overall_risk": "LOW",
+      "score": 0.0,
+      "false_positive": false
+    },
+    {
+      "corpus_id": "CB-ADV-016",
+      "batch": 9,
+      "context": "ADV — Specialist & consultant",
+      "overall_risk": "LOW",
+      "score": 0.048,
+      "false_positive": false
+    },
+    {
+      "corpus_id": "CB-ADV-017",
+      "batch": 9,
+      "context": "ADV — Specialist & consultant",
+      "overall_risk": "LOW",
+      "score": 0.066,
+      "false_positive": false
+    },
+    {
+      "corpus_id": "CB-ADV-018",
+      "batch": 9,
+      "context": "ADV — Specialist & consultant",
+      "overall_risk": "LOW",
+      "score": 0.061,
+      "false_positive": false
+    },
+    {
+      "corpus_id": "CB-ADV-019",
+      "batch": 9,
+      "context": "ADV — Specialist & consultant",
+      "overall_risk": "LOW",
+      "score": 0.013,
+      "false_positive": false
+    },
+    {
+      "corpus_id": "CB-ADV-020",
+      "batch": 9,
+      "context": "ADV — Specialist & consultant",
+      "overall_risk": "LOW",
+      "score": 0.013,
+      "false_positive": false
+    },
+    {
+      "corpus_id": "CB-ADV-021",
+      "batch": 9,
+      "context": "ADV — Specialist & consultant",
+      "overall_risk": "LOW",
+      "score": 0.018,
+      "false_positive": false
+    },
+    {
+      "corpus_id": "CB-ADV-022",
+      "batch": 9,
+      "context": "ADV — Specialist & consultant",
+      "overall_risk": "LOW",
+      "score": 0.018,
+      "false_positive": false
+    },
+    {
+      "corpus_id": "CB-ADV-023",
+      "batch": 9,
+      "context": "ADV — Specialist & consultant",
+      "overall_risk": "LOW",
+      "score": 0.018,
+      "false_positive": false
+    },
+    {
+      "corpus_id": "CB-ADV-024",
+      "batch": 9,
+      "context": "ADV — Specialist & consultant",
+      "overall_risk": "LOW",
+      "score": 0.008,
+      "false_positive": false
+    },
+    {
+      "corpus_id": "CB-ADV-025",
+      "batch": 9,
+      "context": "ADV — Specialist & consultant",
+      "overall_risk": "LOW",
+      "score": 0.008,
+      "false_positive": false
+    },
+    {
+      "corpus_id": "CB-ADV-026",
+      "batch": 9,
+      "context": "ADV — Specialist & consultant",
+      "overall_risk": "LOW",
+      "score": 0.018,
+      "false_positive": false
+    },
+    {
+      "corpus_id": "CB-ADV-027",
+      "batch": 9,
+      "context": "ADV — Specialist & consultant",
+      "overall_risk": "LOW",
+      "score": 0.018,
+      "false_positive": false
+    },
+    {
+      "corpus_id": "CB-ADV-028",
+      "batch": 9,
+      "context": "ADV — Specialist & consultant",
+      "overall_risk": "LOW",
+      "score": 0.084,
+      "false_positive": false
+    },
+    {
+      "corpus_id": "CB-ADV-029",
+      "batch": 9,
+      "context": "ADV — Specialist & consultant",
+      "overall_risk": "LOW",
+      "score": 0.013,
+      "false_positive": false
+    },
+    {
+      "corpus_id": "CB-ADV-030",
+      "batch": 9,
+      "context": "ADV — Specialist & consultant",
+      "overall_risk": "LOW",
+      "score": 0.084,
+      "false_positive": false
+    },
+    {
+      "corpus_id": "CB-ANTI-001",
+      "batch": 10,
+      "context": "ANTI — Template institutional",
+      "overall_risk": "LOW",
+      "score": 0.133,
+      "false_positive": false
+    },
+    {
+      "corpus_id": "CB-ANTI-002",
+      "batch": 10,
+      "context": "ANTI — Template institutional",
+      "overall_risk": "LOW",
+      "score": 0.127,
+      "false_positive": false
+    },
+    {
+      "corpus_id": "CB-ANTI-003",
+      "batch": 10,
+      "context": "ANTI — Template institutional",
+      "overall_risk": "LOW",
+      "score": 0.067,
+      "false_positive": false
+    },
+    {
+      "corpus_id": "CB-ANTI-004",
+      "batch": 10,
+      "context": "ANTI — Template institutional",
+      "overall_risk": "LOW",
+      "score": 0.013,
+      "false_positive": false
+    },
+    {
+      "corpus_id": "CB-ANTI-005",
+      "batch": 10,
+      "context": "ANTI — Template institutional",
+      "overall_risk": "LOW",
+      "score": 0.079,
+      "false_positive": false
+    },
+    {
+      "corpus_id": "CB-ANTI-006",
+      "batch": 10,
+      "context": "ANTI — Template institutional",
+      "overall_risk": "LOW",
+      "score": 0.093,
+      "false_positive": false
+    },
+    {
+      "corpus_id": "CB-ANTI-007",
+      "batch": 10,
+      "context": "ANTI — Template institutional",
+      "overall_risk": "LOW",
+      "score": 0.105,
+      "false_positive": false
+    },
+    {
+      "corpus_id": "CB-ANTI-008",
+      "batch": 10,
+      "context": "ANTI — Template institutional",
+      "overall_risk": "LOW",
+      "score": 0.053,
+      "false_positive": false
+    },
+    {
+      "corpus_id": "CB-ANTI-009",
+      "batch": 10,
+      "context": "ANTI — Template institutional",
+      "overall_risk": "LOW",
+      "score": 0.147,
+      "false_positive": false
+    },
+    {
+      "corpus_id": "CB-ANTI-010",
+      "batch": 10,
+      "context": "ANTI — Template institutional",
+      "overall_risk": "LOW",
+      "score": 0.018,
+      "false_positive": false
+    },
+    {
+      "corpus_id": "CB-ANTI-011",
+      "batch": 11,
+      "context": "ANTI — Regulatory urgency",
+      "overall_risk": "LOW",
+      "score": 0.173,
+      "false_positive": false
+    },
+    {
+      "corpus_id": "CB-ANTI-012",
+      "batch": 11,
+      "context": "ANTI — Regulatory urgency",
+      "overall_risk": "LOW",
+      "score": 0.089,
+      "false_positive": false
+    },
+    {
+      "corpus_id": "CB-ANTI-013",
+      "batch": 11,
+      "context": "ANTI — Regulatory urgency",
+      "overall_risk": "LOW",
+      "score": 0.061,
+      "false_positive": false
+    },
+    {
+      "corpus_id": "CB-ANTI-014",
+      "batch": 11,
+      "context": "ANTI — Regulatory urgency",
+      "overall_risk": "LOW",
+      "score": 0.153,
+      "false_positive": false
+    },
+    {
+      "corpus_id": "CB-ANTI-015",
+      "batch": 11,
+      "context": "ANTI — Regulatory urgency",
+      "overall_risk": "LOW",
+      "score": 0.079,
+      "false_positive": false
+    },
+    {
+      "corpus_id": "CB-ANTI-016",
+      "batch": 11,
+      "context": "ANTI — Regulatory urgency",
+      "overall_risk": "LOW",
+      "score": 0.066,
+      "false_positive": false
+    },
+    {
+      "corpus_id": "CB-ANTI-017",
+      "batch": 11,
+      "context": "ANTI — Regulatory urgency",
+      "overall_risk": "LOW",
+      "score": 0.105,
+      "false_positive": false
+    },
+    {
+      "corpus_id": "CB-ANTI-018",
+      "batch": 11,
+      "context": "ANTI — Regulatory urgency",
+      "overall_risk": "LOW",
+      "score": 0.079,
+      "false_positive": false
+    },
+    {
+      "corpus_id": "CB-ANTI-019",
+      "batch": 11,
+      "context": "ANTI — Regulatory urgency",
+      "overall_risk": "LOW",
+      "score": 0.018,
+      "false_positive": false
+    },
+    {
+      "corpus_id": "CB-ANTI-020",
+      "batch": 11,
+      "context": "ANTI — Regulatory urgency",
+      "overall_risk": "LOW",
+      "score": 0.1,
+      "false_positive": false
+    },
+    {
+      "corpus_id": "CB-ANTI-021",
+      "batch": 12,
+      "context": "ANTI — Expert confidence",
+      "overall_risk": "LOW",
+      "score": 0.093,
+      "false_positive": false
+    },
+    {
+      "corpus_id": "CB-ANTI-022",
+      "batch": 12,
+      "context": "ANTI — Expert confidence",
+      "overall_risk": "LOW",
+      "score": 0.073,
+      "false_positive": false
+    },
+    {
+      "corpus_id": "CB-ANTI-023",
+      "batch": 12,
+      "context": "ANTI — Expert confidence",
+      "overall_risk": "LOW",
+      "score": 0.008,
+      "false_positive": false
+    },
+    {
+      "corpus_id": "CB-ANTI-024",
+      "batch": 12,
+      "context": "ANTI — Expert confidence",
+      "overall_risk": "LOW",
+      "score": 0.061,
+      "false_positive": false
+    },
+    {
+      "corpus_id": "CB-ANTI-025",
+      "batch": 12,
+      "context": "ANTI — Expert confidence",
+      "overall_risk": "LOW",
+      "score": 0.013,
+      "false_positive": false
+    },
+    {
+      "corpus_id": "CB-ANTI-026",
+      "batch": 12,
+      "context": "ANTI — Expert confidence",
+      "overall_risk": "LOW",
+      "score": 0.119,
+      "false_positive": false
+    },
+    {
+      "corpus_id": "CB-ANTI-027",
+      "batch": 12,
+      "context": "ANTI — Expert confidence",
+      "overall_risk": "LOW",
+      "score": 0.0,
+      "false_positive": false
+    },
+    {
+      "corpus_id": "CB-ANTI-028",
+      "batch": 12,
+      "context": "ANTI — Expert confidence",
+      "overall_risk": "LOW",
+      "score": 0.018,
+      "false_positive": false
+    },
+    {
+      "corpus_id": "CB-ANTI-029",
+      "batch": 12,
+      "context": "ANTI — Expert confidence",
+      "overall_risk": "LOW",
+      "score": 0.013,
+      "false_positive": false
+    },
+    {
+      "corpus_id": "CB-ANTI-030",
+      "batch": 12,
+      "context": "ANTI — Expert confidence",
+      "overall_risk": "LOW",
+      "score": 0.066,
+      "false_positive": false
+    }
+  ]
+}
