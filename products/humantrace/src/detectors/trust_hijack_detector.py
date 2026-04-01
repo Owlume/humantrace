@@ -14,7 +14,7 @@ is materially different from one that invokes authority alone.
 The negative feature system handles this distinction.
 
 Build step: 2
-Status: new
+Status: updated — HT.TRUST.AUTH.02 legitimacy suppression added
 """
 
 import re
@@ -159,6 +159,25 @@ GROUNDING_MARKERS = [
     ]),
 ]
 
+# Legitimacy markers — presence of two or more suppresses HT.TRUST.AUTH.02
+# by 65%. Genuine regulatory/institutional communications consistently carry
+# multiple verifiable markers; synthetic impersonation typically lacks two
+# or more of these because they require genuine underlying record access.
+_LEGITIMACY_CHECKS = [
+    # ABN/ACN with digit groups (e.g. "abn 51 824 753 556")
+    (r"\b(abn|acn)\s+\d{2}\s+\d{3}\s+\d{3}\s+\d{3}", "ABN/ACN"),
+    # Statutory section citation (e.g. "section 255-15", "s.120")
+    (r"\b(section|s\.)\s*\d+[\-\.]\d+", "statutory section"),
+    # Specific reference/account number with label
+    (r"(reference|ref|account\s+number|loan\s+account|notice\s+number)\s*[:\-]\s*[a-z0-9\-]+",
+     "specific reference number"),
+    # Government postal address (e.g. "gpo box", "locked bag")
+    (r"(gpo\s+box|locked\s+bag|po\s+box\s+\d)", "government postal address"),
+    # Statutory deadline with specific day count
+    (r"within\s+(7|14|21|28|30|60|90)\s+days\s+of\s+(the\s+)?(date|this)",
+     "statutory deadline"),
+]
+
 # Score weights per signal
 SCORE_WEIGHTS = {
     "HT.TRUST.AUTH.01": 0.20,   # authority invocation — strong
@@ -191,6 +210,21 @@ def _find_pattern_hits(text_norm: str, patterns: list[str]) -> list[str]:
         if m:
             matched.append(m.group(0))
     return matched
+
+
+def _legitimacy_marker_count(text_norm: str) -> tuple[int, list[str]]:
+    """
+    Count how many legitimacy markers are present in text_norm.
+    Returns (count, list_of_matched_marker_names).
+    Used to suppress HT.TRUST.AUTH.02 when >= 2 markers are found.
+    """
+    count = 0
+    matched_names = []
+    for pattern, name in _LEGITIMACY_CHECKS:
+        if re.search(pattern, text_norm):
+            count += 1
+            matched_names.append(name)
+    return count, matched_names
 
 
 def _best_evidence(hits: list[str], text_norm: str, window: int = 60) -> str:
@@ -248,6 +282,23 @@ def detect_trust_hijack(text: str) -> TrustDetectionResult:
     hits_02 = _find_hits(text_norm, INSTITUTION_IMPERSONATION)
     if hits_02:
         contribution = SCORE_WEIGHTS["HT.TRUST.AUTH.02"]
+
+        # Legitimacy suppression: when two or more verifiable institutional
+        # markers are present, reduce the AUTH.02 contribution by 65%.
+        # Genuine regulatory/institutional communications consistently carry
+        # multiple verifiable markers (ABN, statutory citations, specific
+        # reference numbers, government postal addresses, statutory deadlines).
+        # Synthetic impersonation typically cannot replicate two or more of
+        # these because they require access to genuine underlying records.
+        lm_count, lm_names = _legitimacy_marker_count(text_norm)
+        if lm_count >= 2:
+            contribution = round(contribution * 0.35, 4)
+            negative_hits.append(
+                f"institutional legitimacy markers present "
+                f"({lm_count}/5: {', '.join(lm_names)}) — "
+                f"HT.TRUST.AUTH.02 suppressed to {contribution:.3f}"
+            )
+
         features.append(DetectedFeature(
             signal_id="HT.TRUST.AUTH.02",
             label="Institution impersonation",

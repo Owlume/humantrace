@@ -8,7 +8,7 @@ or extractive outcome: money, credentials, personal data, blind
 compliance, or secrecy.
 
 Build step: 1
-Status: new
+Status: updated — HT.INT.EXT.01 legitimacy suppression added
 """
 
 import re
@@ -110,6 +110,20 @@ SCORE_WEIGHTS = {
 
 NEGATIVE_REDUCTION = 0.08   # reduction per distinct negative feature hit
 
+# Legitimacy marker patterns — mirrors trust_hijack_detector.py
+# When two or more of these are present, HT.INT.EXT.01 contribution is
+# suppressed by 65%. Payment instructions in genuine regulatory or
+# institutional communications are not extraction attempts.
+_LEGITIMACY_CHECKS = [
+    (r"\b(abn|acn)\s+\d{2}\s+\d{3}\s+\d{3}\s+\d{3}", "ABN/ACN"),
+    (r"\b(section|s\.)\s*\d+[\-\.]\d+", "statutory section"),
+    (r"(reference|ref|account\s+number|loan\s+account|notice\s+number)\s*[:\-]\s*[a-z0-9\-]+",
+     "specific reference number"),
+    (r"(gpo\s+box|locked\s+bag|po\s+box\s+\d)", "government postal address"),
+    (r"within\s+(7|14|21|28|30|60|90)\s+days\s+of\s+(the\s+)?(date|this)",
+     "statutory deadline"),
+]
+
 
 # ---------------------------------------------------------------------------
 # Internal helpers
@@ -138,6 +152,21 @@ def _best_evidence(hits: list[str], text_norm: str, window: int = 60) -> str:
     end = min(len(text_norm), idx + len(anchor) + window)
     excerpt = text_norm[start:end].strip()
     return f"...{excerpt}..." if start > 0 else f"{excerpt}..."
+
+
+def _legitimacy_marker_count(text_norm: str) -> tuple[int, list[str]]:
+    """
+    Count how many legitimacy markers are present in text_norm.
+    Returns (count, list_of_matched_marker_names).
+    Used to suppress HT.INT.EXT.01 when >= 2 markers are found.
+    """
+    count = 0
+    matched_names = []
+    for pattern, name in _LEGITIMACY_CHECKS:
+        if re.search(pattern, text_norm):
+            count += 1
+            matched_names.append(name)
+    return count, matched_names
 
 
 # ---------------------------------------------------------------------------
@@ -169,6 +198,17 @@ def detect_intent(text: str) -> IntentDetectionResult:
     hits_01 = _find_hits(text_norm, EXTRACTION_MONEY)
     if hits_01:
         contribution = SCORE_WEIGHTS["HT.INT.EXT.01"]
+
+        # Legitimacy suppression — payment instructions in genuine regulatory
+        # or institutional communications are not extraction attempts.
+        # A statutory debt notice directing payment via BPAY or a named
+        # account with a reference number is materially different from a
+        # fraud message directing payment to an unverifiable destination.
+        # Same two-marker threshold as HT.TRUST.AUTH.02 suppression.
+        lm_count, lm_names = _legitimacy_marker_count(text_norm)
+        if lm_count >= 2:
+            contribution = round(contribution * 0.35, 4)
+
         features.append(DetectedFeature(
             signal_id="HT.INT.EXT.01",
             label="Direct money or payment extraction",
